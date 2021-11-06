@@ -78,7 +78,6 @@ public class LevelManager : MonoBehaviour {
 	public bool timerPaused;
 	public bool musicPaused;
 
-
 	void Awake() {
 		Time.timeScale = 1;
 	}
@@ -510,8 +509,8 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	/****************** Game state */
-	public void AddLife() {
-		lives++;
+	public void AddLife(int amount = 1) {
+		lives += amount;
 		soundSource.PlayOneShot (oneUpSound);
 	}
 
@@ -564,11 +563,20 @@ public class LevelManager : MonoBehaviour {
 		Debug.Log (this.name + " FindSpawnPosition: GSM spawnFromPoint=" + t_GameStateManager.spawnFromPoint.ToString()
 			+ " spawnPipeIdx= " + t_GameStateManager.spawnPipeIdx.ToString() 
 			+ " spawnPointIdx=" + t_GameStateManager.spawnPointIdx.ToString());
-		if (t_GameStateManager.spawnFromPoint) {
-			spawnPosition = GameObject.Find ("Spawn Points").transform.GetChild (t_GameStateManager.spawnPointIdx).transform.position;
-		} else {
+		if (t_GameStateManager.spawnFromPoint) 
+		{
+			var spawnPoints = GameObject.Find("Spawn Points").transform;
+			spawnPosition = spawnPoints.GetChild (t_GameStateManager.spawnPointIdx).transform.position;
+		} 
+		else if(GameObject.Find("Spawn Pipes") != null) 
+		{
 			spawnPosition = GameObject.Find ("Spawn Pipes").transform.GetChild (t_GameStateManager.spawnPipeIdx).transform.Find("Spawn Pos").transform.position;
 		}
+		else
+        {
+			spawnPosition = mario.transform.position;
+        }
+
 		return spawnPosition;
 	}
 

@@ -24,7 +24,7 @@ public class GameOverScreen : MonoBehaviour {
 		t_GameStateManager = FindObjectOfType<GameStateManager> ();
 		string worldName = t_GameStateManager.sceneToLoad;
 
-		WorldTextHUD.text = Regex.Split (worldName, "World ")[1];
+		WorldTextHUD.text = worldName.Contains("World") ? Regex.Split (worldName, "World ")[1] : "PCG";
 		ScoreTextHUD.text = t_GameStateManager.scores.ToString ("D6");
 		CoinTextHUD.text = "x" + t_GameStateManager.coins.ToString ("D2");
 
