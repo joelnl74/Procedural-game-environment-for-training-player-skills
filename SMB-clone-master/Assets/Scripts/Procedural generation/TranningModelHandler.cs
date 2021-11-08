@@ -29,16 +29,20 @@ public class TranningModelHandler
             case TranningType.Short_Jump:
                 GenerateShortJumpModels();
                 break;
+            case TranningType.Enemies:
+                GenerateShortJumpModels(true, 25);
+                break;
             case TranningType.Medium_Jump:
                 break;
             case TranningType.Long_Jump:
                 break;
             case TranningType.High_Jump:
                 break;
+
         }
     }
 
-    private void GenerateShortJumpModels()
+    private void GenerateShortJumpModels(bool hasEnemies = false, int minChance = 100)
     {
         for (int i = 0; i < model.ShotJumpSkill; i++)
         {
@@ -46,7 +50,8 @@ public class TranningModelHandler
                 new ElevationModel
                 {
                     heigth = Random.Range(1, 1),
-                    width = Random.Range(1, 5)
+                    width = Random.Range(1, 5),
+                    hasEnemies = Random.Range(0, 100) > minChance
                 });
         }
     }

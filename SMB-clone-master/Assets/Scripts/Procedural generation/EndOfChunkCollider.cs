@@ -1,11 +1,8 @@
 using UnityEngine;
-using System;
 using System.Collections.Generic;
 
 public class EndOfChunkCollider : MonoBehaviour
 {
-    public Action<int, List<TranningType>> onReachedEndOfChunk;
-
     private int _chunkId;
     private List<TranningType> _tranningTypes;
 
@@ -19,7 +16,7 @@ public class EndOfChunkCollider : MonoBehaviour
     {
         if (collision.tag == "Player")
         {
-            onReachedEndOfChunk?.Invoke(_chunkId, _tranningTypes);
+            PCGEventManager.Instance.onReachedEndOfChunk?.Invoke(_chunkId, _tranningTypes);
         }
     }
 }

@@ -13,6 +13,7 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private GameObject _spawnPoints;
     [SerializeField] private GameObject _endOfChunk;
     [SerializeField] private GameObject _groundBlock;
+    [SerializeField] private GameObject _goomba;
 
     [SerializeField] private Mario _mario;
 
@@ -36,6 +37,17 @@ public class LevelGenerator : MonoBehaviour
         {
             GenerateChunk(handler);
         }
+    }
+
+    public void ReachedEndOfChunk(int id, List<TranningType> tranningTypes)
+    {
+        var chunk = _chunks[id];
+
+        _chunks.Remove(id);
+
+        CleanEntitiesInChunk(id);
+        Destroy(chunk);
+        GenerateChunk(_tranningModelHandler);
     }
 
     private void Start()
@@ -91,8 +103,14 @@ public class LevelGenerator : MonoBehaviour
 
             var beginposition = new Vector2Int(xPos, yPos);
             var endPosition = new Vector2Int(xPos + model.width, yPos + model.heigth);
+            var chunk = _chunks[chunkId];
 
-            GenerateSolidBlocks(beginposition, endPosition, _chunks[chunkId]);
+            GenerateSolidBlocks(beginposition, endPosition, chunk);
+
+            if (model.hasEnemies)
+            {
+                GenerateGoomba(chunk, endPosition);
+            }        
         }
     }
 
@@ -113,6 +131,17 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
+    private void GenerateGoomba(GameObject chunk, Vector2 end)
+    {
+        var go = Instantiate(_goomba, chunk.transform);
+        var pos = new Vector2(end.x, end.y + 1);
+
+        go.name = "goomba";
+        go.transform.position = pos;
+
+        AddEntity(_lastGeneratedChunk, 2, pos);
+    }
+
     private int FindHighestBlock(int xPos, int width, int chunkId)
     {
         // TODO create dictonary of coordinates and check this.
@@ -130,22 +159,8 @@ public class LevelGenerator : MonoBehaviour
         goEnd.transform.position = new Vector2(x, y);
 
         component.Setup(_lastGeneratedChunk, new List<TranningType>());
-        component.onReachedEndOfChunk += CheckEndOfChunk;
-
+        
         _lastGeneratedChunk++;
-    }
-
-    private void CheckEndOfChunk(int id, List<TranningType> tranningTypes)
-    {
-        var chunk = _chunks[id];
-
-        _chunks.Remove(id);
-
-        _tranningModelHandler.model.SetTranningType(TranningType.Short_Jump);
-        _tranningModelHandler.GenerateModelsBasedOnSkill();
-        CleanEntitiesInChunk(id);
-        Destroy(chunk);
-        GenerateChunk(_tranningModelHandler);
     }
 
     private void AddEntity(int chunk, int type, Vector2 position)
@@ -153,11 +168,11 @@ public class LevelGenerator : MonoBehaviour
         if(_entities.ContainsKey(chunk) == false)
         {
             _entities.Add(chunk, new Dictionary<int, List<Vector2>>());
+        }
 
-            if(_entities[chunk].ContainsKey(type) == false)
-            {
-                _entities[chunk].Add(type, new List<Vector2>());
-            }
+        if (_entities[chunk].ContainsKey(type) == false)
+        {
+            _entities[chunk].Add(type, new List<Vector2>());
         }
 
         _entities[chunk][type].Add(position);
