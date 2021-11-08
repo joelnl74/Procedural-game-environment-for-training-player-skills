@@ -1,8 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class LevelGenerator : MonoBehaviour
 {
+    private int _halfWidth;
+
     [SerializeField] private int _maxHeigth;
     [SerializeField] private int _maxWidth;
     [SerializeField] private int _chunksToGenerate;
@@ -20,31 +23,36 @@ public class LevelGenerator : MonoBehaviour
     private int _previousChunkHeigthEnd = 0;
 
     private int _lastGeneratedChunk = 1;
-    private int _currentChunk = 1;
 
-    // Start is called before the first frame update
-    private void Awake()
+    private TranningModelHandler _tranningModelHandler;
+
+    public void SetupLevel(TranningModelHandler handler)
     {
         _entities = new Dictionary<int, Dictionary<int, List<Vector2>>>();
         _chunks = new Dictionary<int, GameObject>();
+        _tranningModelHandler = handler;
 
-        for(int i = 0; i < _chunksToGenerate; i++)
+        for (int i = 0; i < _chunksToGenerate; i++)
         {
-            GenerateChunk(i == 0);
+            GenerateChunk(handler);
         }
     }
 
     private void Start()
     {
+        _halfWidth = _maxWidth / 2;
+
         _mario.EnablePhysics();
     }
 
-    private void GenerateChunk(bool generateSpawnPoint = false)
+    private void GenerateChunk(TranningModelHandler handler)
     {
         var chunk = new GameObject();
         var maxX = _previousChunkWidthEnd + _maxWidth;
 
         chunk.name = $"Chunk {_lastGeneratedChunk}";
+
+        _chunks.Add(_lastGeneratedChunk, chunk);
 
         for (int x = _previousChunkWidthEnd; x < maxX; x++)
             for (int y = 0; y < _maxHeigth; y++)
@@ -66,9 +74,52 @@ public class LevelGenerator : MonoBehaviour
                 }
             }
 
+        HandleElevation(handler, _lastGeneratedChunk);
+
         SetupEndOfChunk(chunk, maxX + 1, 0);
 
         _previousChunkWidthEnd = maxX;
+    }
+
+    private void HandleElevation(TranningModelHandler handler, int chunkId)
+    {
+        foreach(var model in handler.elevationModels)
+        {
+            var startPos = chunkId * _maxWidth - _halfWidth;
+            var xPos = Random.Range(startPos - model.width, startPos + model.width);
+            var yPos = FindHighestBlock(xPos, model.width, chunkId);
+
+            var beginposition = new Vector2Int(xPos, yPos);
+            var endPosition = new Vector2Int(xPos + model.width, yPos + model.heigth);
+
+            GenerateSolidBlocks(beginposition, endPosition, _chunks[chunkId]);
+        }
+    }
+
+    private void GenerateSolidBlocks(Vector2Int begin, Vector2Int end, GameObject chunk)
+    {
+        for(int x = begin.x; x < end.x; x++)
+        {
+            for(int y = begin.y; y < end.y; y++)
+            {
+                var go = Instantiate(_groundBlock, chunk.transform);
+                var pos = new Vector2(x, y);
+
+                go.name = "block";
+                go.transform.position = pos;
+
+                AddEntity(_lastGeneratedChunk, 1, pos);
+            }
+        }
+    }
+
+    private int FindHighestBlock(int xPos, int width, int chunkId)
+    {
+        // TODO create dictonary of coordinates and check this.
+        var chunk = _entities[chunkId];
+        var highestYPos = 1;
+
+        return highestYPos;
     }
 
     private void SetupEndOfChunk(GameObject chunkGo, int x, int y)
@@ -78,24 +129,23 @@ public class LevelGenerator : MonoBehaviour
 
         goEnd.transform.position = new Vector2(x, y);
 
-        component.Setup(_lastGeneratedChunk);
+        component.Setup(_lastGeneratedChunk, new List<TranningType>());
         component.onReachedEndOfChunk += CheckEndOfChunk;
-
-        _chunks.Add(_lastGeneratedChunk, chunkGo);
 
         _lastGeneratedChunk++;
     }
 
-    private void CheckEndOfChunk(int id)
+    private void CheckEndOfChunk(int id, List<TranningType> tranningTypes)
     {
         var chunk = _chunks[id];
 
-        _currentChunk = id;
         _chunks.Remove(id);
 
+        _tranningModelHandler.model.SetTranningType(TranningType.Short_Jump);
+        _tranningModelHandler.GenerateModelsBasedOnSkill();
         CleanEntitiesInChunk(id);
         Destroy(chunk);
-        GenerateChunk(false);
+        GenerateChunk(_tranningModelHandler);
     }
 
     private void AddEntity(int chunk, int type, Vector2 position)

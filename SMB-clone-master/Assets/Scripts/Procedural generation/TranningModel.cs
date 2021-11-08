@@ -1,4 +1,6 @@
 
+using UnityEngine;
+
 public enum TranningType
 {
     None = 0,
@@ -22,4 +24,26 @@ public class TranningModel
 
     public TranningType GetCurrentTrannigType()
         => _currentTranningType;
+
+    public void SetTranningType(TranningType tranningType)
+    {
+        _currentTranningType = tranningType;
+
+        switch (_currentTranningType)
+        {
+            case TranningType.None:
+                break;
+            case TranningType.Walking:
+                break;
+            case TranningType.Short_Jump:
+                ShotJumpSkill = Random.Range(1, 3);
+                break;
+            case TranningType.Medium_Jump:
+                break;
+            case TranningType.Long_Jump:
+                break;
+            case TranningType.High_Jump:
+                break;
+        }
+    }
 }
