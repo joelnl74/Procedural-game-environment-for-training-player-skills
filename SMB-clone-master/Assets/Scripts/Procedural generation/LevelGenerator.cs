@@ -1,11 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 public class LevelGenerator : MonoBehaviour
 {
-    private int _halfWidth;
-
     [SerializeField] private int _maxHeigth;
     [SerializeField] private int _maxWidth;
     [SerializeField] private int _chunksToGenerate;
@@ -17,25 +14,25 @@ public class LevelGenerator : MonoBehaviour
 
     [SerializeField] private Mario _mario;
 
-    private Dictionary<int, Dictionary<int, List<Vector2>>> _entities;
+    private Dictionary<int, Dictionary<int, EntityModel>> _entities;
     private Dictionary<int, GameObject> _chunks;
 
     private int _previousChunkWidthEnd = 0;
-    private int _previousChunkHeigthEnd = 0;
-
     private int _lastGeneratedChunk = 1;
 
-    private TranningModelHandler _tranningModelHandler;
+    private int minHeigth = 1;
 
-    public void SetupLevel(TranningModelHandler handler)
+    private TranningHandler tranningHandler;
+
+    public void SetupLevel(TranningHandler handler)
     {
-        _entities = new Dictionary<int, Dictionary<int, List<Vector2>>>();
+        _entities = new Dictionary<int, Dictionary<int, EntityModel>>();
         _chunks = new Dictionary<int, GameObject>();
-        _tranningModelHandler = handler;
+        tranningHandler = handler;
 
         for (int i = 0; i < _chunksToGenerate; i++)
         {
-            GenerateChunk(handler);
+            GenerateChunk();
         }
     }
 
@@ -47,17 +44,15 @@ public class LevelGenerator : MonoBehaviour
 
         CleanEntitiesInChunk(id);
         Destroy(chunk);
-        GenerateChunk(_tranningModelHandler);
+        GenerateChunk();
     }
 
     private void Start()
     {
-        _halfWidth = _maxWidth / 2;
-
         _mario.EnablePhysics();
     }
 
-    private void GenerateChunk(TranningModelHandler handler)
+    private void GenerateChunk()
     {
         var chunk = new GameObject();
         var maxX = _previousChunkWidthEnd + _maxWidth;
@@ -67,42 +62,47 @@ public class LevelGenerator : MonoBehaviour
         _chunks.Add(_lastGeneratedChunk, chunk);
 
         for (int x = _previousChunkWidthEnd; x < maxX; x++)
-            for (int y = 0; y < _maxHeigth; y++)
+            for (int y = minHeigth; y < _maxHeigth; y++)
             {
                 if (x == 0 && y == 2)
                 {
                     var spawnPos = Instantiate(new GameObject(), _spawnPoints.transform);
                     spawnPos.name = "Spawn position";
                 }
-                if (y == 0)
+                if (y == minHeigth)
                 {
                     var go = Instantiate(_groundBlock, chunk.transform);
                     var pos = new Vector2(x, y);
+                    var component = go.AddComponent<EntityModel>();
 
                     go.name = "block";
                     go.transform.position = pos;
 
-                    AddEntity(_lastGeneratedChunk, 1, pos);
+                    AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), component, EntityType.Solid);
                 }
             }
 
-        HandleElevation(handler, _lastGeneratedChunk);
+        HandleElevation(_lastGeneratedChunk);
+        HandleChasm(_lastGeneratedChunk);
 
         SetupEndOfChunk(chunk, maxX + 1, 0);
 
-        _previousChunkWidthEnd = maxX;
+        _previousChunkWidthEnd += _maxWidth;
     }
 
-    private void HandleElevation(TranningModelHandler handler, int chunkId)
+    private void HandleElevation(int chunkId)
     {
-        foreach(var model in handler.elevationModels)
+        var minX = _previousChunkWidthEnd;
+        var maxX = _previousChunkWidthEnd + _maxWidth;
+
+        foreach (var model in tranningHandler.GetElevationModels())
         {
-            var startPos = chunkId * _maxWidth - _halfWidth;
-            var xPos = Random.Range(startPos - model.width, startPos + model.width);
+            var xPos = Random.Range(minX, maxX - model.width);
             var yPos = FindHighestBlock(xPos, model.width, chunkId);
 
             var beginposition = new Vector2Int(xPos, yPos);
             var endPosition = new Vector2Int(xPos + model.width, yPos + model.heigth);
+            
             var chunk = _chunks[chunkId];
 
             GenerateSolidBlocks(beginposition, endPosition, chunk);
@@ -114,6 +114,22 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
+    private void HandleChasm(int chunkId)
+    {
+        var minX = _previousChunkWidthEnd;
+        var maxX = _previousChunkWidthEnd + _maxWidth;
+
+        foreach (var model in tranningHandler.GetChasmModels())
+        {
+            var xPos = Random.Range(minX, maxX - model.width);
+
+            var beginposition = new Vector2Int(xPos, minHeigth);
+            var endPosition = new Vector2Int(xPos + model.width, _maxHeigth);
+
+            GenerateChasmBlocks(beginposition, endPosition, chunkId);
+        }
+    }
+
     private void GenerateSolidBlocks(Vector2Int begin, Vector2Int end, GameObject chunk)
     {
         for(int x = begin.x; x < end.x; x++)
@@ -122,33 +138,49 @@ public class LevelGenerator : MonoBehaviour
             {
                 var go = Instantiate(_groundBlock, chunk.transform);
                 var pos = new Vector2(x, y);
+                var component = go.AddComponent<EntityModel>();
 
                 go.name = "block";
                 go.transform.position = pos;
 
-                AddEntity(_lastGeneratedChunk, 1, pos);
+                AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), component, EntityType.Solid);
             }
         }
     }
 
-    private void GenerateGoomba(GameObject chunk, Vector2 end)
+    private void GenerateChasmBlocks(Vector2Int begin, Vector2Int end, int chunkId)
     {
-        var go = Instantiate(_goomba, chunk.transform);
-        var pos = new Vector2(end.x, end.y + 1);
+        for (int x = begin.x; x < end.x; x++)
+        {
+            for (int y = begin.y; y < end.y; y++)
+            {
+                var index = GetId(x, y, chunkId);
+                var block = GetEntity(x, y, chunkId);
 
-        go.name = "goomba";
-        go.transform.position = pos;
+                if (block == null && x == begin.x && y == 1)
+                {
+                    // TODO generate platform or block.
+                }
 
-        AddEntity(_lastGeneratedChunk, 2, pos);
+                if (block != null)
+                {
+                    Destroy(block.gameObject);
+                    _entities[chunkId].Remove(index);
+                }
+            }
+        }
     }
 
-    private int FindHighestBlock(int xPos, int width, int chunkId)
+    private void GenerateGoomba(GameObject chunk, Vector2Int end)
     {
-        // TODO create dictonary of coordinates and check this.
-        var chunk = _entities[chunkId];
-        var highestYPos = 1;
+        var go = Instantiate(_goomba, chunk.transform);
+        var pos = new Vector2Int(end.x, end.y + 1);
+        var component = go.AddComponent<EntityModel>();
 
-        return highestYPos;
+        go.name = "goomba";
+        go.transform.position = new Vector2(pos.x, pos.y);
+
+        AddEntity(_lastGeneratedChunk, pos, component, EntityType.Enemy);
     }
 
     private void SetupEndOfChunk(GameObject chunkGo, int x, int y)
@@ -163,20 +195,44 @@ public class LevelGenerator : MonoBehaviour
         _lastGeneratedChunk++;
     }
 
-    private void AddEntity(int chunk, int type, Vector2 position)
+    private EntityModel GetEntity(int x, int y, int chunk)
     {
-        if(_entities.ContainsKey(chunk) == false)
-        {
-            _entities.Add(chunk, new Dictionary<int, List<Vector2>>());
-        }
+        var key = x * y * chunk;
+        var contains = _entities[chunk].ContainsKey(key);
 
-        if (_entities[chunk].ContainsKey(type) == false)
-        {
-            _entities[chunk].Add(type, new List<Vector2>());
-        }
+        if (contains)
+            return _entities[chunk][key];
 
-        _entities[chunk][type].Add(position);
+        return null;
     }
+
+    private int FindHighestBlock(int xPos, int width, int chunkId)
+    {
+        // TODO create dictonary of coordinates and check this.
+        var chunk = _entities[chunkId];
+        var highestYPos = minHeigth + 1;
+
+        return highestYPos;
+    }
+
+    private void AddEntity(int chunkId, Vector2Int position, EntityModel entityModel, EntityType entityType)
+    {
+        var id = GetId(position.x, position.y, chunkId);
+
+        if (_entities.ContainsKey(chunkId) == false)
+        {
+            _entities.Add(chunkId, new Dictionary<int, EntityModel>());
+        }
+
+        if (_entities[chunkId].ContainsKey(id) == false)
+        {
+            entityModel.Setup(id, position.x, position.y, entityType);
+            _entities[chunkId].Add(id, entityModel);
+        }
+    }
+
+    private int GetId(int x, int y, int chunkId)
+        => x * y * chunkId;
 
     private void CleanEntitiesInChunk(int chunkId)
     {

@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class ElevationModel
 {
     public int heigth;

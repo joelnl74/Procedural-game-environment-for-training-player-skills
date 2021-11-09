@@ -12,25 +12,42 @@ public class TranningHandler : MonoBehaviour
     public List<TranningType> GetTranningTypes()
         => tranningTypes;
 
+    public TranningModel GetTranningModel()
+        => tranningModelHandler.model;
+
+    public List<ElevationModel> GetElevationModels()
+        => tranningModelHandler.elevationModels;
+
+    public List<ChasmModel> GetChasmModels()
+    => tranningModelHandler.chasmModels;
+
     private void Awake()
     {
         tranningModelHandler = new TranningModelHandler();
         tranningModelHandler.GenerateModelsBasedOnSkill();
 
-        _levelGenerator.SetupLevel(tranningModelHandler);
+        _levelGenerator.SetupLevel(this);
 
         PCGEventManager.Instance.onReachedEndOfChunk += CheckEndOfChunk;
     }
 
     private void CheckEndOfChunk(int chunkId, List<TranningType> types)
     {
-        if(chunkId > 0)
+        if (chunkId > 0)
         {
             tranningModelHandler.model.SetTranningType(TranningType.Short_Jump);
         }
-        if(chunkId > 3)
+        if(chunkId > 2)
         {
             tranningModelHandler.model.SetTranningType(TranningType.Enemies);
+        }
+        if(chunkId > 3)
+        {
+            tranningModelHandler.model.SetTranningType(TranningType.Medium_Jump);
+        }
+        if (chunkId > 4)
+        {
+            tranningModelHandler.model.SetTranningType(TranningType.Long_Jump);
         }
 
         tranningModelHandler.GenerateModelsBasedOnSkill();
