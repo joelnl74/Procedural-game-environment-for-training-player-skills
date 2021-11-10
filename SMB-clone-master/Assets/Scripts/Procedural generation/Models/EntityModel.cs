@@ -4,7 +4,8 @@ public enum EntityType
 {
     Unknown = 3,
     Solid = 1,
-    Enemy = 2
+    Enemy = 2,
+    Coin = 3
 }
 
 public class EntityModel : MonoBehaviour

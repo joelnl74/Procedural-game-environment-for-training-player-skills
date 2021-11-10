@@ -11,6 +11,7 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private GameObject _endOfChunk;
     [SerializeField] private GameObject _groundBlock;
     [SerializeField] private GameObject _goomba;
+    [SerializeField] private GameObject _coin;
 
     [SerializeField] private Mario _mario;
 
@@ -84,6 +85,7 @@ public class LevelGenerator : MonoBehaviour
 
         HandleElevation(_lastGeneratedChunk);
         HandleChasm(_lastGeneratedChunk);
+        HandlePlatforms(_lastGeneratedChunk);
 
         SetupEndOfChunk(chunk, maxX + 1, 0);
 
@@ -114,6 +116,43 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
+    private void HandlePlatforms(int chunkId)
+    {
+        var minX = _previousChunkWidthEnd;
+        var maxX = _previousChunkWidthEnd + _maxWidth;
+
+        foreach (var model in tranningHandler.GetPlatformModels())
+        {
+            var xPos = Random.Range(minX, maxX - model.width);
+
+            var beginposition = new Vector2Int(xPos, model.heigth);
+            var endPosition = new Vector2Int(xPos + model.width, model.heigth + 1);
+
+            var chunk = _chunks[chunkId];
+
+            GenerateSolidBlocks(beginposition, endPosition, chunk);
+
+            if (model.hasEnemies)
+            {
+                GenerateGoomba(chunk, endPosition);
+            }
+            if(model.hasCoins)
+            {
+                for(int x = beginposition.x; x < endPosition.x; x++)
+                {
+                    GenerateCoins(x, model.heigth + 1, chunk);
+                }
+            }
+            if(model.hasChasm)
+            {
+                var startX = Random.Range(beginposition.x + model.width - 1, beginposition.x + model.width + 2);
+                var endX = startX + Random.Range(4, 5);
+
+                GenerateChasmBlocks(new Vector2Int(startX, minHeigth), new Vector2Int(endX, _maxHeigth), chunkId);
+            }
+        }
+    }
+
     private void HandleChasm(int chunkId)
     {
         var minX = _previousChunkWidthEnd;
@@ -128,6 +167,18 @@ public class LevelGenerator : MonoBehaviour
 
             GenerateChasmBlocks(beginposition, endPosition, chunkId);
         }
+    }
+
+    private void GenerateCoins(int x, int y, GameObject chunk)
+    {
+        var go = Instantiate(_coin, chunk.transform);
+        var pos = new Vector2(x, y);
+        var component = go.AddComponent<EntityModel>();
+
+        go.name = "coin";
+        go.transform.position = pos;
+
+        AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), component, EntityType.Coin);
     }
 
     private void GenerateSolidBlocks(Vector2Int begin, Vector2Int end, GameObject chunk)
@@ -146,6 +197,18 @@ public class LevelGenerator : MonoBehaviour
                 AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), component, EntityType.Solid);
             }
         }
+    }
+
+    private void GenerateGoomba(GameObject chunk, Vector2Int end)
+    {
+        var go = Instantiate(_goomba, chunk.transform);
+        var pos = new Vector2Int(end.x, end.y + 1);
+        var component = go.AddComponent<EntityModel>();
+
+        go.name = "goomba";
+        go.transform.position = new Vector2(pos.x, pos.y);
+
+        AddEntity(_lastGeneratedChunk, pos, component, EntityType.Enemy);
     }
 
     private void GenerateChasmBlocks(Vector2Int begin, Vector2Int end, int chunkId)
@@ -169,18 +232,6 @@ public class LevelGenerator : MonoBehaviour
                 }
             }
         }
-    }
-
-    private void GenerateGoomba(GameObject chunk, Vector2Int end)
-    {
-        var go = Instantiate(_goomba, chunk.transform);
-        var pos = new Vector2Int(end.x, end.y + 1);
-        var component = go.AddComponent<EntityModel>();
-
-        go.name = "goomba";
-        go.transform.position = new Vector2(pos.x, pos.y);
-
-        AddEntity(_lastGeneratedChunk, pos, component, EntityType.Enemy);
     }
 
     private void SetupEndOfChunk(GameObject chunkGo, int x, int y)

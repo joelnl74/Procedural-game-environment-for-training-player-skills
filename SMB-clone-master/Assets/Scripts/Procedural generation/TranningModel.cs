@@ -47,10 +47,11 @@ public class TranningModel
                 MediumJumpSkill = Random.Range(1, 3);
                 break;
             case TranningType.Long_Jump:
+                LongJumpSkill = Random.Range(1, 2);
                 break;
             case TranningType.High_Jump:
+                HighJumpSkill = Random.Range(1, 2);
                 break;
-
         }
     }
 }

@@ -19,7 +19,10 @@ public class TranningHandler : MonoBehaviour
         => tranningModelHandler.elevationModels;
 
     public List<ChasmModel> GetChasmModels()
-    => tranningModelHandler.chasmModels;
+        => tranningModelHandler.chasmModels;
+
+    public List<PlatformModel> GetPlatformModels()
+        => tranningModelHandler.platformModels;
 
     private void Awake()
     {
@@ -35,7 +38,7 @@ public class TranningHandler : MonoBehaviour
     {
         if (chunkId > 0)
         {
-            tranningModelHandler.model.SetTranningType(TranningType.Short_Jump);
+            tranningModelHandler.model.SetTranningType(TranningType.High_Jump);
         }
         if(chunkId > 2)
         {

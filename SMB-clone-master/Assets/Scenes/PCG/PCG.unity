@@ -441,6 +441,12 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
         type: 3}
+      propertyPath: _coin
+      value: 
+      objectReference: {fileID: 1852225634613044, guid: 0933b49153e7b46bf8acdcb029409ce5,
+        type: 3}
+    - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
+        type: 3}
       propertyPath: _mario
       value: 
       objectReference: {fileID: 105353960}

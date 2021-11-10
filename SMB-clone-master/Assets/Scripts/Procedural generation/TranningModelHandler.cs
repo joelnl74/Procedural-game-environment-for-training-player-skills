@@ -5,6 +5,7 @@ public class TranningModelHandler
 {
     public List<ElevationModel> elevationModels = new List<ElevationModel>();
     public List<ChasmModel> chasmModels = new List<ChasmModel>();
+    public List<PlatformModel> platformModels = new List<PlatformModel>();
 
     public TranningModel model;
 
@@ -44,6 +45,7 @@ public class TranningModelHandler
                 GenerateLongJumpModels();
                 break;
             case TranningType.High_Jump:
+                GeneratePlatformModels(4, 4, 0, false, true, true);
                 break;
 
         }
@@ -52,6 +54,8 @@ public class TranningModelHandler
     private void Clear()
     {
         elevationModels.Clear();
+        chasmModels.Clear();
+        platformModels.Clear();
     }
 
     private void GenerateShortJumpModels(bool hasEnemies = false, int minChance = 100)
@@ -77,7 +81,7 @@ public class TranningModelHandler
                 {
                     heigth = Random.Range(2, 3),
                     width = Random.Range(3, 5),
-                    hasEnemies = Random.Range(0, 100) > minChance
+                    hasEnemies = hasEnemies && Random.Range(0, 100) > minChance
                 });
         }
     }
@@ -91,6 +95,20 @@ public class TranningModelHandler
                 {
                     width = Random.Range(3, 5),
                 });
+        }
+    }
+
+    private void GeneratePlatformModels(int width, int heigth, int minChance = 0, bool hasEnemies = false, bool hasCoins = false, bool HasChasm = false)
+    {
+        for (int i = 0; i < model.HighJumpSkill; i++)
+        {
+            var w = Random.Range(4, 6);
+            var h = Random.Range(4, 6);
+            var containsEnemies = hasEnemies && Random.Range(0, 100) > minChance;
+            var containsCoins = hasCoins && Random.Range(0, 100) > 50;
+            var containsChasm = HasChasm && Random.Range(0, 100) > 50;
+
+            platformModels.Add(new PlatformModel(w, h, containsCoins, containsEnemies, containsChasm));
         }
     }
 }
