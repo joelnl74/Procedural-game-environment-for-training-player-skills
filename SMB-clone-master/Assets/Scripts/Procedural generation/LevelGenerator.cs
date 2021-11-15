@@ -242,7 +242,7 @@ public class LevelGenerator : MonoBehaviour
 
         goEnd.transform.position = new Vector2(x, y);
 
-        component.Setup(_lastGeneratedChunk, new List<TranningType>());
+        component.Setup(_lastGeneratedChunk, tranningHandler.GetTranningTypes());
         
         _lastGeneratedChunk++;
     }

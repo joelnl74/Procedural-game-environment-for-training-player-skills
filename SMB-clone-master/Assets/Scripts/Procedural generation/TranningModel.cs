@@ -6,10 +6,11 @@ public enum TranningType
     None = 0,
     Walking = 1,
     Short_Jump = 2,
-    Enemies = 3,
-    Medium_Jump = 4,
+    Medium_Jump = 3,
     Long_Jump = 5,
-    High_Jump = 6,
+    Enemies = 6,
+    High_Jump = 7,
+    BasicsTest = 8,
 }
 
 public class TranningModel
@@ -51,6 +52,9 @@ public class TranningModel
                 break;
             case TranningType.High_Jump:
                 HighJumpSkill = Random.Range(1, 2);
+                break;
+            case TranningType.BasicsTest:
+                //TODO;
                 break;
         }
     }

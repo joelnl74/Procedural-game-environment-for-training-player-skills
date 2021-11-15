@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +6,47 @@ public class TranningHandler : MonoBehaviour
     [SerializeField] private LevelGenerator _levelGenerator;
     
     private TranningModelHandler tranningModelHandler;
-    private List<TranningType> tranningTypes = new List<TranningType>();
+    private PCGEventManager _PCGEventManager;
+    private TranningType _currentTranningType;
+
+    private List<TranningType> tranningTypes;
+
+    public int deathCount = 0;
+    public int jumpDeaths = 0;
+    public int enemiesDeaths = 0;
+
+    private void Awake()
+    {
+        _currentTranningType = TranningType.Walking;
+        _PCGEventManager = PCGEventManager.Instance;
+        tranningModelHandler = new TranningModelHandler();
+        tranningTypes = new List<TranningType> { _currentTranningType };
+
+        tranningModelHandler.model.SetTranningType(_currentTranningType);
+        tranningModelHandler.GenerateModelsBasedOnSkill();
+        _levelGenerator.SetupLevel(this);
+
+        _PCGEventManager.onReachedEndOfChunk += CheckEndOfChunk;
+    }
+
+    private void Start()
+    {
+        _PCGEventManager.onFallDeath += HandleDeathByFalling;
+        _PCGEventManager.onDeathByEnemy += HandleDeathByEnemy;
+        _PCGEventManager.onKilledEnemy += HandleKilledEnemy;
+    }
+
+    private void OnDestroy()
+    {
+        if (_PCGEventManager == null)
+        {
+            return;
+        }
+
+        _PCGEventManager.onFallDeath -= HandleDeathByFalling;
+        _PCGEventManager.onDeathByEnemy -= HandleDeathByEnemy;
+        _PCGEventManager.onKilledEnemy -= HandleKilledEnemy;
+    }
 
     public List<TranningType> GetTranningTypes()
         => tranningTypes;
@@ -24,39 +63,42 @@ public class TranningHandler : MonoBehaviour
     public List<PlatformModel> GetPlatformModels()
         => tranningModelHandler.platformModels;
 
-    private void Awake()
+    private void HandleDeathByFalling()
     {
-        tranningModelHandler = new TranningModelHandler();
-        tranningModelHandler.GenerateModelsBasedOnSkill();
-
-        _levelGenerator.SetupLevel(this);
-
-        PCGEventManager.Instance.onReachedEndOfChunk += CheckEndOfChunk;
+        jumpDeaths++;
+        deathCount++;
     }
 
-    private void CheckEndOfChunk(int chunkId, List<TranningType> types)
+    private void HandleDeathByEnemy(Enemytype obj)
     {
-        if (chunkId > 0)
+        enemiesDeaths++;
+        deathCount++;
+    }
+
+    private void HandleKilledEnemy(Enemytype obj)
+    {
+    }
+
+    private void ClearChunkStats()
+    {
+        deathCount = 0;
+        enemiesDeaths = 0;
+        jumpDeaths = 0;
+    }
+
+    private void CheckEndOfChunk(int chunkId, List<TranningType> chunkTranningTypes)
+    {
+        if (deathCount == 0 && chunkTranningTypes.Contains(_currentTranningType))
         {
-            tranningModelHandler.model.SetTranningType(TranningType.High_Jump);
+            _currentTranningType += 1;
+            tranningModelHandler.model.SetTranningType(_currentTranningType);
         }
-        if(chunkId > 2)
-        {
-            tranningModelHandler.model.SetTranningType(TranningType.Enemies);
-        }
-        if(chunkId > 3)
-        {
-            tranningModelHandler.model.SetTranningType(TranningType.Medium_Jump);
-        }
-        if (chunkId > 4)
-        {
-            tranningModelHandler.model.SetTranningType(TranningType.Long_Jump);
-        }
+
+        tranningTypes = new List<TranningType> { _currentTranningType };
 
         tranningModelHandler.GenerateModelsBasedOnSkill();
-
-        tranningTypes = new List<TranningType> { tranningModelHandler.GetTranningType() };
-
         _levelGenerator.ReachedEndOfChunk(chunkId, tranningTypes);
+
+        ClearChunkStats();
     }
 }
