@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class KillPlane : MonoBehaviour {
 	private LevelManager t_LevelManager;
@@ -17,6 +16,7 @@ public class KillPlane : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other) {
 		if (other.gameObject.tag == "Player") {
+			PCGEventManager.Instance.onFallDeath?.Invoke();
 			t_LevelManager.MarioRespawn ();
 		} else {
 			Destroy (other.gameObject);

@@ -309,7 +309,11 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	public void MarioRespawn(bool timeup = false) {
-		if (!isRespawning) {
+		if(SceneManager.GetActiveScene().name == "PCG")
+        {
+			mario.UnFreeAndLive();
+        }
+		else if (!isRespawning) {
 			isRespawning = true;
 
 			marioSize = 0;

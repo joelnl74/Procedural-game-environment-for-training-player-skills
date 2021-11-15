@@ -49,12 +49,15 @@ public class Mario : MonoBehaviour {
 	private bool isChangingDirection;
 	private bool wasDashingBeforeJump;
 	private bool isShooting;
+	
 	public bool isCrouching;
 
 	private bool jumpButtonHeld;
 	private bool jumpButtonReleased;
 
 	public bool inputFreezed;
+
+	public Vector2 respawnPositionPCG;
 
 	// Use this for initialization
 	void Start () {
@@ -292,6 +295,17 @@ public class Mario : MonoBehaviour {
 		m_Animator.SetTrigger ("respawn");
 		gameObject.layer = LayerMask.NameToLayer ("Falling to Kill Plane");
 		gameObject.GetComponent<SpriteRenderer>().sortingLayerName = "Foreground Effect";
+	}
+
+	public void UnFreeAndLive()
+    {
+		var cameraPos = Camera.main.transform.position;
+
+		transform.position = respawnPositionPCG;
+		Camera.main.transform.position = new Vector3(respawnPositionPCG.x, cameraPos.y, cameraPos.z);
+
+		inputFreezed = false;
+		m_Rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
 	}
 
 	public void EnablePhysics()

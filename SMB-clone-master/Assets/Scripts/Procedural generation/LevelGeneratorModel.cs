@@ -1,5 +1,8 @@
 public class LevelGeneratorModel
 {
+    // This is used to calculate the max amount of generated objects within a chunk.
+    public int maxAmountOfObjectsPlaced;
+
     public int amountOfPlatforms;
     public int amountOfEnemies;
     public int shortJumps;

@@ -40,6 +40,7 @@ public class LevelGenerator : MonoBehaviour
     public void ReachedEndOfChunk(int id, List<TranningType> tranningTypes)
     {
         var chunk = _chunks[id];
+        _mario.respawnPositionPCG = new Vector2(id * _maxWidth + 1, 3);
 
         _chunks.Remove(id);
 
