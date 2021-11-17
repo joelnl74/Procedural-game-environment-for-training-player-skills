@@ -87,6 +87,7 @@ public class LevelGenerator : MonoBehaviour
         HandleElevation(_lastGeneratedChunk);
         HandleChasm(_lastGeneratedChunk);
         HandlePlatforms(_lastGeneratedChunk);
+        HandleEnemies(_lastGeneratedChunk);
 
         SetupEndOfChunk(chunk, maxX + 1, 0);
 
@@ -121,15 +122,13 @@ public class LevelGenerator : MonoBehaviour
     {
         var minX = _previousChunkWidthEnd;
         var maxX = _previousChunkWidthEnd + _maxWidth;
+        var chunk = _chunks[chunkId];
 
         foreach (var model in tranningHandler.GetPlatformModels())
         {
             var xPos = Random.Range(minX, maxX - model.width);
-
             var beginposition = new Vector2Int(xPos, model.heigth);
             var endPosition = new Vector2Int(xPos + model.width, model.heigth + 1);
-
-            var chunk = _chunks[chunkId];
 
             GenerateSolidBlocks(beginposition, endPosition, chunk);
 
@@ -144,13 +143,29 @@ public class LevelGenerator : MonoBehaviour
                     GenerateCoins(x, model.heigth + 1, chunk);
                 }
             }
-            if(model.hasChasm)
+            if(model.chasmModel != null)
             {
-                var startX = Random.Range(beginposition.x + model.width - 1, beginposition.x + model.width + 2);
-                var endX = startX + Random.Range(4, 5);
+                var halfLength = beginposition.x + (model.width / 2) + 1;
+                var startX = halfLength;
+                var endX = startX + model.chasmModel.width;
 
-                GenerateChasmBlocks(new Vector2Int(startX, minHeigth), new Vector2Int(endX, _maxHeigth), chunkId);
+                GenerateChasmBlocks(new Vector2Int(startX, minHeigth), new Vector2Int(endX, model.heigth - 1), chunkId);
             }
+        }
+    }
+
+    private void HandleEnemies(int chunkId)
+    {
+        var minX = _previousChunkWidthEnd;
+        var maxX = _previousChunkWidthEnd + _maxWidth;
+        var chunk = _chunks[chunkId];
+
+        foreach (var model in tranningHandler.GetEnemyModels())
+        {
+            var xPosition = Random.Range(minX, maxX);
+            var position = new Vector2Int(xPosition, _maxHeigth);
+
+            GenerateGoomba(chunk, position);
         }
     }
 

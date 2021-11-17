@@ -26,7 +26,7 @@ public class LevelGeneratorModel
             case TranningType.Long_Jump:
                 longJumps = 1;
                 break;
-            case TranningType.High_Jump:
+            case TranningType.Platform:
                 amountOfPlatforms = 1;
                 break;
         }

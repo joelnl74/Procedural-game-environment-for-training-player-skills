@@ -63,6 +63,9 @@ public class TranningHandler : MonoBehaviour
     public List<PlatformModel> GetPlatformModels()
         => tranningModelHandler.platformModels;
 
+    public List<EnemyModel> GetEnemyModels()
+    => tranningModelHandler.enemyModels;
+
     private void HandleDeathByFalling()
     {
         jumpDeaths++;
@@ -88,7 +91,9 @@ public class TranningHandler : MonoBehaviour
 
     private void CheckEndOfChunk(int chunkId, List<TranningType> chunkTranningTypes)
     {
-        if (deathCount == 0 && chunkTranningTypes.Contains(_currentTranningType))
+        if (deathCount == 0 
+            && chunkTranningTypes.Contains(_currentTranningType)
+            && _currentTranningType != TranningType.BasicsTest)
         {
             _currentTranningType += 1;
             tranningModelHandler.model.SetTranningType(_currentTranningType);

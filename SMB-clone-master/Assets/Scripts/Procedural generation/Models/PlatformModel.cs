@@ -6,12 +6,14 @@ public class PlatformModel
     public bool hasEnemies;
     public bool hasChasm;
 
-    public PlatformModel(int w, int h, bool containsCoins = false, bool containsEnemies = false, bool containsChasm = false)
+    public ChasmModel chasmModel;
+
+    public PlatformModel(int w, int h, bool containsCoins = false, bool containsEnemies = false, ChasmModel chasmModel = null)
     {
         width = w;
         heigth = h;
         hasCoins = containsCoins;
         hasEnemies = containsEnemies;
-        hasChasm = containsChasm;
+        this.chasmModel = chasmModel;
     }
 }

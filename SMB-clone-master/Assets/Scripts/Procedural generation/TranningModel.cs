@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 public enum TranningType
@@ -7,16 +6,16 @@ public enum TranningType
     Walking = 1,
     Short_Jump = 2,
     Medium_Jump = 3,
+    Enemies = 4,
     Long_Jump = 5,
-    Enemies = 6,
-    High_Jump = 7,
-    BasicsTest = 8,
+    Platform = 6,
+    BasicsTest = 7,
 }
 
 public class TranningModel
 {
     public int WalkingSkill = 0;
-    public int ShotJumpSkill = 0;
+    public int ShortJumpSkill = 0;
     public int MediumJumpSkill = 0;
     public int LongJumpSkill = 0;
     public int HighJumpSkill = 0;
@@ -29,6 +28,8 @@ public class TranningModel
 
     public void SetTranningType(TranningType tranningType)
     {
+        ResetSkills();
+
         _currentTranningType = tranningType;
 
         switch (_currentTranningType)
@@ -38,24 +39,37 @@ public class TranningModel
             case TranningType.Walking:
                 break;
             case TranningType.Short_Jump:
-                ShotJumpSkill = Random.Range(1, 3);
-                break;
-            case TranningType.Enemies:
-                ShotJumpSkill = Random.Range(3, 5);
+                ShortJumpSkill = Random.Range(1, 3);
                 break;
             case TranningType.Medium_Jump:
-                ShotJumpSkill = Random.Range(1, 3);
+                ShortJumpSkill = Random.Range(1, 3);
                 MediumJumpSkill = Random.Range(1, 3);
+                break;
+            case TranningType.Enemies:
+                EnemySkill = Random.Range(1, 2);
                 break;
             case TranningType.Long_Jump:
                 LongJumpSkill = Random.Range(1, 2);
                 break;
-            case TranningType.High_Jump:
+            case TranningType.Platform:
                 HighJumpSkill = Random.Range(1, 2);
                 break;
             case TranningType.BasicsTest:
-                //TODO;
+                ShortJumpSkill = Random.Range(0, 3);
+                MediumJumpSkill = Random.Range(0, 3);
+                LongJumpSkill = Random.Range(0, 3);
+                HighJumpSkill = Random.Range(0, 3);
                 break;
         }
+    }
+
+    private void ResetSkills()
+    {
+        WalkingSkill = 0;
+        ShortJumpSkill = 0;
+        MediumJumpSkill = 0;
+        LongJumpSkill = 0;
+        HighJumpSkill = 0;
+        EnemySkill = 0;
     }
 }
