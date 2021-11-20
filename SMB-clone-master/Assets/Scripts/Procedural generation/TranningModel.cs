@@ -54,11 +54,12 @@ public class TranningModel
             case TranningType.Platform:
                 HighJumpSkill = Random.Range(1, 2);
                 break;
-            case TranningType.BasicsTest:
+            default:
                 ShortJumpSkill = Random.Range(0, 3);
                 MediumJumpSkill = Random.Range(0, 3);
                 LongJumpSkill = Random.Range(0, 3);
                 HighJumpSkill = Random.Range(0, 3);
+                EnemySkill = Random.Range(0, 2);
                 break;
         }
     }

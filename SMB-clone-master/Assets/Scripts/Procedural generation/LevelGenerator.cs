@@ -102,9 +102,9 @@ public class LevelGenerator : MonoBehaviour
         foreach (var model in tranningHandler.GetElevationModels())
         {
             var xPos = Random.Range(minX, maxX - model.width);
-            var yPos = FindHighestBlock(xPos, model.width, chunkId);
+            var yPos = FindHighestBlock(xPos, model.width, chunkId) + 1;
 
-            var beginposition = new Vector2Int(xPos, yPos);
+            var beginposition = new Vector2Int(xPos, 1);
             var endPosition = new Vector2Int(xPos + model.width, yPos + model.heigth);
             
             var chunk = _chunks[chunkId];
@@ -127,8 +127,9 @@ public class LevelGenerator : MonoBehaviour
         foreach (var model in tranningHandler.GetPlatformModels())
         {
             var xPos = Random.Range(minX, maxX - model.width);
-            var beginposition = new Vector2Int(xPos, model.heigth);
-            var endPosition = new Vector2Int(xPos + model.width, model.heigth + 1);
+            var yPos = FindHighestBlock(xPos, model.width, chunkId) + model.heigth;
+            var beginposition = new Vector2Int(xPos, yPos);
+            var endPosition = new Vector2Int(xPos + model.width, yPos + 1);
 
             GenerateSolidBlocks(beginposition, endPosition, chunk);
 
@@ -140,16 +141,16 @@ public class LevelGenerator : MonoBehaviour
             {
                 for(int x = beginposition.x; x < endPosition.x; x++)
                 {
-                    GenerateCoins(x, model.heigth + 1, chunk);
+                    GenerateCoins(x, yPos + 1, chunk);
                 }
             }
             if(model.chasmModel != null)
             {
-                var halfLength = beginposition.x + (model.width / 2) + 1;
+                var halfLength = beginposition.x;
                 var startX = halfLength;
                 var endX = startX + model.chasmModel.width;
 
-                GenerateChasmBlocks(new Vector2Int(startX, minHeigth), new Vector2Int(endX, model.heigth - 1), chunkId);
+                GenerateChasmBlocks(new Vector2Int(startX, minHeigth), new Vector2Int(endX, yPos - 1), chunkId);
             }
         }
     }
@@ -236,11 +237,6 @@ public class LevelGenerator : MonoBehaviour
                 var index = GetId(x, y, chunkId);
                 var block = GetEntity(x, y, chunkId);
 
-                if (block == null && x == begin.x && y == 1)
-                {
-                    // TODO generate platform or block.
-                }
-
                 if (block != null)
                 {
                     Destroy(block.gameObject);
@@ -273,11 +269,24 @@ public class LevelGenerator : MonoBehaviour
         return null;
     }
 
-    private int FindHighestBlock(int xPos, int width, int chunkId)
+    private int FindHighestBlock(int x, int width, int chunkId)
     {
-        // TODO create dictonary of coordinates and check this.
+        int highestYPos = 0;
+
         var chunk = _entities[chunkId];
-        var highestYPos = minHeigth + 1;
+
+        foreach(var block in chunk)
+        {
+            var value = block.Value;
+
+            if (value.xPos >= x && value.xPos <= x + width)
+            {
+                if (block.Value.yPos > highestYPos)
+                {
+                    highestYPos = block.Value.yPos;
+                }
+            }
+        }
 
         return highestYPos;
     }
@@ -300,6 +309,9 @@ public class LevelGenerator : MonoBehaviour
 
     private int GetId(int x, int y, int chunkId)
         => x * y * chunkId;
+
+    private bool ContainsId(int id, int chunkId)
+        => _entities[chunkId].ContainsKey(id);
 
     private void CleanEntitiesInChunk(int chunkId)
     {

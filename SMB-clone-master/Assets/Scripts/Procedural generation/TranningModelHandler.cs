@@ -49,6 +49,7 @@ public class TranningModelHandler
                 GeneratePlatformModels(4, 6, 2, 4, 0, false, true, true, true);
                 break;
             default:
+                model.SetTranningType(TranningType.BasicsTest);
                 GenerateShortJumpModels();
                 GenerateMediumJumpModels();
                 GenerateLongJumpModels();
