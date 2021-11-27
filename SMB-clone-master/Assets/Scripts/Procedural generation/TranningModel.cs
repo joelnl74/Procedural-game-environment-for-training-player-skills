@@ -39,11 +39,11 @@ public class TranningModel
             case TranningType.Walking:
                 break;
             case TranningType.Short_Jump:
-                ShortJumpSkill = Random.Range(1, 3);
+                ShortJumpSkill = Random.Range(6, 10);
                 break;
             case TranningType.Medium_Jump:
-                ShortJumpSkill = Random.Range(1, 3);
-                MediumJumpSkill = Random.Range(1, 3);
+                ShortJumpSkill = Random.Range(3, 5);
+                MediumJumpSkill = Random.Range(3, 5);
                 break;
             case TranningType.Enemies:
                 EnemySkill = Random.Range(1, 2);
@@ -55,8 +55,8 @@ public class TranningModel
                 HighJumpSkill = Random.Range(1, 2);
                 break;
             default:
-                ShortJumpSkill = Random.Range(0, 3);
-                MediumJumpSkill = Random.Range(0, 3);
+                ShortJumpSkill = Random.Range(0, 4);
+                MediumJumpSkill = Random.Range(0, 4);
                 LongJumpSkill = Random.Range(0, 3);
                 HighJumpSkill = Random.Range(0, 3);
                 EnemySkill = Random.Range(0, 2);

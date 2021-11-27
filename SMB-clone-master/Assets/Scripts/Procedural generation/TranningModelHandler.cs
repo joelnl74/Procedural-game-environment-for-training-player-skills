@@ -54,7 +54,7 @@ public class TranningModelHandler
                 GenerateMediumJumpModels();
                 GenerateLongJumpModels();
                 GenerateEnemies();
-                GeneratePlatformModels(4, 6, 2, 4, 0, true, true, true, true);
+                GeneratePlatformModels(4, 6, 2, 4, 0, true, true, true, false);
                 break;
 
         }
@@ -136,7 +136,7 @@ public class TranningModelHandler
             {
                 chasmModel = new ChasmModel
                 {
-                    width = Random.Range(4, 6)
+                    width = Random.Range(4, 8)
                 };
             }
 

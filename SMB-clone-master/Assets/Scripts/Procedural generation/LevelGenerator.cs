@@ -96,13 +96,26 @@ public class LevelGenerator : MonoBehaviour
 
     private void HandleElevation(int chunkId)
     {
-        var minX = _previousChunkWidthEnd;
+        var minX = _previousChunkWidthEnd + 1;
         var maxX = _previousChunkWidthEnd + _maxWidth;
 
         foreach (var model in tranningHandler.GetElevationModels())
         {
             var xPos = Random.Range(minX, maxX - model.width);
             var yPos = FindHighestBlock(xPos, model.width, chunkId) + 1;
+            var previousBlockHeigth = FindBlockHighestPosition(chunkId, xPos, yPos, model.heigth);
+
+            if (yPos + model.heigth - previousBlockHeigth > 4)
+            {
+                if(yPos + 1 - previousBlockHeigth > 4)
+                {
+                    model.heigth = 0;
+                }
+                else
+                {
+                    model.heigth = 1;
+                }
+            }
 
             var beginposition = new Vector2Int(xPos, 1);
             var endPosition = new Vector2Int(xPos + model.width, yPos + model.heigth);
@@ -137,14 +150,14 @@ public class LevelGenerator : MonoBehaviour
             {
                 GenerateGoomba(chunk, endPosition);
             }
-            if(model.hasCoins)
+            if (model.hasCoins)
             {
                 for(int x = beginposition.x; x < endPosition.x; x++)
                 {
                     GenerateCoins(x, yPos + 1, chunk);
                 }
             }
-            if(model.chasmModel != null)
+            if (model.chasmModel != null)
             {
                 var halfLength = beginposition.x;
                 var startX = halfLength;
@@ -267,6 +280,26 @@ public class LevelGenerator : MonoBehaviour
             return _entities[chunk][key];
 
         return null;
+    }
+
+    private int FindBlockHighestPosition(int chunkId, int x, int y, int heigth)
+    {
+        int highestPositon = 0;
+
+        var chunk = _entities[chunkId];
+        var xPos = x - 1;
+
+        foreach (var block in chunk)
+        {
+            var value = block.Value;
+
+            if(value.xPos == xPos && value.yPos > highestPositon)
+            {
+                highestPositon = block.Value.yPos;
+            }
+        }
+
+        return highestPositon;
     }
 
     private int FindHighestBlock(int x, int width, int chunkId)
