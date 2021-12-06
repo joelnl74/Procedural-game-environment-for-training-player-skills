@@ -39,14 +39,17 @@ public class LevelGenerator : MonoBehaviour
 
     public void ReachedEndOfChunk(int id, List<TranningType> tranningTypes)
     {
-        var chunk = _chunks[id];
-        _mario.respawnPositionPCG = new Vector2(id * _maxWidth + 1, 3);
+        if(_chunks.ContainsKey(id - 1))
+        {
+            var currentId = id - 1;
+            var chunk = _chunks[currentId];
+            _mario.respawnPositionPCG = new Vector2(id * _maxWidth + 1, 3);
 
-        _chunks.Remove(id);
-
-        CleanEntitiesInChunk(id);
-        Destroy(chunk);
-        GenerateChunk();
+            CleanEntitiesInChunk(currentId);
+            Destroy(chunk);
+            _chunks.Remove(currentId);
+            GenerateChunk();
+        }
     }
 
     private void Start()
@@ -347,7 +350,5 @@ public class LevelGenerator : MonoBehaviour
         => _entities[chunkId].ContainsKey(id);
 
     private void CleanEntitiesInChunk(int chunkId)
-    {
-        _entities.Remove(chunkId);
-    }
+        => _entities.Remove(chunkId);
 }

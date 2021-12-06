@@ -125,7 +125,7 @@ public class TranningModelHandler
         for (int i = 0; i < model.HighJumpSkill; i++)
         {
             var w = Random.Range(minWidth, maxWidth);
-            var h = Random.Range(maxHeigth, maxHeigth);
+            var h = Random.Range(minHeigth, maxHeigth);
             var containsEnemies = hasEnemies && Random.Range(0, 100) > minChance;
             var containsCoins = hasCoins && Random.Range(0, 100) > 50;
             var containsChasm = HasChasm && Random.Range(0, 100) > 50 || forceChasm;
@@ -136,7 +136,7 @@ public class TranningModelHandler
             {
                 chasmModel = new ChasmModel
                 {
-                    width = Random.Range(4, 8)
+                    width = w
                 };
             }
 

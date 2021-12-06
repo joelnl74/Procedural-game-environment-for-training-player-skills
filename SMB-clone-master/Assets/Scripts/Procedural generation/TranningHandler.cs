@@ -11,6 +11,10 @@ public class TranningHandler : MonoBehaviour
 
     private List<TranningType> tranningTypes;
 
+    private float timer;
+    private bool outOfTime = false;
+    private bool buttonPressed;
+
     public int deathCount = 0;
     public int jumpDeaths = 0;
     public int enemiesDeaths = 0;
@@ -46,6 +50,28 @@ public class TranningHandler : MonoBehaviour
         _PCGEventManager.onFallDeath -= HandleDeathByFalling;
         _PCGEventManager.onDeathByEnemy -= HandleDeathByEnemy;
         _PCGEventManager.onKilledEnemy -= HandleKilledEnemy;
+    }
+
+    private void Update()
+    {
+        if (timer < 0 && outOfTime == false)
+        {
+            EndOfTimerReached();
+        }
+
+        if (buttonPressed)
+        {
+            return;
+        }
+
+        if (_currentTranningType == TranningType.Walking)
+        {
+            if (outOfTime)
+            {
+                // TODO show something that makes it clear the player has to move.
+            }
+        }
+        
     }
 
     public List<TranningType> GetTranningTypes()
@@ -89,21 +115,107 @@ public class TranningHandler : MonoBehaviour
         jumpDeaths = 0;
     }
 
+    private void EndOfTimerReached()
+    {
+        outOfTime = true;
+    }
+
+    private void SetTimer(float time)
+    {
+        timer = time;
+        outOfTime = false;
+    }
+
     private void CheckEndOfChunk(int chunkId, List<TranningType> chunkTranningTypes)
     {
-        if (deathCount == 0 
-            && chunkTranningTypes.Contains(_currentTranningType)
-            && _currentTranningType != TranningType.BasicsTest)
+        var playerSucces = false;
+        var containsTranningType = chunkTranningTypes.Contains(_currentTranningType);
+
+        if (_currentTranningType == TranningType.BasicsTest)
         {
-            _currentTranningType += 1;
-            tranningModelHandler.model.SetTranningType(_currentTranningType);
+            containsTranningType = false;
         }
 
+        if (containsTranningType)
+        {
+            foreach (var type in tranningTypes)
+            {
+                playerSucces = DidCompleteTranningType(type);
+
+                if (playerSucces == false)
+                {
+                    break;
+                }
+            }
+        }
+  
+        if (playerSucces)
+        {
+            _currentTranningType += 1;
+        }
+
+        tranningModelHandler.model.SetTranningType(_currentTranningType);
         tranningTypes = new List<TranningType> { _currentTranningType };
 
         tranningModelHandler.GenerateModelsBasedOnSkill();
         _levelGenerator.ReachedEndOfChunk(chunkId, tranningTypes);
 
+        SetTimer(30);
         ClearChunkStats();
+    }
+
+    private bool DidCompleteTranningType(TranningType type)
+    {
+        switch (type)
+        {
+            case TranningType.None:
+                return true;
+            case TranningType.Walking:
+                return DidCompleteWalkingTranning();
+            case TranningType.Short_Jump:
+                return DidCompleteJumpTranning();
+            case TranningType.Medium_Jump:
+                return DidCompleteJumpTranning();
+            case TranningType.Enemies:
+                return DidCompleteEnemies();
+            case TranningType.Long_Jump:
+                return DidCompleteJumpTranning();
+            case TranningType.Platform:
+                break;
+            case TranningType.BasicsTest:
+                break;
+        }
+
+        return false;
+    }
+
+    private bool DidCompleteWalkingTranning()
+    {
+        if (outOfTime)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool DidCompleteJumpTranning()
+    {
+        if (jumpDeaths > 2 || outOfTime)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool DidCompleteEnemies()
+    {
+        if (enemiesDeaths > 2 && outOfTime == false)
+        {
+            return false;
+        }
+
+        return true;
     }
 }
