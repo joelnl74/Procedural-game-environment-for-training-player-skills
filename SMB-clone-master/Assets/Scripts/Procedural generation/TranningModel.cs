@@ -39,7 +39,7 @@ public class TranningModel
             case TranningType.Walking:
                 break;
             case TranningType.Short_Jump:
-                ShortJumpSkill = Random.Range(3, 6);
+                ShortJumpSkill = Random.Range(2, 5);
                 break;
             case TranningType.Medium_Jump:
                 ShortJumpSkill = Random.Range(2, 5);

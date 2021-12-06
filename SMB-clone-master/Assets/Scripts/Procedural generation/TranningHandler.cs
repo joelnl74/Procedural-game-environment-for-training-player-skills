@@ -181,7 +181,7 @@ public class TranningHandler : MonoBehaviour
             case TranningType.Long_Jump:
                 return DidCompleteJumpTranning();
             case TranningType.Platform:
-                break;
+                return DidCompletePlatformTranning(); // TODO add something that check you have reached a platform.
             case TranningType.BasicsTest:
                 break;
         }
@@ -200,6 +200,16 @@ public class TranningHandler : MonoBehaviour
     }
 
     private bool DidCompleteJumpTranning()
+    {
+        if (jumpDeaths > 2 || outOfTime)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool DidCompletePlatformTranning()
     {
         if (jumpDeaths > 2 || outOfTime)
         {

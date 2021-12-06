@@ -128,7 +128,8 @@ public class TranningModelHandler
             var h = Random.Range(minHeigth, maxHeigth);
             var containsEnemies = hasEnemies && Random.Range(0, 100) > minChance;
             var containsCoins = hasCoins && Random.Range(0, 100) > 50;
-            var containsChasm = HasChasm && Random.Range(0, 100) > 50 || forceChasm;
+            var containsChasm = HasChasm && Random.Range(0, 100) > 33 || forceChasm;
+            var containsSpecialBlocks = GetTranningType() > TranningType.Platform && containsChasm == false;
 
             ChasmModel chasmModel = null;
 
@@ -140,7 +141,7 @@ public class TranningModelHandler
                 };
             }
 
-            platformModels.Add(new PlatformModel(w, h, containsCoins, containsEnemies, chasmModel));
+            platformModels.Add(new PlatformModel(w, h, containsCoins, containsEnemies, containsSpecialBlocks, chasmModel));
         }
     }
 }

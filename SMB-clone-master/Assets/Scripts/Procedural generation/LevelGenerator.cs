@@ -13,6 +13,8 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private GameObject _goomba;
     [SerializeField] private GameObject _coin;
 
+    [SerializeField] private GameObject[] _specialBlocks;
+
     [SerializeField] private Mario _mario;
 
     private Dictionary<int, Dictionary<int, EntityModel>> _entities;
@@ -125,7 +127,7 @@ public class LevelGenerator : MonoBehaviour
             
             var chunk = _chunks[chunkId];
 
-            GenerateSolidBlocks(beginposition, endPosition, chunk);
+            GenerateBlocks(beginposition, endPosition, chunk);
 
             if (model.hasEnemies)
             {
@@ -147,7 +149,7 @@ public class LevelGenerator : MonoBehaviour
             var beginposition = new Vector2Int(xPos, yPos);
             var endPosition = new Vector2Int(xPos + model.width, yPos + 1);
 
-            GenerateSolidBlocks(beginposition, endPosition, chunk);
+            GenerateBlocks(beginposition, endPosition, chunk, model.hasSpecialBlocks);
 
             if (model.hasEnemies)
             {
@@ -214,13 +216,24 @@ public class LevelGenerator : MonoBehaviour
         AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), component, EntityType.Coin);
     }
 
-    private void GenerateSolidBlocks(Vector2Int begin, Vector2Int end, GameObject chunk)
+    private void GenerateBlocks(Vector2Int begin, Vector2Int end, GameObject chunk, bool hasSpecial = false)
     {
         for(int x = begin.x; x < end.x; x++)
         {
             for(int y = begin.y; y < end.y; y++)
             {
-                var go = Instantiate(_groundBlock, chunk.transform);
+                GameObject go = null;
+                int chance = 0;
+
+                if (hasSpecial)
+                {
+                    chance = Random.Range(0, 100);
+                }
+
+                go = chance < 50
+                    ? Instantiate(_groundBlock, chunk.transform)
+                    : Instantiate(_specialBlocks[Random.Range(0, _specialBlocks.Length - 1)], chunk.transform);
+
                 var pos = new Vector2(x, y);
                 var component = go.AddComponent<EntityModel>();
 
