@@ -371,11 +371,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4566420616817328, guid: 2edb2b8e476654f0ea2807c7a8261a76, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1
+      value: 32
       objectReference: {fileID: 0}
     - target: {fileID: 4566420616817328, guid: 2edb2b8e476654f0ea2807c7a8261a76, type: 3}
       propertyPath: m_LocalPosition.y
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4609822613767340, guid: 2edb2b8e476654f0ea2807c7a8261a76, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 33
       objectReference: {fileID: 0}
     - target: {fileID: 4609822613767340, guid: 2edb2b8e476654f0ea2807c7a8261a76, type: 3}
       propertyPath: m_LocalPosition.y
@@ -470,13 +474,36 @@ PrefabInstance:
         type: 3}
       propertyPath: _groundBlock
       value: 
-      objectReference: {fileID: 1539517773479806, guid: 884934ea3b1604605a91783a55f1e9e1,
+      objectReference: {fileID: 1885436972596724, guid: 05676d0a8024243b9bf2c4f0becaa4b9,
         type: 3}
     - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
         type: 3}
       propertyPath: _spawnPoints
       value: 
       objectReference: {fileID: 350379960}
+    - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
+        type: 3}
+      propertyPath: _specialBlocks.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
+        type: 3}
+      propertyPath: _specialBlocks.Array.data[0]
+      value: 
+      objectReference: {fileID: 1783807411602976, guid: 6c35459d6db0c41fa80075e6d00bf225,
+        type: 3}
+    - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
+        type: 3}
+      propertyPath: _specialBlocks.Array.data[1]
+      value: 
+      objectReference: {fileID: 1594059678097616, guid: ee80148a6a6634492a197a751d0e2e2e,
+        type: 3}
+    - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
+        type: 3}
+      propertyPath: _specialBlocks.Array.data[2]
+      value: 
+      objectReference: {fileID: 1633837326665838, guid: c2cf0a6bc142746a6a26ad5011fc3399,
+        type: 3}
     - target: {fileID: 4617614379025424905, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
         type: 3}
       propertyPath: m_Name
