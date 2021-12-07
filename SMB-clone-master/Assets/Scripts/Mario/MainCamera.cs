@@ -15,7 +15,6 @@ public class MainCamera : MonoBehaviour
 	private float cameraWidth;
 	private Vector3 targetPosition;
 
-
 	// Use this for initialization
 	void Start()
 	{

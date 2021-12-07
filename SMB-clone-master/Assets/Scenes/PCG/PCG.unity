@@ -2598,6 +2598,11 @@ PrefabInstance:
       objectReference: {fileID: 105353960}
     - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
         type: 3}
+      propertyPath: _clouds
+      value: 
+      objectReference: {fileID: 1357758828}
+    - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
+        type: 3}
       propertyPath: _goomba
       value: 
       objectReference: {fileID: 1817385042008108, guid: ed84cd197f7024048a728aa8354e0523,

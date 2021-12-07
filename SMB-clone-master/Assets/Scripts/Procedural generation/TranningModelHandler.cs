@@ -46,7 +46,7 @@ public class TranningModelHandler
                 GenerateLongJumpModels();
                 break;
             case TranningType.Platform:
-                GeneratePlatformModels(4, 6, 2, 4, 0, false, true, true, true);
+                GeneratePlatformModels(2, 6, 3, 4, 0, false, true, true, true);
                 break;
             default:
                 model.SetTranningType(TranningType.BasicsTest);
@@ -54,7 +54,7 @@ public class TranningModelHandler
                 GenerateMediumJumpModels();
                 GenerateLongJumpModels();
                 GenerateEnemies();
-                GeneratePlatformModels(4, 6, 2, 4, 0, true, true, true, false);
+                GeneratePlatformModels(2, 6, 3, 4, 0, true, true, true, false);
                 break;
 
         }
@@ -89,7 +89,7 @@ public class TranningModelHandler
             elevationModels.Add(
                 new ElevationModel
                 {
-                    heigth = Random.Range(2, 3),
+                    heigth = Random.Range(3, 4),
                     width = Random.Range(3, 5),
                     hasEnemies = hasEnemies && Random.Range(0, 100) > minChance
                 });

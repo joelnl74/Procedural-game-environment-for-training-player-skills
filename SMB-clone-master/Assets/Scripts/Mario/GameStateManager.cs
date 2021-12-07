@@ -70,5 +70,4 @@ public class GameStateManager : MonoBehaviour {
 		timeLeft = t_LevelManager.timeLeft;
 		hurryUp = t_LevelManager.hurryUp;
 	}
-
 }

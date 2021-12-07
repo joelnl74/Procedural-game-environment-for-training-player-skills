@@ -42,11 +42,10 @@ public class LevelGenerator : MonoBehaviour
 
     public void ReachedEndOfChunk(int id, List<TranningType> tranningTypes)
     {
-        var currentId = id - 1;
-        var chunk = _chunks[currentId];
-
         if (_chunks.ContainsKey(id - 1))
         {
+            var currentId = id - 1;
+            var chunk = _chunks[currentId];
             _mario.respawnPositionPCG = new Vector2(id * _maxWidth + 1, 3);
 
             CleanEntitiesInChunk(currentId);
@@ -57,7 +56,7 @@ public class LevelGenerator : MonoBehaviour
 
         if (id % 10 == 0)
         {
-            _clouds.transform.position = new Vector2(chunk.transform.position.x + 50, _clouds.transform.position.y);
+            _clouds.transform.position = new Vector2((id -1) * _maxWidth, _clouds.transform.position.y);
         }
     }
 
