@@ -16,6 +16,7 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private GameObject[] _specialBlocks;
 
     [SerializeField] private Mario _mario;
+    [SerializeField] private GameObject _clouds;
 
     private Dictionary<int, Dictionary<int, EntityModel>> _entities;
     private Dictionary<int, GameObject> _chunks;
@@ -41,16 +42,22 @@ public class LevelGenerator : MonoBehaviour
 
     public void ReachedEndOfChunk(int id, List<TranningType> tranningTypes)
     {
-        if(_chunks.ContainsKey(id - 1))
+        var currentId = id - 1;
+        var chunk = _chunks[currentId];
+
+        if (_chunks.ContainsKey(id - 1))
         {
-            var currentId = id - 1;
-            var chunk = _chunks[currentId];
             _mario.respawnPositionPCG = new Vector2(id * _maxWidth + 1, 3);
 
             CleanEntitiesInChunk(currentId);
             Destroy(chunk);
             _chunks.Remove(currentId);
             GenerateChunk();
+        }
+
+        if (id % 10 == 0)
+        {
+            _clouds.transform.position = new Vector2(chunk.transform.position.x + 50, _clouds.transform.position.y);
         }
     }
 
@@ -145,7 +152,7 @@ public class LevelGenerator : MonoBehaviour
         foreach (var model in tranningHandler.GetPlatformModels())
         {
             var xPos = Random.Range(minX, maxX - model.width);
-            var yPos = FindHighestBlock(xPos, model.width, chunkId) + model.heigth;
+            var yPos = FindHighestBlock(xPos, model.width - 1, chunkId) + model.heigth;
             var beginposition = new Vector2Int(xPos, yPos);
             var endPosition = new Vector2Int(xPos + model.width, yPos + 1);
 
