@@ -5,6 +5,7 @@ public class LevelGenerator : MonoBehaviour
 {
     [SerializeField] private int _maxHeigth;
     [SerializeField] private int _maxWidth;
+    [SerializeField] private int _maxCooldownWidth;
     [SerializeField] private int _chunksToGenerate;
 
     [SerializeField] private GameObject _spawnPoints;
@@ -34,6 +35,9 @@ public class LevelGenerator : MonoBehaviour
         _chunks = new Dictionary<int, GameObject>();
         tranningHandler = handler;
 
+        var spawnPos = Instantiate(new GameObject(), _spawnPoints.transform);
+        spawnPos.name = "Spawn position";
+
         for (int i = 0; i < _chunksToGenerate; i++)
         {
             GenerateChunk();
@@ -42,15 +46,19 @@ public class LevelGenerator : MonoBehaviour
 
     public void ReachedEndOfChunk(int id, List<TranningType> tranningTypes)
     {
-        if (_chunks.ContainsKey(id - 1))
+        var currentId = id - 1;
+
+        if (_chunks.ContainsKey(currentId))
         {
-            var currentId = id - 1;
-            var chunk = _chunks[currentId];
+            // TODO change this to only be working when creating resting chunk.
             _mario.respawnPositionPCG = new Vector2(id * _maxWidth + 1, 3);
+
+            var chunk = _chunks[currentId];
 
             CleanEntitiesInChunk(currentId);
             Destroy(chunk);
             _chunks.Remove(currentId);
+
             GenerateChunk();
         }
 
@@ -74,24 +82,13 @@ public class LevelGenerator : MonoBehaviour
 
         _chunks.Add(_lastGeneratedChunk, chunk);
 
+        // TODO clean this up can be done easier with generate solid blocks.
         for (int x = _previousChunkWidthEnd; x < maxX; x++)
             for (int y = minHeigth; y < _maxHeigth; y++)
             {
-                if (x == 0 && y == 2)
-                {
-                    var spawnPos = Instantiate(new GameObject(), _spawnPoints.transform);
-                    spawnPos.name = "Spawn position";
-                }
                 if (y == minHeigth)
                 {
-                    var go = Instantiate(_groundBlock, chunk.transform);
-                    var pos = new Vector2(x, y);
-                    var component = go.AddComponent<EntityModel>();
-
-                    go.name = "block";
-                    go.transform.position = pos;
-
-                    AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), component, EntityType.Solid);
+                    GenerateFloorBlock(chunk, x, y);
                 }
             }
 
@@ -105,6 +102,49 @@ public class LevelGenerator : MonoBehaviour
         _previousChunkWidthEnd += _maxWidth;
     }
 
+    private void GenerateCooldownChunk()
+    {
+        var chunk = new GameObject();
+        var maxX = _previousChunkWidthEnd + _maxCooldownWidth;
+
+        chunk.name = $"Chunk {_lastGeneratedChunk}";
+
+        _chunks.Add(_lastGeneratedChunk, chunk);
+
+        for (int x = _previousChunkWidthEnd; x < maxX; x++)
+            for (int y = minHeigth; y < _maxHeigth; y++)
+            {
+                if (x == 0 && y == 2)
+                {
+                    var spawnPos = Instantiate(new GameObject(), _spawnPoints.transform);
+                    spawnPos.name = "Spawn position";
+                }
+            }
+
+        HandleElevation(_lastGeneratedChunk);
+        HandleChasm(_lastGeneratedChunk);
+        HandlePlatforms(_lastGeneratedChunk);
+        HandleEnemies(_lastGeneratedChunk);
+
+        SetupEndOfChunk(chunk, maxX + 1, 0);
+
+        _previousChunkWidthEnd += _maxCooldownWidth;
+    }
+
+    // Generate solid floor block.
+    private void GenerateFloorBlock(GameObject chunk, int x, int y)
+    {
+        var go = Instantiate(_groundBlock, chunk.transform);
+        var pos = new Vector2(x, y);
+        var component = go.AddComponent<EntityModel>();
+
+        go.name = "block";
+        go.transform.position = pos;
+
+        AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), component, EntityType.Solid);
+    }
+
+    // Generate elevation in terrain.
     private void HandleElevation(int chunkId)
     {
         var minX = _previousChunkWidthEnd + 1;

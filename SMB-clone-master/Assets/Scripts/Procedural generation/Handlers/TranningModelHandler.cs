@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class TranningModelHandler
@@ -14,49 +15,51 @@ public class TranningModelHandler
     {
         model = new TranningModel();
 
-        model.SetTranningType(TranningType.Walking);
+        model.SetTranningType(new List<TranningType> { TranningType.Walking });
 
         // TODO Load in from external file.
     }
 
-    public TranningType GetTranningType()
+    public List<TranningType> GetTranningType()
         => model.GetCurrentTrannigType();
 
     public void GenerateModelsBasedOnSkill()
     {
         Clear();
 
-        switch (model.GetCurrentTrannigType())
+        foreach(var tranningType in model.GetCurrentTrannigType())
         {
-            case TranningType.None:
-                break;
-            case TranningType.Walking:
-                break;
-            case TranningType.Short_Jump:
-                GenerateShortJumpModels();
-                break;
-            case TranningType.Enemies:
-                GenerateEnemies();
-                break;
-            case TranningType.Medium_Jump:
-                GenerateShortJumpModels();
-                GenerateMediumJumpModels();
-                break;
-            case TranningType.Long_Jump:
-                GenerateLongJumpModels();
-                break;
-            case TranningType.Platform:
-                GeneratePlatformModels(2, 6, 3, 4, 0, false, true, true, true);
-                break;
-            default:
-                model.SetTranningType(TranningType.BasicsTest);
-                GenerateShortJumpModels();
-                GenerateMediumJumpModels();
-                GenerateLongJumpModels();
-                GenerateEnemies();
-                GeneratePlatformModels(2, 6, 3, 4, 0, true, true, true, false);
-                break;
-
+            switch (tranningType)
+            {
+                case TranningType.None:
+                    break;
+                case TranningType.Walking:
+                    break;
+                case TranningType.Short_Jump:
+                    GenerateShortJumpModels();
+                    break;
+                case TranningType.Enemies:
+                    GenerateEnemies();
+                    break;
+                case TranningType.Medium_Jump:
+                    GenerateShortJumpModels();
+                    GenerateMediumJumpModels();
+                    break;
+                case TranningType.Long_Jump:
+                    GenerateLongJumpModels();
+                    break;
+                case TranningType.Platform:
+                    GeneratePlatformModels(2, 6, 3, 4, 0, false, true, true, true);
+                    break;
+                default:
+                    model.SetTranningType(new List<TranningType> { TranningType.BasicsTest});
+                    GenerateShortJumpModels();
+                    GenerateMediumJumpModels();
+                    GenerateLongJumpModels();
+                    GenerateEnemies();
+                    GeneratePlatformModels(2, 6, 3, 4, 0, true, true, true, false);
+                    break;
+            }
         }
     }
 
@@ -129,7 +132,7 @@ public class TranningModelHandler
             var containsEnemies = hasEnemies && Random.Range(0, 100) > minChance;
             var containsCoins = hasCoins && Random.Range(0, 100) > 50;
             var containsChasm = HasChasm && Random.Range(0, 100) > 33 || forceChasm;
-            var containsSpecialBlocks = GetTranningType() > TranningType.Platform && containsChasm == false;
+            var containsSpecialBlocks = GetTranningType().Max() > TranningType.Platform && containsChasm == false;
 
             ChasmModel chasmModel = null;
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class TranningHandler : MonoBehaviour
@@ -7,8 +8,8 @@ public class TranningHandler : MonoBehaviour
     
     private TranningModelHandler tranningModelHandler;
     private PCGEventManager _PCGEventManager;
-    private TranningType _currentTranningType;
 
+    private List<TranningType> _currentTranningType;
     private List<TranningType> tranningTypes;
 
     private float timer;
@@ -21,10 +22,10 @@ public class TranningHandler : MonoBehaviour
 
     private void Awake()
     {
-        _currentTranningType = TranningType.Walking;
+        _currentTranningType = new List<TranningType> { TranningType.Walking };
         _PCGEventManager = PCGEventManager.Instance;
         tranningModelHandler = new TranningModelHandler();
-        tranningTypes = new List<TranningType> { _currentTranningType };
+        tranningTypes = _currentTranningType;
 
         tranningModelHandler.model.SetTranningType(_currentTranningType);
         tranningModelHandler.GenerateModelsBasedOnSkill();
@@ -64,7 +65,8 @@ public class TranningHandler : MonoBehaviour
             return;
         }
 
-        if (_currentTranningType == TranningType.Walking)
+        // TODO make this boolean based to make it faster.
+        if (_currentTranningType.Contains(TranningType.Walking))
         {
             if (outOfTime)
             {
@@ -129,18 +131,17 @@ public class TranningHandler : MonoBehaviour
     private void CheckEndOfChunk(int chunkId, List<TranningType> chunkTranningTypes)
     {
         var playerSucces = false;
-        var containsTranningType = chunkTranningTypes.Contains(_currentTranningType);
 
-        if (_currentTranningType == TranningType.BasicsTest)
+        if (_currentTranningType.Contains(TranningType.BasicsTest) == false)
         {
-            containsTranningType = false;
-        }
-
-        if (containsTranningType)
-        {
-            foreach (var type in tranningTypes)
+            foreach (var tranningType in chunkTranningTypes)
             {
-                playerSucces = DidCompleteTranningType(type);
+                if(_currentTranningType.Contains(tranningType) == false)
+                {
+                    break;
+                }
+
+                playerSucces = DidCompleteTranningType(tranningType);
 
                 if (playerSucces == false)
                 {
@@ -148,20 +149,40 @@ public class TranningHandler : MonoBehaviour
                 }
             }
         }
+        else
+        {
+            playerSucces = true;
+        }
   
         if (playerSucces)
         {
-            _currentTranningType += 1;
-        }
+            tranningTypes = GenerateTranningType(_currentTranningType);
+            _currentTranningType = tranningTypes;
 
-        tranningModelHandler.model.SetTranningType(_currentTranningType);
-        tranningTypes = new List<TranningType> { _currentTranningType };
+            tranningModelHandler.model.SetTranningType(_currentTranningType);
+        }
 
         tranningModelHandler.GenerateModelsBasedOnSkill();
         _levelGenerator.ReachedEndOfChunk(chunkId, tranningTypes);
 
         SetTimer(30);
         ClearChunkStats();
+    }
+
+    private List<TranningType> GenerateTranningType(List<TranningType> currentTypes)
+    {
+        var types = new List<TranningType>();
+        var lastTranningType = currentTypes.Max();
+        var newTranningType = lastTranningType += 1;
+
+        if(lastTranningType != TranningType.BasicsTest)
+        {
+            newTranningType = lastTranningType++;
+        }
+
+        types.Add(newTranningType);
+
+        return types;
     }
 
     private bool DidCompleteTranningType(TranningType type)
