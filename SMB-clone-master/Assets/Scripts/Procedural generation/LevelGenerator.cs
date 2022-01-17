@@ -4,7 +4,7 @@ using UnityEngine;
 public class LevelGenerator : MonoBehaviour
 {
     [SerializeField] private int _maxHeigth;
-    [SerializeField] private int _maxWidth;
+    [SerializeField] private int _maxLearningWidth;
     [SerializeField] private int _maxCooldownWidth;
     [SerializeField] private int _chunksToGenerate;
 
@@ -28,6 +28,7 @@ public class LevelGenerator : MonoBehaviour
     private int minHeigth = 1;
 
     private TranningHandler tranningHandler;
+    private int _maxWidth;
 
     public void SetupLevel(TranningHandler handler)
     {
@@ -48,11 +49,15 @@ public class LevelGenerator : MonoBehaviour
     {
         var currentId = id - 1;
 
+        if(currentId == 0)
+        {
+            GenerateChunk();
+
+            return;
+        }
+
         if (_chunks.ContainsKey(currentId))
         {
-            // TODO change this to only be working when creating resting chunk.
-            _mario.respawnPositionPCG = new Vector2(id * _maxWidth + 1, 3);
-
             var chunk = _chunks[currentId];
 
             CleanEntitiesInChunk(currentId);
@@ -75,6 +80,15 @@ public class LevelGenerator : MonoBehaviour
 
     private void GenerateChunk()
     {
+        if(_lastGeneratedChunk % 2 == 0)
+        {
+            GenerateCooldownChunk();
+
+            return;
+        }
+
+        _maxWidth = _maxLearningWidth;
+
         var chunk = new GameObject();
         var maxX = _previousChunkWidthEnd + _maxWidth;
 
@@ -107,17 +121,18 @@ public class LevelGenerator : MonoBehaviour
         var chunk = new GameObject();
         var maxX = _previousChunkWidthEnd + _maxCooldownWidth;
 
-        chunk.name = $"Chunk {_lastGeneratedChunk}";
+        _maxWidth = _maxCooldownWidth;
+        chunk.name = $"Cooldown chunk {_lastGeneratedChunk}";
 
         _chunks.Add(_lastGeneratedChunk, chunk);
+        SetupNewSpawnPosition(maxX - 1, 6);
 
         for (int x = _previousChunkWidthEnd; x < maxX; x++)
             for (int y = minHeigth; y < _maxHeigth; y++)
             {
-                if (x == 0 && y == 2)
+                if (y == minHeigth)
                 {
-                    var spawnPos = Instantiate(new GameObject(), _spawnPoints.transform);
-                    spawnPos.name = "Spawn position";
+                    GenerateFloorBlock(chunk, x, y);
                 }
             }
 
@@ -129,6 +144,15 @@ public class LevelGenerator : MonoBehaviour
         SetupEndOfChunk(chunk, maxX + 1, 0);
 
         _previousChunkWidthEnd += _maxCooldownWidth;
+    }
+
+    private void SetupNewSpawnPosition(int x, int y)
+    {
+        var spawnPos = Instantiate(new GameObject(), _spawnPoints.transform);
+        _mario.respawnPositionPCG = new Vector2(x + 1, y);
+       
+        spawnPos.name = "Spawn position";
+
     }
 
     // Generate solid floor block.
@@ -328,7 +352,7 @@ public class LevelGenerator : MonoBehaviour
 
         goEnd.transform.position = new Vector2(x, y);
 
-        component.Setup(_lastGeneratedChunk, tranningHandler.GetTranningTypes());
+        component.Setup(_lastGeneratedChunk, _lastGeneratedChunk % 2 == 0, tranningHandler.GetTranningTypes());
         
         _lastGeneratedChunk++;
     }

@@ -128,11 +128,11 @@ public class TranningHandler : MonoBehaviour
         outOfTime = false;
     }
 
-    private void CheckEndOfChunk(int chunkId, List<TranningType> chunkTranningTypes)
+    private void CheckEndOfChunk(int chunkId, bool isCoolDownChunk, List<TranningType> chunkTranningTypes)
     {
         var playerSucces = false;
 
-        if (_currentTranningType.Contains(TranningType.BasicsTest) == false)
+        if (_currentTranningType.Contains(TranningType.BasicsTest) == false && isCoolDownChunk == false)
         {
             foreach (var tranningType in chunkTranningTypes)
             {
@@ -154,12 +154,16 @@ public class TranningHandler : MonoBehaviour
             playerSucces = true;
         }
   
-        if (playerSucces)
+        if (playerSucces && isCoolDownChunk == false)
         {
             tranningTypes = GenerateTranningType(_currentTranningType);
             _currentTranningType = tranningTypes;
 
             tranningModelHandler.model.SetTranningType(_currentTranningType);
+        }
+        else
+        {
+            tranningModelHandler.model.SetTranningType(new List<TranningType> { TranningType.Short_Jump});
         }
 
         tranningModelHandler.GenerateModelsBasedOnSkill();
