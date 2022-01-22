@@ -137,10 +137,6 @@ public class LevelGenerator : MonoBehaviour
             }
 
         HandleElevation(_lastGeneratedChunk);
-        HandleChasm(_lastGeneratedChunk);
-        HandlePlatforms(_lastGeneratedChunk);
-        HandleEnemies(_lastGeneratedChunk);
-
         SetupEndOfChunk(chunk, maxX + 1, 0);
 
         _previousChunkWidthEnd += _maxCooldownWidth;
