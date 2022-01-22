@@ -88,6 +88,7 @@ public class LevelGenerator : MonoBehaviour
         }
 
         _maxWidth = _maxLearningWidth;
+        SetupNewSpawnPosition(_previousChunkWidthEnd - 5, 6);
 
         var chunk = new GameObject();
         var maxX = _previousChunkWidthEnd + _maxWidth;
@@ -125,7 +126,6 @@ public class LevelGenerator : MonoBehaviour
         chunk.name = $"Cooldown chunk {_lastGeneratedChunk}";
 
         _chunks.Add(_lastGeneratedChunk, chunk);
-        SetupNewSpawnPosition(maxX - 1, 6);
 
         for (int x = _previousChunkWidthEnd; x < maxX; x++)
             for (int y = minHeigth; y < _maxHeigth; y++)
@@ -152,7 +152,6 @@ public class LevelGenerator : MonoBehaviour
         _mario.respawnPositionPCG = new Vector2(x + 1, y);
        
         spawnPos.name = "Spawn position";
-
     }
 
     // Generate solid floor block.
@@ -178,7 +177,7 @@ public class LevelGenerator : MonoBehaviour
         {
             var xPos = Random.Range(minX, maxX - model.width);
             var yPos = FindHighestBlock(xPos, model.width, chunkId) + 1;
-            var previousBlockHeigth = FindBlockHighestPosition(chunkId, xPos, yPos, model.heigth);
+            var previousBlockHeigth = FindBlockHighestPosition(chunkId, xPos - 1, yPos, model.heigth);
 
             if (yPos + model.heigth - previousBlockHeigth > 4)
             {
@@ -351,6 +350,7 @@ public class LevelGenerator : MonoBehaviour
         var component = goEnd.GetComponent<EndOfChunkCollider>();
 
         goEnd.transform.position = new Vector2(x, y);
+        goEnd.name = "End of chunk";
 
         component.Setup(_lastGeneratedChunk, _lastGeneratedChunk % 2 == 0, tranningHandler.GetTranningTypes());
         
