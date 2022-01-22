@@ -9,6 +9,8 @@ public class EndOfChunkCollider : MonoBehaviour
     private bool _isCooldownChunk;
     private List<TranningType> _tranningTypes;
 
+    private bool _triggerd = false;
+
     public void Setup(int chunkId, bool isCooldownChunk, List<TranningType> tranningTypes)
     {
         _chunkId = chunkId;
@@ -18,10 +20,16 @@ public class EndOfChunkCollider : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if(_triggerd == true)
+        {
+            return;
+        }
+
         if (collision.tag == "Player")
         {
             PCGEventManager.Instance.onReachedEndOfChunk?.Invoke(_chunkId, _isCooldownChunk, _tranningTypes);
             _collider2D.enabled = false;
+            _triggerd = true;
         }
     }
 }

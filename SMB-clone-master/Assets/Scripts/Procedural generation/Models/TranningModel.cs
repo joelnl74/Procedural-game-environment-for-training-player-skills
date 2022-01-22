@@ -15,6 +15,8 @@ public enum TranningType
 
 public class TranningModel
 {
+    private int _totalPlacedObjects;
+
     public int WalkingSkill = 0;
     public int ShortJumpSkill = 0;
     public int MediumJumpSkill = 0;
@@ -23,9 +25,16 @@ public class TranningModel
     public int EnemySkill = 0;
 
     private List<TranningType> _currentTranningType;
+    private SkillsCollectionConfiguration _skillsCollectionConfiguration;
 
     public List<TranningType> GetCurrentTrannigType()
         => _currentTranningType;
+
+    public void SetPlayerSkillConfiguration(SkillsCollectionConfiguration skillsCollectionConfiguration)
+    {
+        _skillsCollectionConfiguration = skillsCollectionConfiguration;
+    }
+
 
     public void SetTranningType(List<TranningType> tranningTypes)
     {
@@ -35,6 +44,13 @@ public class TranningModel
 
         foreach(var tranningType in tranningTypes)
         {
+            var skill = _skillsCollectionConfiguration.skillParameters[(int)tranningType];
+
+            if(_totalPlacedObjects > _skillsCollectionConfiguration._maxObjects)
+            {
+                break;
+            }
+
             switch (tranningType)
             {
                 case TranningType.None:
@@ -42,29 +58,32 @@ public class TranningModel
                 case TranningType.Walking:
                     break;
                 case TranningType.Short_Jump:
-                    ShortJumpSkill = Random.Range(2, 5);
+                    ShortJumpSkill += Random.Range(skill.min, skill.max);
+                    _totalPlacedObjects += ShortJumpSkill;
                     break;
                 case TranningType.Medium_Jump:
-                    ShortJumpSkill = Random.Range(2, 5);
-                    MediumJumpSkill = Random.Range(2, 5);
+                    MediumJumpSkill += Random.Range(skill.min, skill.max);
+                    _totalPlacedObjects += MediumJumpSkill;
                     break;
                 case TranningType.Enemies:
-                    ShortJumpSkill = Random.Range(2, 5);
-                    EnemySkill = Random.Range(2, 3);
+                    EnemySkill += Random.Range(skill.min, skill.max);
+                    _totalPlacedObjects += EnemySkill;
                     break;
                 case TranningType.Long_Jump:
-                    LongJumpSkill = Random.Range(2, 3);
+                    LongJumpSkill += Random.Range(skill.min, skill.max);
+                    _totalPlacedObjects += LongJumpSkill;
                     break;
                 case TranningType.Platform:
-                    HighJumpSkill = Random.Range(1, 2);
+                    HighJumpSkill += Random.Range(skill.min, skill.max);
+                    _totalPlacedObjects += HighJumpSkill;
                     break;
                 default:
-                    ShortJumpSkill = Random.Range(0, 4);
-                    MediumJumpSkill = Random.Range(0, 4);
+                    ShortJumpSkill += Random.Range(skill.min, skill.max);
+                    MediumJumpSkill += Random.Range(skill.min, skill.max);
 
-                    LongJumpSkill = Random.Range(0, 3);
-                    HighJumpSkill = Random.Range(0, 3);
-                    EnemySkill = Random.Range(0, 3);
+                    LongJumpSkill += Random.Range(skill.min, skill.max);
+                    HighJumpSkill += Random.Range(skill.min, skill.max);
+                    EnemySkill += Random.Range(skill.min, skill.max);
                     break;
             }
         }
@@ -72,6 +91,8 @@ public class TranningModel
 
     private void ResetSkills()
     {
+        _totalPlacedObjects = 0;
+
         WalkingSkill = 0;
         ShortJumpSkill = 0;
         MediumJumpSkill = 0;

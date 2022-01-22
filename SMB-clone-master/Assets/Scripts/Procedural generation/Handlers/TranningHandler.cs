@@ -5,8 +5,8 @@ using UnityEngine;
 public class TranningHandler : MonoBehaviour
 {
     [SerializeField] private LevelGenerator _levelGenerator;
-    
-    private TranningModelHandler tranningModelHandler;
+    [SerializeField] private TranningModelHandler tranningModelHandler;
+
     private PCGEventManager _PCGEventManager;
 
     private List<TranningType> _currentTranningType;
@@ -24,12 +24,7 @@ public class TranningHandler : MonoBehaviour
     {
         _currentTranningType = new List<TranningType> { TranningType.Walking };
         _PCGEventManager = PCGEventManager.Instance;
-        tranningModelHandler = new TranningModelHandler();
         tranningTypes = _currentTranningType;
-
-        tranningModelHandler.model.SetTranningType(_currentTranningType);
-        tranningModelHandler.GenerateModelsBasedOnSkill();
-        _levelGenerator.SetupLevel(this);
 
         _PCGEventManager.onReachedEndOfChunk += CheckEndOfChunk;
     }
@@ -39,6 +34,10 @@ public class TranningHandler : MonoBehaviour
         _PCGEventManager.onFallDeath += HandleDeathByFalling;
         _PCGEventManager.onDeathByEnemy += HandleDeathByEnemy;
         _PCGEventManager.onKilledEnemy += HandleKilledEnemy;
+
+        tranningModelHandler.model.SetTranningType(_currentTranningType);
+        tranningModelHandler.GenerateModelsBasedOnSkill();
+        _levelGenerator.SetupLevel(this);
     }
 
     private void OnDestroy()
@@ -177,14 +176,19 @@ public class TranningHandler : MonoBehaviour
     {
         var types = new List<TranningType>();
         var lastTranningType = currentTypes.Max();
-        var newTranningType = lastTranningType += 1;
 
-        if(lastTranningType != TranningType.BasicsTest)
+        if (lastTranningType != TranningType.BasicsTest)
         {
+            var newTranningType = lastTranningType += 1;
+
             newTranningType = lastTranningType++;
+            types.Add(newTranningType);
+        }
+        else
+        {
+            types.Add(lastTranningType);
         }
 
-        types.Add(newTranningType);
 
         return types;
     }

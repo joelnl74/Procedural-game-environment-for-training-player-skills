@@ -2,8 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class TranningModelHandler
+public class TranningModelHandler : MonoBehaviour
 {
+    [SerializeField] private SkillsCollectionConfiguration _skillsCollection;
+
     public List<ElevationModel> elevationModels = new List<ElevationModel>();
     public List<ChasmModel> chasmModels = new List<ChasmModel>();
     public List<PlatformModel> platformModels = new List<PlatformModel>();
@@ -11,13 +13,13 @@ public class TranningModelHandler
 
     public TranningModel model;
 
-    public TranningModelHandler()
+    private void Awake()
     {
         model = new TranningModel();
-
-        model.SetTranningType(new List<TranningType> { TranningType.Walking });
+        model.SetPlayerSkillConfiguration(_skillsCollection);
 
         // TODO Load in from external file.
+        model.SetTranningType(new List<TranningType> { TranningType.Walking });
     }
 
     public List<TranningType> GetTranningType()
