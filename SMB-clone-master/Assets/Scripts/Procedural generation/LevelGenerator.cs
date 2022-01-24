@@ -12,6 +12,7 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private GameObject _endOfChunk;
     [SerializeField] private GameObject _groundBlock;
     [SerializeField] private GameObject _goomba;
+    [SerializeField] private GameObject _shell;
     [SerializeField] private GameObject _coin;
 
     [SerializeField] private GameObject[] _specialBlocks;
@@ -249,7 +250,18 @@ public class LevelGenerator : MonoBehaviour
             var xPosition = Random.Range(minX, maxX);
             var position = new Vector2Int(xPosition, _maxHeigth);
 
-            GenerateGoomba(chunk, position);
+            switch(model.enemytype)
+            {
+                case Enemytype.Shell:
+                    GenerateShell(chunk, position);
+                    break;
+                case Enemytype.Goomba:
+                    GenerateGoomba(chunk, position);
+                    break;
+                default:
+                    GenerateGoomba(chunk, position);
+                    break;
+            }
         }
     }
 
@@ -287,6 +299,9 @@ public class LevelGenerator : MonoBehaviour
         {
             for(int y = begin.y; y < end.y; y++)
             {
+                if (y >= _maxHeigth)
+                    break;
+
                 GameObject go = null;
                 int chance = 0;
 
@@ -321,18 +336,33 @@ public class LevelGenerator : MonoBehaviour
 
         AddEntity(_lastGeneratedChunk, pos, component, EntityType.Enemy);
     }
+    private void GenerateShell(GameObject chunk, Vector2Int end)
+    {
+        var go = Instantiate(_shell, chunk.transform);
+        var pos = new Vector2Int(end.x, end.y + 1);
+        var component = go.AddComponent<EntityModel>();
 
-    private void GenerateChasmBlocks(Vector2Int begin, Vector2Int end, int chunkId)
+        go.name = "shell";
+        go.transform.position = new Vector2(pos.x, pos.y);
+
+        AddEntity(_lastGeneratedChunk, pos, component, EntityType.Enemy);
+    }
+
+
+    private void GenerateChasmBlocks(Vector2Int begin, Vector2Int end, int chunkId, bool ignoreCheck = false)
     {
         for (int x = begin.x; x < end.x; x++)
         {
-            for (int y = begin.y; y < end.y; y++)
+            if (ignoreCheck == false)
             {
                 var CanRemove = CheckBlockInfront(x, chunkId);
 
                 if (CanRemove == false)
                     break;
+            }
 
+            for (int y = begin.y; y < end.y; y++)
+            {
                 var index = GetId(x, y, chunkId);
                 var block = GetEntity(x, y, chunkId);
 
@@ -347,10 +377,33 @@ public class LevelGenerator : MonoBehaviour
 
     private bool CheckBlockInfront(int start, int chunkId)
     {
-        var beginTest = GetEntity(start - 4, 1, chunkId);
-        var endTest = GetEntity(start + 4, 1, chunkId);
+        var min = false;
+        var max = false;
 
-        return beginTest != null && endTest != null;
+        for(int x = start - 3; x < start; x++)
+        {
+            var beginTest = GetEntity(x, 1, chunkId);
+
+            if(beginTest != null)
+            {
+                min = true;
+                
+                break;
+            }
+        }
+        for (int x = start + 3; x > start; x--)
+        {
+            var endTest = GetEntity(x, 1, chunkId);
+
+            if (endTest != null)
+            {
+                max = true;
+
+                break;
+            }
+        }
+
+        return min && max;
     }
 
     private void SetupEndOfChunk(GameObject chunkGo, int x, int y)
