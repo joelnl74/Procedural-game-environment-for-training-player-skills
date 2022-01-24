@@ -2532,7 +2532,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4566420616817328, guid: 2edb2b8e476654f0ea2807c7a8261a76, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 4566420616817328, guid: 2edb2b8e476654f0ea2807c7a8261a76, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2540,7 +2540,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4609822613767340, guid: 2edb2b8e476654f0ea2807c7a8261a76, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2
+      value: 31
       objectReference: {fileID: 0}
     - target: {fileID: 4609822613767340, guid: 2edb2b8e476654f0ea2807c7a8261a76, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2615,6 +2615,12 @@ PrefabInstance:
       propertyPath: _mario
       value: 
       objectReference: {fileID: 105353960}
+    - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
+        type: 3}
+      propertyPath: _shell
+      value: 
+      objectReference: {fileID: 1853458744217640, guid: 02739983e8875481da95619ddc1b41e0,
+        type: 3}
     - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
         type: 3}
       propertyPath: _clouds

@@ -41,7 +41,7 @@ public class TranningModelHandler : MonoBehaviour
                     GenerateShortJumpModels();
                     break;
                 case TranningType.Enemies:
-                    GenerateEnemies();
+                    GenerateEnemies(1, (Enemytype)Random.Range(0, 2));
                     break;
                 case TranningType.Medium_Jump:
                     GenerateShortJumpModels();
@@ -58,7 +58,7 @@ public class TranningModelHandler : MonoBehaviour
                     GenerateShortJumpModels();
                     GenerateMediumJumpModels();
                     GenerateLongJumpModels();
-                    GenerateEnemies();
+                    GenerateEnemies(1, (Enemytype)Random.Range(0, 2));
                     GeneratePlatformModels(2, 6, 3, 4, 0, true, true, true, false);
                     break;
             }
