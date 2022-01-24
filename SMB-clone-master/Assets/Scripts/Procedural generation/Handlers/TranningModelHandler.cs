@@ -1,8 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class TranningModelHandler
+public class TranningModelHandler : MonoBehaviour
 {
+    [SerializeField] private SkillsCollectionConfiguration _skillsCollection;
+
     public List<ElevationModel> elevationModels = new List<ElevationModel>();
     public List<ChasmModel> chasmModels = new List<ChasmModel>();
     public List<PlatformModel> platformModels = new List<PlatformModel>();
@@ -10,53 +13,55 @@ public class TranningModelHandler
 
     public TranningModel model;
 
-    public TranningModelHandler()
+    private void Awake()
     {
         model = new TranningModel();
-
-        model.SetTranningType(TranningType.Walking);
+        model.SetPlayerSkillConfiguration(_skillsCollection);
 
         // TODO Load in from external file.
+        model.SetTranningType(new List<TranningType> { TranningType.Walking });
     }
 
-    public TranningType GetTranningType()
+    public List<TranningType> GetTranningType()
         => model.GetCurrentTrannigType();
 
     public void GenerateModelsBasedOnSkill()
     {
         Clear();
 
-        switch (model.GetCurrentTrannigType())
+        foreach(var tranningType in model.GetCurrentTrannigType())
         {
-            case TranningType.None:
-                break;
-            case TranningType.Walking:
-                break;
-            case TranningType.Short_Jump:
-                GenerateShortJumpModels();
-                break;
-            case TranningType.Enemies:
-                GenerateEnemies();
-                break;
-            case TranningType.Medium_Jump:
-                GenerateShortJumpModels();
-                GenerateMediumJumpModels();
-                break;
-            case TranningType.Long_Jump:
-                GenerateLongJumpModels();
-                break;
-            case TranningType.Platform:
-                GeneratePlatformModels(2, 6, 3, 4, 0, false, true, true, true);
-                break;
-            default:
-                model.SetTranningType(TranningType.BasicsTest);
-                GenerateShortJumpModels();
-                GenerateMediumJumpModels();
-                GenerateLongJumpModels();
-                GenerateEnemies();
-                GeneratePlatformModels(2, 6, 3, 4, 0, true, true, true, false);
-                break;
-
+            switch (tranningType)
+            {
+                case TranningType.None:
+                    break;
+                case TranningType.Walking:
+                    break;
+                case TranningType.Short_Jump:
+                    GenerateShortJumpModels();
+                    break;
+                case TranningType.Enemies:
+                    GenerateEnemies();
+                    break;
+                case TranningType.Medium_Jump:
+                    GenerateShortJumpModels();
+                    GenerateMediumJumpModels();
+                    break;
+                case TranningType.Long_Jump:
+                    GenerateLongJumpModels();
+                    break;
+                case TranningType.Platform:
+                    GeneratePlatformModels(2, 6, 3, 4, 0, false, true, true, true);
+                    break;
+                default:
+                    model.SetTranningType(new List<TranningType> { TranningType.BasicsTest});
+                    GenerateShortJumpModels();
+                    GenerateMediumJumpModels();
+                    GenerateLongJumpModels();
+                    GenerateEnemies();
+                    GeneratePlatformModels(2, 6, 3, 4, 0, true, true, true, false);
+                    break;
+            }
         }
     }
 
@@ -129,7 +134,7 @@ public class TranningModelHandler
             var containsEnemies = hasEnemies && Random.Range(0, 100) > minChance;
             var containsCoins = hasCoins && Random.Range(0, 100) > 50;
             var containsChasm = HasChasm && Random.Range(0, 100) > 33 || forceChasm;
-            var containsSpecialBlocks = GetTranningType() > TranningType.Platform && containsChasm == false;
+            var containsSpecialBlocks = GetTranningType().Max() > TranningType.Platform && containsChasm == false;
 
             ChasmModel chasmModel = null;
 

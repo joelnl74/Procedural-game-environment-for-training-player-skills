@@ -4,7 +4,8 @@ using UnityEngine;
 public class LevelGenerator : MonoBehaviour
 {
     [SerializeField] private int _maxHeigth;
-    [SerializeField] private int _maxWidth;
+    [SerializeField] private int _maxLearningWidth;
+    [SerializeField] private int _maxCooldownWidth;
     [SerializeField] private int _chunksToGenerate;
 
     [SerializeField] private GameObject _spawnPoints;
@@ -27,12 +28,16 @@ public class LevelGenerator : MonoBehaviour
     private int minHeigth = 1;
 
     private TranningHandler tranningHandler;
+    private int _maxWidth;
 
     public void SetupLevel(TranningHandler handler)
     {
         _entities = new Dictionary<int, Dictionary<int, EntityModel>>();
         _chunks = new Dictionary<int, GameObject>();
         tranningHandler = handler;
+
+        var spawnPos = Instantiate(new GameObject(), _spawnPoints.transform);
+        spawnPos.name = "Spawn position";
 
         for (int i = 0; i < _chunksToGenerate; i++)
         {
@@ -42,15 +47,23 @@ public class LevelGenerator : MonoBehaviour
 
     public void ReachedEndOfChunk(int id, List<TranningType> tranningTypes)
     {
-        if (_chunks.ContainsKey(id - 1))
+        var currentId = id - 1;
+
+        if(currentId == 0)
         {
-            var currentId = id - 1;
+            GenerateChunk();
+
+            return;
+        }
+
+        if (_chunks.ContainsKey(currentId))
+        {
             var chunk = _chunks[currentId];
-            _mario.respawnPositionPCG = new Vector2(id * _maxWidth + 1, 3);
 
             CleanEntitiesInChunk(currentId);
             Destroy(chunk);
             _chunks.Remove(currentId);
+
             GenerateChunk();
         }
 
@@ -67,6 +80,16 @@ public class LevelGenerator : MonoBehaviour
 
     private void GenerateChunk()
     {
+        if(_lastGeneratedChunk % 2 == 0)
+        {
+            GenerateCooldownChunk();
+
+            return;
+        }
+
+        _maxWidth = _maxLearningWidth;
+        SetupNewSpawnPosition(_previousChunkWidthEnd - 5, 6);
+
         var chunk = new GameObject();
         var maxX = _previousChunkWidthEnd + _maxWidth;
 
@@ -74,24 +97,13 @@ public class LevelGenerator : MonoBehaviour
 
         _chunks.Add(_lastGeneratedChunk, chunk);
 
+        // TODO clean this up can be done easier with generate solid blocks.
         for (int x = _previousChunkWidthEnd; x < maxX; x++)
             for (int y = minHeigth; y < _maxHeigth; y++)
             {
-                if (x == 0 && y == 2)
-                {
-                    var spawnPos = Instantiate(new GameObject(), _spawnPoints.transform);
-                    spawnPos.name = "Spawn position";
-                }
                 if (y == minHeigth)
                 {
-                    var go = Instantiate(_groundBlock, chunk.transform);
-                    var pos = new Vector2(x, y);
-                    var component = go.AddComponent<EntityModel>();
-
-                    go.name = "block";
-                    go.transform.position = pos;
-
-                    AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), component, EntityType.Solid);
+                    GenerateFloorBlock(chunk, x, y);
                 }
             }
 
@@ -105,6 +117,53 @@ public class LevelGenerator : MonoBehaviour
         _previousChunkWidthEnd += _maxWidth;
     }
 
+    private void GenerateCooldownChunk()
+    {
+        var chunk = new GameObject();
+        var maxX = _previousChunkWidthEnd + _maxCooldownWidth;
+
+        _maxWidth = _maxCooldownWidth;
+        chunk.name = $"Cooldown chunk {_lastGeneratedChunk}";
+
+        _chunks.Add(_lastGeneratedChunk, chunk);
+
+        for (int x = _previousChunkWidthEnd; x < maxX; x++)
+            for (int y = minHeigth; y < _maxHeigth; y++)
+            {
+                if (y == minHeigth)
+                {
+                    GenerateFloorBlock(chunk, x, y);
+                }
+            }
+
+        HandleElevation(_lastGeneratedChunk);
+        SetupEndOfChunk(chunk, maxX + 1, 0);
+
+        _previousChunkWidthEnd += _maxCooldownWidth;
+    }
+
+    private void SetupNewSpawnPosition(int x, int y)
+    {
+        var spawnPos = Instantiate(new GameObject(), _spawnPoints.transform);
+        _mario.respawnPositionPCG = new Vector2(x + 1, y);
+       
+        spawnPos.name = "Spawn position";
+    }
+
+    // Generate solid floor block.
+    private void GenerateFloorBlock(GameObject chunk, int x, int y)
+    {
+        var go = Instantiate(_groundBlock, chunk.transform);
+        var pos = new Vector2(x, y);
+        var component = go.AddComponent<EntityModel>();
+
+        go.name = "block";
+        go.transform.position = pos;
+
+        AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), component, EntityType.Solid);
+    }
+
+    // Generate elevation in terrain.
     private void HandleElevation(int chunkId)
     {
         var minX = _previousChunkWidthEnd + 1;
@@ -114,7 +173,7 @@ public class LevelGenerator : MonoBehaviour
         {
             var xPos = Random.Range(minX, maxX - model.width);
             var yPos = FindHighestBlock(xPos, model.width, chunkId) + 1;
-            var previousBlockHeigth = FindBlockHighestPosition(chunkId, xPos, yPos, model.heigth);
+            var previousBlockHeigth = FindBlockHighestPosition(chunkId, xPos - 1, yPos, model.heigth);
 
             if (yPos + model.heigth - previousBlockHeigth > 4)
             {
@@ -287,8 +346,9 @@ public class LevelGenerator : MonoBehaviour
         var component = goEnd.GetComponent<EndOfChunkCollider>();
 
         goEnd.transform.position = new Vector2(x, y);
+        goEnd.name = "End of chunk";
 
-        component.Setup(_lastGeneratedChunk, tranningHandler.GetTranningTypes());
+        component.Setup(_lastGeneratedChunk, _lastGeneratedChunk % 2 == 0, tranningHandler.GetTranningTypes());
         
         _lastGeneratedChunk++;
     }

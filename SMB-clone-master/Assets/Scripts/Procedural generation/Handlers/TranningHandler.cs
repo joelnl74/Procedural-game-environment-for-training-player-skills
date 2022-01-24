@@ -1,14 +1,15 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class TranningHandler : MonoBehaviour
 {
     [SerializeField] private LevelGenerator _levelGenerator;
-    
-    private TranningModelHandler tranningModelHandler;
-    private PCGEventManager _PCGEventManager;
-    private TranningType _currentTranningType;
+    [SerializeField] private TranningModelHandler tranningModelHandler;
 
+    private PCGEventManager _PCGEventManager;
+
+    private List<TranningType> _currentTranningType;
     private List<TranningType> tranningTypes;
 
     private float timer;
@@ -21,14 +22,9 @@ public class TranningHandler : MonoBehaviour
 
     private void Awake()
     {
-        _currentTranningType = TranningType.Walking;
+        _currentTranningType = new List<TranningType> { TranningType.Walking };
         _PCGEventManager = PCGEventManager.Instance;
-        tranningModelHandler = new TranningModelHandler();
-        tranningTypes = new List<TranningType> { _currentTranningType };
-
-        tranningModelHandler.model.SetTranningType(_currentTranningType);
-        tranningModelHandler.GenerateModelsBasedOnSkill();
-        _levelGenerator.SetupLevel(this);
+        tranningTypes = _currentTranningType;
 
         _PCGEventManager.onReachedEndOfChunk += CheckEndOfChunk;
     }
@@ -38,6 +34,10 @@ public class TranningHandler : MonoBehaviour
         _PCGEventManager.onFallDeath += HandleDeathByFalling;
         _PCGEventManager.onDeathByEnemy += HandleDeathByEnemy;
         _PCGEventManager.onKilledEnemy += HandleKilledEnemy;
+
+        tranningModelHandler.model.SetTranningType(_currentTranningType);
+        tranningModelHandler.GenerateModelsBasedOnSkill();
+        _levelGenerator.SetupLevel(this);
     }
 
     private void OnDestroy()
@@ -64,7 +64,8 @@ public class TranningHandler : MonoBehaviour
             return;
         }
 
-        if (_currentTranningType == TranningType.Walking)
+        // TODO make this boolean based to make it faster.
+        if (_currentTranningType.Contains(TranningType.Walking))
         {
             if (outOfTime)
             {
@@ -126,21 +127,20 @@ public class TranningHandler : MonoBehaviour
         outOfTime = false;
     }
 
-    private void CheckEndOfChunk(int chunkId, List<TranningType> chunkTranningTypes)
+    private void CheckEndOfChunk(int chunkId, bool isCoolDownChunk, List<TranningType> chunkTranningTypes)
     {
         var playerSucces = false;
-        var containsTranningType = chunkTranningTypes.Contains(_currentTranningType);
 
-        if (_currentTranningType == TranningType.BasicsTest)
+        if (_currentTranningType.Contains(TranningType.BasicsTest) == false && isCoolDownChunk == false)
         {
-            containsTranningType = false;
-        }
-
-        if (containsTranningType)
-        {
-            foreach (var type in tranningTypes)
+            foreach (var tranningType in chunkTranningTypes)
             {
-                playerSucces = DidCompleteTranningType(type);
+                if(_currentTranningType.Contains(tranningType) == false)
+                {
+                    break;
+                }
+
+                playerSucces = DidCompleteTranningType(tranningType);
 
                 if (playerSucces == false)
                 {
@@ -148,20 +148,49 @@ public class TranningHandler : MonoBehaviour
                 }
             }
         }
-  
-        if (playerSucces)
+        else
         {
-            _currentTranningType += 1;
+            playerSucces = true;
         }
+  
+        if (playerSucces && isCoolDownChunk == false)
+        {
+            tranningTypes = GenerateTranningType(_currentTranningType);
+            _currentTranningType = tranningTypes;
 
-        tranningModelHandler.model.SetTranningType(_currentTranningType);
-        tranningTypes = new List<TranningType> { _currentTranningType };
+            tranningModelHandler.model.SetTranningType(_currentTranningType);
+        }
+        else
+        {
+            tranningModelHandler.model.SetTranningType(new List<TranningType> { TranningType.Short_Jump});
+        }
 
         tranningModelHandler.GenerateModelsBasedOnSkill();
         _levelGenerator.ReachedEndOfChunk(chunkId, tranningTypes);
 
         SetTimer(30);
         ClearChunkStats();
+    }
+
+    private List<TranningType> GenerateTranningType(List<TranningType> currentTypes)
+    {
+        var types = new List<TranningType>();
+        var lastTranningType = currentTypes.Max();
+
+        if (lastTranningType != TranningType.BasicsTest)
+        {
+            var newTranningType = lastTranningType += 1;
+
+            newTranningType = lastTranningType++;
+            types.Add(newTranningType);
+        }
+        else
+        {
+            types.Add(lastTranningType);
+        }
+
+
+        return types;
     }
 
     private bool DidCompleteTranningType(TranningType type)
