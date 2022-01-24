@@ -328,6 +328,11 @@ public class LevelGenerator : MonoBehaviour
         {
             for (int y = begin.y; y < end.y; y++)
             {
+                var CanRemove = CheckBlockInfront(x, chunkId);
+
+                if (CanRemove == false)
+                    break;
+
                 var index = GetId(x, y, chunkId);
                 var block = GetEntity(x, y, chunkId);
 
@@ -338,6 +343,14 @@ public class LevelGenerator : MonoBehaviour
                 }
             }
         }
+    }
+
+    private bool CheckBlockInfront(int start, int chunkId)
+    {
+        var beginTest = GetEntity(start - 4, 1, chunkId);
+        var endTest = GetEntity(start + 4, 1, chunkId);
+
+        return beginTest != null && endTest != null;
     }
 
     private void SetupEndOfChunk(GameObject chunkGo, int x, int y)
