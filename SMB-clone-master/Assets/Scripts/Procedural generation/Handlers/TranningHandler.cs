@@ -129,6 +129,12 @@ public class TranningHandler : MonoBehaviour
         _outOfTime = false;
     }
 
+    /// <summary>
+    /// Check if the tranning was complete and if we should generate new tranning goals.
+    /// </summary>
+    /// <param name="chunkId">Chunk id.</param>
+    /// <param name="isCoolDownChunk">Cooldown chunk.</param>
+    /// <param name="chunkTranningTypes">Tranning types in the chunk.</param>
     private void CheckEndOfChunk(int chunkId, bool isCoolDownChunk, List<TranningType> chunkTranningTypes)
     {
         var playerSucces = false;
@@ -184,10 +190,15 @@ public class TranningHandler : MonoBehaviour
         ClearChunkStats();
     }
 
-    private List<TranningType> GenerateTranningType(List<TranningType> currentTypes)
+    /// <summary>
+    /// Generate tranning types
+    /// </summary>
+    /// <param name="currentTypes">Previous chunk tranning types.</param>
+    /// <returns></returns>
+    private List<TranningType> GenerateTranningType(List<TranningType> previousTranningTypes)
     {
         var types = new List<TranningType>();
-        var lastTranningType = currentTypes.Max();
+        var lastTranningType = previousTranningTypes.Max();
 
         if (lastTranningType != TranningType.BasicsTest)
         {
@@ -195,9 +206,9 @@ public class TranningHandler : MonoBehaviour
 
             newTranningType = lastTranningType++;
 
-            if (currentTypes.Count == 1)
+            if (previousTranningTypes.Count == 1)
             {
-                for(int i = currentTypes.Count; i <= 0; i++)
+                for(int i = previousTranningTypes.Count; i <= 0; i++)
                 {
                     types.Add((TranningType)i);
                 }
