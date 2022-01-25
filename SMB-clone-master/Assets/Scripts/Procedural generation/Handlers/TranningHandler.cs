@@ -4,21 +4,23 @@ using UnityEngine;
 
 public class TranningHandler : MonoBehaviour
 {
+    public int deathCount = 0;
+    public int jumpDeaths = 0;
+    public int enemiesDeaths = 0;
+
     [SerializeField] private LevelGenerator _levelGenerator;
     [SerializeField] private TranningModelHandler tranningModelHandler;
 
     private PCGEventManager _PCGEventManager;
 
     private List<TranningType> _currentTranningType;
+    private List<TranningType> _failedTranningType;
     private List<TranningType> tranningTypes;
 
-    private float timer;
-    private bool outOfTime = false;
-    private bool buttonPressed;
-
-    public int deathCount = 0;
-    public int jumpDeaths = 0;
-    public int enemiesDeaths = 0;
+    private float _timer;
+    private bool _outOfTime = false;
+    private bool _buttonPressed;
+    private bool _tranningChunkSucces;
 
     private void Awake()
     {
@@ -54,12 +56,12 @@ public class TranningHandler : MonoBehaviour
 
     private void Update()
     {
-        if (timer < 0 && outOfTime == false)
+        if (_timer < 0 && _outOfTime == false)
         {
             EndOfTimerReached();
         }
 
-        if (buttonPressed)
+        if (_buttonPressed)
         {
             return;
         }
@@ -67,7 +69,7 @@ public class TranningHandler : MonoBehaviour
         // TODO make this boolean based to make it faster.
         if (_currentTranningType.Contains(TranningType.Walking))
         {
-            if (outOfTime)
+            if (_outOfTime)
             {
                 // TODO show something that makes it clear the player has to move.
             }
@@ -118,13 +120,13 @@ public class TranningHandler : MonoBehaviour
 
     private void EndOfTimerReached()
     {
-        outOfTime = true;
+        _outOfTime = true;
     }
 
     private void SetTimer(float time)
     {
-        timer = time;
-        outOfTime = false;
+        _timer = time;
+        _outOfTime = false;
     }
 
     private void CheckEndOfChunk(int chunkId, bool isCoolDownChunk, List<TranningType> chunkTranningTypes)
@@ -152,17 +154,27 @@ public class TranningHandler : MonoBehaviour
         {
             playerSucces = true;
         }
+        
+        if (isCoolDownChunk == false)
+        {
+            _failedTranningType = _currentTranningType;
+            _tranningChunkSucces = playerSucces;
+        }
   
-        if (playerSucces && isCoolDownChunk == false)
+        if (_tranningChunkSucces && isCoolDownChunk == false)
         {
             tranningTypes = GenerateTranningType(_currentTranningType);
             _currentTranningType = tranningTypes;
 
             tranningModelHandler.model.SetTranningType(_currentTranningType);
         }
+        else if(_tranningChunkSucces == false && isCoolDownChunk == false)
+        {
+            tranningModelHandler.model.SetTranningType(_failedTranningType);
+        }
         else
         {
-            tranningModelHandler.model.SetTranningType(new List<TranningType> { TranningType.Short_Jump});
+            tranningModelHandler.model.SetTranningType(new List<TranningType> { TranningType.Short_Jump });
         }
 
         tranningModelHandler.GenerateModelsBasedOnSkill();
@@ -182,6 +194,15 @@ public class TranningHandler : MonoBehaviour
             var newTranningType = lastTranningType += 1;
 
             newTranningType = lastTranningType++;
+
+            if (currentTypes.Count == 1)
+            {
+                for(int i = currentTypes.Count; i <= 0; i++)
+                {
+                    types.Add((TranningType)i);
+                }
+            }
+
             types.Add(newTranningType);
         }
         else
@@ -220,7 +241,7 @@ public class TranningHandler : MonoBehaviour
 
     private bool DidCompleteWalkingTranning()
     {
-        if (outOfTime)
+        if (_outOfTime)
         {
             return false;
         }
@@ -230,7 +251,7 @@ public class TranningHandler : MonoBehaviour
 
     private bool DidCompleteJumpTranning()
     {
-        if (jumpDeaths > 2 || outOfTime)
+        if (jumpDeaths > 2 || _outOfTime)
         {
             return false;
         }
@@ -240,7 +261,7 @@ public class TranningHandler : MonoBehaviour
 
     private bool DidCompletePlatformTranning()
     {
-        if (jumpDeaths > 2 || outOfTime)
+        if (jumpDeaths > 2 || _outOfTime)
         {
             return false;
         }
@@ -250,7 +271,7 @@ public class TranningHandler : MonoBehaviour
 
     private bool DidCompleteEnemies()
     {
-        if (enemiesDeaths > 2 && outOfTime == false)
+        if (enemiesDeaths > 2 && _outOfTime == false)
         {
             return false;
         }
