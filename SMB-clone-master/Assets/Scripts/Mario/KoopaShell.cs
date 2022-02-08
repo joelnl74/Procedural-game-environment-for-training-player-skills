@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class KoopaShell : Enemy {
 	private Animator m_Animator;
@@ -89,7 +87,7 @@ public class KoopaShell : Enemy {
 			if (other.gameObject.tag.Contains("Enemy")) { // kill off other enemies
 				Enemy enemy = other.gameObject.GetComponent<Enemy>();
 				t_LevelManager.RollingShellTouchEnemy (enemy);
-			} else {
+			} else if(transform.position.y <= other.transform.position.y) {
 				currentRollVelocityX = -currentRollVelocityX;
 			}
 		}

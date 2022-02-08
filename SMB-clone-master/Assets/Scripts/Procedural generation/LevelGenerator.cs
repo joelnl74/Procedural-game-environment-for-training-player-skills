@@ -160,6 +160,8 @@ public class LevelGenerator : MonoBehaviour
 
         go.name = "block";
         go.transform.position = pos;
+        go.layer = 9;
+        go.tag = "Platform";
 
         AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), component, EntityType.Solid);
     }
