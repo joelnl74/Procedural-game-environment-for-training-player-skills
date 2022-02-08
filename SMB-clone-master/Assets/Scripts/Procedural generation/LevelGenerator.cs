@@ -158,10 +158,8 @@ public class LevelGenerator : MonoBehaviour
         var pos = new Vector2(x, y);
         var component = go.AddComponent<EntityModel>();
 
-        go.name = "block";
+        go.name = "ground_block";
         go.transform.position = pos;
-        go.layer = 9;
-        go.tag = "Platform";
 
         AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), component, EntityType.Solid);
     }
