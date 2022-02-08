@@ -12,30 +12,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c1a36c8f9825de47a3914d266e7fa20, type: 3}
   m_Name: Player skill collection
   m_EditorClassIdentifier: 
-  _maxObjects: 8
-  _minObjects: 0
   skillParameters:
-  - tranningType: 0
-    min: 0
-    max: 0
-  - tranningType: 1
-    min: 0
-    max: 0
-  - tranningType: 2
-    min: 3
-    max: 5
-  - tranningType: 3
-    min: 3
-    max: 5
-  - tranningType: 4
-    min: 1
-    max: 4
-  - tranningType: 5
-    min: 1
-    max: 5
-  - tranningType: 6
-    min: 1
-    max: 4
-  - tranningType: 7
-    min: 0
-    max: 3
+  - TranningType: 0
+    maxObjects: 0
+    skillParameters: []
+  - TranningType: 1
+    maxObjects: 0
+    skillParameters: []
+  - TranningType: 2
+    maxObjects: 5
+    skillParameters:
+    - tranningType: 2
+      min: 3
+      max: 5
+  - TranningType: 3
+    maxObjects: 5
+    skillParameters:
+    - tranningType: 3
+      min: 3
+      max: 5
+  - TranningType: 4
+    maxObjects: 3
+    skillParameters:
+    - tranningType: 4
+      min: 1
+      max: 3
+  - TranningType: 5
+    maxObjects: 3
+    skillParameters:
+    - tranningType: 5
+      min: 1
+      max: 3
+  - TranningType: 6
+    maxObjects: 3
+    skillParameters:
+    - tranningType: 6
+      min: 1
+      max: 3
+  - TranningType: 7
+    maxObjects: 12
+    skillParameters:
+    - tranningType: 2
+      min: 0
+      max: 2
+    - tranningType: 3
+      min: 0
+      max: 2
+    - tranningType: 4
+      min: 0
+      max: 2
+    - tranningType: 5
+      min: 0
+      max: 2
+    - tranningType: 6
+      min: 0
+      max: 2

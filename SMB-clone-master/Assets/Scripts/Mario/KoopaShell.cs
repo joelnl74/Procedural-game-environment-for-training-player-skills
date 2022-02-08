@@ -84,10 +84,13 @@ public class KoopaShell : Enemy {
 
 	void OnCollisionEnter2D(Collision2D other) {
 		if (isRolling) {
-			if (other.gameObject.tag.Contains("Enemy")) { // kill off other enemies
+			if (other.gameObject.tag.Contains("Enemy"))
+			{ // kill off other enemies
 				Enemy enemy = other.gameObject.GetComponent<Enemy>();
-				t_LevelManager.RollingShellTouchEnemy (enemy);
-			} else if(transform.position.y <= other.transform.position.y) {
+				t_LevelManager.RollingShellTouchEnemy(enemy);
+			}
+			else if(transform.position.y <= other.transform.position.y) 
+			{
 				currentRollVelocityX = -currentRollVelocityX;
 			}
 		}

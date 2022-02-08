@@ -46,46 +46,49 @@ public class TranningModel
         {
             var skill = _skillsCollectionConfiguration.skillParameters[(int)tranningType];
 
-            if(_totalPlacedObjects > _skillsCollectionConfiguration._maxObjects)
+            foreach(var traningSkill in skill.skillParameters)
             {
-                break;
-            }
+                if (_totalPlacedObjects > skill.maxObjects)
+                {
+                    break;
+                }
 
-            switch (tranningType)
-            {
-                case TranningType.None:
-                    break;
-                case TranningType.Walking:
-                    break;
-                case TranningType.Short_Jump:
-                    ShortJumpSkill += Random.Range(skill.min, skill.max);
-                    _totalPlacedObjects += ShortJumpSkill;
-                    break;
-                case TranningType.Medium_Jump:
-                    MediumJumpSkill += Random.Range(skill.min, skill.max);
-                    _totalPlacedObjects += MediumJumpSkill;
-                    break;
-                case TranningType.Enemies:
-                    EnemySkill += Random.Range(skill.min, skill.max);
-                    _totalPlacedObjects += EnemySkill;
-                    break;
-                case TranningType.Long_Jump:
-                    LongJumpSkill += Random.Range(skill.min, skill.max);
-                    _totalPlacedObjects += LongJumpSkill;
-                    break;
-                case TranningType.Platform:
-                    HighJumpSkill += Random.Range(skill.min, skill.max);
-                    _totalPlacedObjects += HighJumpSkill;
-                    break;
-                case TranningType.BasicsTest:
-                default:
-                    ShortJumpSkill += Random.Range(skill.min, skill.max);
-                    MediumJumpSkill += Random.Range(skill.min, skill.max);
+                switch (tranningType)
+                {
+                    case TranningType.None:
+                        break;
+                    case TranningType.Walking:
+                        break;
+                    case TranningType.Short_Jump:
+                        ShortJumpSkill += Random.Range(traningSkill.min, traningSkill.max);
+                        _totalPlacedObjects += ShortJumpSkill;
+                        break;
+                    case TranningType.Medium_Jump:
+                        MediumJumpSkill += Random.Range(traningSkill.min, traningSkill.max);
+                        _totalPlacedObjects += MediumJumpSkill;
+                        break;
+                    case TranningType.Enemies:
+                        EnemySkill += Random.Range(traningSkill.min, traningSkill.max);
+                        _totalPlacedObjects += EnemySkill;
+                        break;
+                    case TranningType.Long_Jump:
+                        LongJumpSkill += Random.Range(traningSkill.min, traningSkill.max);
+                        _totalPlacedObjects += LongJumpSkill;
+                        break;
+                    case TranningType.Platform:
+                        HighJumpSkill += Random.Range(traningSkill.min, traningSkill.max);
+                        _totalPlacedObjects += HighJumpSkill;
+                        break;
+                    case TranningType.BasicsTest:
+                    default:
+                        ShortJumpSkill += Random.Range(traningSkill.min, traningSkill.max);
+                        MediumJumpSkill += Random.Range(traningSkill.min, traningSkill.max);
 
-                    LongJumpSkill += Random.Range(skill.min, skill.max);
-                    HighJumpSkill += Random.Range(skill.min, skill.max);
-                    EnemySkill += Random.Range(skill.min, skill.max);
-                    break;
+                        LongJumpSkill += Random.Range(traningSkill.min, traningSkill.max);
+                        HighJumpSkill += Random.Range(traningSkill.min, traningSkill.max);
+                        EnemySkill += Random.Range(traningSkill.min, traningSkill.max);
+                        break;
+                }
             }
         }
     }
