@@ -77,6 +77,7 @@ public class TranningModel
                     HighJumpSkill += Random.Range(skill.min, skill.max);
                     _totalPlacedObjects += HighJumpSkill;
                     break;
+                case TranningType.BasicsTest:
                 default:
                     ShortJumpSkill += Random.Range(skill.min, skill.max);
                     MediumJumpSkill += Random.Range(skill.min, skill.max);

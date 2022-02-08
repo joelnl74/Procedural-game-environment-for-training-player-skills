@@ -54,7 +54,6 @@ public class TranningModelHandler : MonoBehaviour
                     GeneratePlatformModels(2, 6, 3, 4, 0, false, true, true, true);
                     break;
                 default:
-                    model.SetTranningType(new List<TranningType> { TranningType.BasicsTest});
                     GenerateShortJumpModels();
                     GenerateMediumJumpModels();
                     GenerateLongJumpModels();
