@@ -175,7 +175,7 @@ public class TranningHandler : MonoBehaviour
         }
         else
         {
-            tranningModelHandler.model.SetTranningType(TranningType.Medium_Jump);
+            tranningModelHandler.model.SetTranningType(TranningType.Short_Jump);
         }
 
         tranningModelHandler.GenerateModelsBasedOnSkill();
