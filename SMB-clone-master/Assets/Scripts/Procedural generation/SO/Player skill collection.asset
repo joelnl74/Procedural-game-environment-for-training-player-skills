@@ -102,10 +102,10 @@ MonoBehaviour:
       max: 2
     - tranningType: 4
       min: 0
-      max: 2
+      max: 3
     - tranningType: 6
       min: 0
-      max: 2
+      max: 3
     - tranningType: 8
       min: 0
-      max: 2
+      max: 3
