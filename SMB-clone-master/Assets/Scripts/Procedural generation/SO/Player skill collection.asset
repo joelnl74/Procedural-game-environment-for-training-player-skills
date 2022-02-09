@@ -38,11 +38,17 @@ MonoBehaviour:
       min: 1
       max: 3
   - TranningType: 5
-    maxObjects: 3
+    maxObjects: 12
     skillParameters:
-    - tranningType: 5
+    - tranningType: 2
+      min: 0
+      max: 2
+    - tranningType: 3
       min: 1
-      max: 3
+      max: 2
+    - tranningType: 4
+      min: 1
+      max: 2
   - TranningType: 6
     maxObjects: 3
     skillParameters:
@@ -51,6 +57,42 @@ MonoBehaviour:
       max: 3
   - TranningType: 7
     maxObjects: 12
+    skillParameters:
+    - tranningType: 6
+      min: 1
+      max: 2
+    - tranningType: 4
+      min: 1
+      max: 2
+  - TranningType: 8
+    maxObjects: 12
+    skillParameters:
+    - tranningType: 8
+      min: 1
+      max: 3
+  - TranningType: 9
+    maxObjects: 12
+    skillParameters:
+    - tranningType: 4
+      min: 1
+      max: 2
+    - tranningType: 8
+      min: 1
+      max: 2
+  - TranningType: 10
+    maxObjects: 8
+    skillParameters:
+    - tranningType: 4
+      min: 1
+      max: 2
+    - tranningType: 8
+      min: 1
+      max: 2
+    - tranningType: 6
+      min: 1
+      max: 2
+  - TranningType: 11
+    maxObjects: 8
     skillParameters:
     - tranningType: 2
       min: 0
@@ -61,9 +103,9 @@ MonoBehaviour:
     - tranningType: 4
       min: 0
       max: 2
-    - tranningType: 5
+    - tranningType: 6
       min: 0
       max: 2
-    - tranningType: 6
+    - tranningType: 8
       min: 0
       max: 2

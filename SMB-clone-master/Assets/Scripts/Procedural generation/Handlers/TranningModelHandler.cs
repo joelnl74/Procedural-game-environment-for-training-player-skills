@@ -19,19 +19,24 @@ public class TranningModelHandler : MonoBehaviour
         model.SetPlayerSkillConfiguration(_skillsCollection);
 
         // TODO Load in from external file.
-        model.SetTranningType(new List<TranningType> { TranningType.Walking });
+        model.SetTranningType(TranningType.Walking);
     }
 
-    public List<TranningType> GetTranningType()
+    public TranningType GetTranningType()
         => model.GetCurrentTrannigType();
+
+    public SkillsCollectionConfiguration Get()
+        => _skillsCollection;
 
     public void GenerateModelsBasedOnSkill()
     {
         Clear();
 
-        foreach(var tranningType in model.GetCurrentTrannigType())
+        var collection = _skillsCollection.skillParameters.FirstOrDefault(x => x.TranningType == GetTranningType());
+
+        foreach (var tranningType in collection.skillParameters)
         {
-            switch (tranningType)
+            switch (tranningType.tranningType)
             {
                 case TranningType.None:
                     break;
@@ -133,7 +138,7 @@ public class TranningModelHandler : MonoBehaviour
             var containsEnemies = hasEnemies && Random.Range(0, 100) > minChance;
             var containsCoins = hasCoins && Random.Range(0, 100) > 50;
             var containsChasm = HasChasm && Random.Range(0, 100) > 33 || forceChasm;
-            var containsSpecialBlocks = GetTranningType().Max() > TranningType.Platform && containsChasm == false;
+            var containsSpecialBlocks = GetTranningType() > TranningType.Platform && containsChasm == false;
 
             ChasmModel chasmModel = null;
 
