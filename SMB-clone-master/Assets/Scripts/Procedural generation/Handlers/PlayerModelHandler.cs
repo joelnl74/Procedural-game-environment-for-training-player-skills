@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
-public class TranningHandler : MonoBehaviour
+public class PlayerModelHandler : MonoBehaviour
 {
     public int deathCount = 0;
     public int jumpDeaths = 0;
@@ -13,8 +12,9 @@ public class TranningHandler : MonoBehaviour
 
     private PCGEventManager _PCGEventManager;
 
-    private TranningType _currentTranningType;
-    private TranningType _failedTranningType;
+    private int _index;
+    private int _failedIndex;
+
     private List<TranningType> _tranningTypes;
 
     private float _timer;
@@ -24,9 +24,9 @@ public class TranningHandler : MonoBehaviour
 
     private void Awake()
     {
-        _currentTranningType = TranningType.Walking;
+        _index = (int)TranningType.Walking;
         _PCGEventManager = PCGEventManager.Instance;
-        _tranningTypes = new List<TranningType> { _currentTranningType};
+        _tranningTypes = new List<TranningType> { TranningType.Walking};
 
         _PCGEventManager.onReachedEndOfChunk += CheckEndOfChunk;
     }
@@ -37,8 +37,8 @@ public class TranningHandler : MonoBehaviour
         _PCGEventManager.onDeathByEnemy += HandleDeathByEnemy;
         _PCGEventManager.onKilledEnemy += HandleKilledEnemy;
 
-        tranningModelHandler.model.SetTranningType(_currentTranningType);
-        tranningModelHandler.GenerateModelsBasedOnSkill();
+        tranningModelHandler.model.SetTranningType(_index);
+        tranningModelHandler.GenerateModelsBasedOnSkill(_tranningTypes);
         _levelGenerator.SetupLevel(this);
     }
 
@@ -137,8 +137,9 @@ public class TranningHandler : MonoBehaviour
     private void CheckEndOfChunk(int chunkId, bool isCoolDownChunk, List<TranningType> chunkTranningTypes)
     {
         var playerSucces = false;
+        var currentTranningType = (TranningType)_index;
 
-        if (_currentTranningType != TranningType.BasicsTest && isCoolDownChunk == false)
+        if (currentTranningType != TranningType.BasicsTest && isCoolDownChunk == false)
         {
             foreach (var tranningType in chunkTranningTypes)
             {
@@ -157,28 +158,28 @@ public class TranningHandler : MonoBehaviour
         
         if (isCoolDownChunk == false)
         {
-            _failedTranningType = _currentTranningType;
+            _failedIndex = _index; ;
             _tranningChunkSucces = playerSucces;
         }
   
         if (_tranningChunkSucces && isCoolDownChunk == false)
         {
             _tranningTypes.Clear();
-            _tranningTypes = GenerateTranningType(_currentTranningType);
+            _tranningTypes = GenerateTranningType(currentTranningType);
 
-            tranningModelHandler.model.SetTranningType(_currentTranningType);
+            tranningModelHandler.model.SetTranningType(_index);
         }
         else if(_tranningChunkSucces == false && isCoolDownChunk == false)
         {
             _tranningTypes.Clear();
-            tranningModelHandler.model.SetTranningType(_currentTranningType);
+            tranningModelHandler.model.SetTranningType(_index);
         }
         else
         {
-            tranningModelHandler.model.SetTranningType(TranningType.Short_Jump);
+            tranningModelHandler.model.SetTranningType((int)TranningType.Short_Jump);
         }
 
-        tranningModelHandler.GenerateModelsBasedOnSkill();
+        tranningModelHandler.GenerateModelsBasedOnSkill(_tranningTypes);
         _levelGenerator.ReachedEndOfChunk(chunkId, _tranningTypes);
 
         SetTimer(30);
@@ -197,15 +198,14 @@ public class TranningHandler : MonoBehaviour
 
         if (previousTranningTypes != TranningType.BasicsTest)
         {
-            var newTranningType = previousTranningTypes += 1;
-            _currentTranningType = newTranningType;
+            _index += 1;
         }
         else
         {
-            _currentTranningType = _failedTranningType;
+            _index = _failedIndex;
         }
 
-        var returningType = tranningTypes.skillParameters.SingleOrDefault(x => x.TranningType == _currentTranningType);
+        var returningType = tranningTypes.skillParameters[_index];
 
         foreach (var type in returningType.skillParameters)
         {

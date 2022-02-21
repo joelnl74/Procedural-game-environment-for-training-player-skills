@@ -28,10 +28,10 @@ public class LevelGenerator : MonoBehaviour
 
     private int minHeigth = 1;
 
-    private TranningHandler tranningHandler;
+    private PlayerModelHandler tranningHandler;
     private int _maxWidth;
 
-    public void SetupLevel(TranningHandler handler)
+    public void SetupLevel(PlayerModelHandler handler)
     {
         _entities = new Dictionary<int, Dictionary<int, EntityModel>>();
         _chunks = new Dictionary<int, GameObject>();

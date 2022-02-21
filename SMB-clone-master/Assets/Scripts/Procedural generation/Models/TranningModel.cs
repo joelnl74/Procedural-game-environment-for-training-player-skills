@@ -28,11 +28,7 @@ public class TranningModel
     public int HighJumpSkill = 0;
     public int EnemySkill = 0;
 
-    private TranningType _currentTranningType;
     private SkillsCollectionConfiguration _skillsCollectionConfiguration;
-
-    public TranningType GetCurrentTrannigType()
-        => _currentTranningType;
 
     public void SetPlayerSkillConfiguration(SkillsCollectionConfiguration skillsCollectionConfiguration)
     {
@@ -40,13 +36,11 @@ public class TranningModel
     }
 
 
-    public void SetTranningType(TranningType tranningType)
+    public void SetTranningType(int index)
     {
         ResetSkills();
 
-        _currentTranningType = tranningType;
-
-        var skill = _skillsCollectionConfiguration.skillParameters[(int)tranningType];
+        var skill = _skillsCollectionConfiguration.skillParameters[index];
 
         foreach (var traningSkill in skill.skillParameters)
         {
