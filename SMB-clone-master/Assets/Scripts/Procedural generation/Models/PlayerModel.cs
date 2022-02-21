@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-
 
 public class ChunkInformation
 {
@@ -16,4 +14,19 @@ public class PlayerModel
     public int enemiesTotalDeaths = 0;
 
     private Dictionary<int, ChunkInformation> _chunkStats;
+
+    public void UpdateChunk(int chunkId, int jumpDeaths, int enemyDeaths)
+    {
+        _chunkStats.Add(chunkId, new ChunkInformation
+        {
+            deathCount = jumpDeaths + enemyDeaths,
+            jumpDeaths = jumpDeaths,
+            enemiesDeaths = enemyDeaths
+        });
+    }
+
+    public int ReturnDifficulty()
+    {
+        return 50;
+    }
 }

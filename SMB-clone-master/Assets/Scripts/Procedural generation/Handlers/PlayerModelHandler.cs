@@ -3,14 +3,11 @@ using UnityEngine;
 
 public class PlayerModelHandler : MonoBehaviour
 {
-    public int deathCount = 0;
-    public int jumpDeaths = 0;
-    public int enemiesDeaths = 0;
-
     [SerializeField] private LevelGenerator _levelGenerator;
     [SerializeField] private TranningModelHandler tranningModelHandler;
 
     private PCGEventManager _PCGEventManager;
+    private PlayerModel _playerModel;
 
     private int _index;
     private int _failedIndex;
@@ -22,8 +19,12 @@ public class PlayerModelHandler : MonoBehaviour
     private bool _buttonPressed;
     private bool _tranningChunkSucces;
 
+    private int _chunkJumpDeaths = 0;
+    private int _chunkEnemiesDeaths = 0;
+
     private void Awake()
     {
+        _playerModel = new PlayerModel();
         _index = (int)TranningType.Walking;
         _PCGEventManager = PCGEventManager.Instance;
         _tranningTypes = new List<TranningType> { TranningType.Walking};
@@ -79,31 +80,14 @@ public class PlayerModelHandler : MonoBehaviour
     public List<TranningType> GetTranningTypes()
         => _tranningTypes;
 
-    public TranningModel GetTranningModel()
-        => tranningModelHandler.model;
-
-    public List<ElevationModel> GetElevationModels()
-        => tranningModelHandler.elevationModels;
-
-    public List<ChasmModel> GetChasmModels()
-        => tranningModelHandler.chasmModels;
-
-    public List<PlatformModel> GetPlatformModels()
-        => tranningModelHandler.platformModels;
-
-    public List<EnemyModel> GetEnemyModels()
-    => tranningModelHandler.enemyModels;
-
     private void HandleDeathByFalling()
     {
-        jumpDeaths++;
-        deathCount++;
+        _chunkJumpDeaths++;
     }
 
     private void HandleDeathByEnemy(Enemytype obj)
     {
-        enemiesDeaths++;
-        deathCount++;
+        _chunkEnemiesDeaths++;
     }
 
     private void HandleKilledEnemy(Enemytype obj)
@@ -112,9 +96,8 @@ public class PlayerModelHandler : MonoBehaviour
 
     private void ClearChunkStats()
     {
-        deathCount = 0;
-        enemiesDeaths = 0;
-        jumpDeaths = 0;
+        _chunkJumpDeaths = 0;
+        _chunkEnemiesDeaths = 0;
     }
 
     private void EndOfTimerReached()
@@ -160,6 +143,7 @@ public class PlayerModelHandler : MonoBehaviour
         {
             _failedIndex = _index; ;
             _tranningChunkSucces = playerSucces;
+            _playerModel.UpdateChunk(chunkId, _chunkJumpDeaths, _chunkEnemiesDeaths);
         }
   
         if (_tranningChunkSucces && isCoolDownChunk == false)
@@ -245,7 +229,7 @@ public class PlayerModelHandler : MonoBehaviour
 
     private bool DidCompleteJumpTranning()
     {
-        if (jumpDeaths > 2 || _outOfTime)
+        if (_chunkJumpDeaths > 2 || _outOfTime)
         {
             return false;
         }
@@ -255,7 +239,7 @@ public class PlayerModelHandler : MonoBehaviour
 
     private bool DidCompletePlatformTranning()
     {
-        if (jumpDeaths > 2 || _outOfTime)
+        if (_chunkJumpDeaths > 2 || _outOfTime)
         {
             return false;
         }
@@ -265,7 +249,7 @@ public class PlayerModelHandler : MonoBehaviour
 
     private bool DidCompleteEnemies()
     {
-        if (enemiesDeaths > 2 && _outOfTime == false)
+        if (_chunkEnemiesDeaths > 2 && _outOfTime == false)
         {
             return false;
         }
