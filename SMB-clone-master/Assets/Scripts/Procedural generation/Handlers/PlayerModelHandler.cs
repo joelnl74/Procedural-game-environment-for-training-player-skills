@@ -196,14 +196,7 @@ public class PlayerModelHandler : MonoBehaviour
         var types = new List<TranningType>();
         var tranningTypes = tranningModelHandler.Get();
 
-        if (previousTranningTypes != TranningType.BasicsTest)
-        {
-            _index += 1;
-        }
-        else
-        {
-            _index = _failedIndex;
-        }
+        _index = Mathf.Clamp(_index + 1, 0, tranningTypes.skillParameters.Count - 1);
 
         var returningType = tranningTypes.skillParameters[_index];
 
