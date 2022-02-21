@@ -202,6 +202,7 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
+
     private void HandlePlatforms(int chunkId)
     {
         var minX = _previousChunkWidthEnd;
@@ -234,7 +235,7 @@ public class LevelGenerator : MonoBehaviour
                 var startX = halfLength;
                 var endX = startX + model.chasmModel.width;
 
-                GenerateChasmBlocks(new Vector2Int(startX, minHeigth), new Vector2Int(endX, yPos - 1), chunkId);
+                GenerateChasmBlocks(new Vector2Int(startX, minHeigth), new Vector2Int(endX, yPos - 1), chunkId, true);
             }
         }
     }
@@ -453,6 +454,11 @@ public class LevelGenerator : MonoBehaviour
     private int FindHighestBlock(int x, int width, int chunkId)
     {
         int highestYPos = 0;
+
+        if(x <= _previousChunkWidthEnd)
+        {
+            return 0;
+        }
 
         var chunk = _entities[chunkId];
 
