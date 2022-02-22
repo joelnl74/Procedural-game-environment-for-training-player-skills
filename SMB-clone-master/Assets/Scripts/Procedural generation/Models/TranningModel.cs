@@ -34,7 +34,6 @@ public class TranningModel
         _skillsCollectionConfiguration = skillsCollectionConfiguration;
     }
 
-
     public void SetTranningType(int index)
     {
         ResetSkills();
