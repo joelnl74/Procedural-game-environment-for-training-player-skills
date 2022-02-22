@@ -180,7 +180,7 @@ public class LevelGenerator : MonoBehaviour
             var modelHeigth = previousBlockHeigth + model.heigth;
             var maxHeigth = Mathf.Clamp(modelHeigth, 0, Mathf.Min(modelHeigth, 4));
 
-            var beginposition = new Vector2Int(xPos, previousBlockHeigth);
+            var beginposition = new Vector2Int(xPos, 1);
             var endPosition = new Vector2Int(xPos + model.width, previousBlockHeigth + maxHeigth);
             
             var chunk = _chunks[chunkId];
@@ -204,7 +204,8 @@ public class LevelGenerator : MonoBehaviour
         foreach (var model in _tranningModelHandler.platformModels)
         {
             var xPos = Random.Range(minX, maxX - model.width);
-            var yPos = FindHighestBlock(xPos, model.width - 1, chunkId) + model.heigth;
+            var yPos = FindBlockHighestPosition(chunkId, xPos, model.heigth) + model.heigth + 1;
+
             var beginposition = new Vector2Int(xPos, yPos);
             var endPosition = new Vector2Int(xPos + model.width, yPos + 1);
 
@@ -212,6 +213,7 @@ public class LevelGenerator : MonoBehaviour
 
             if (model.hasEnemies)
             {
+                // TODO goomba or turtle
                 GenerateGoomba(chunk, endPosition);
             }
             if (model.hasCoins)
@@ -333,6 +335,7 @@ public class LevelGenerator : MonoBehaviour
 
         AddEntity(_lastGeneratedChunk, pos, component, EntityType.Enemy);
     }
+
     private void GenerateShell(GameObject chunk, Vector2Int end)
     {
         var go = Instantiate(_shell, chunk.transform);
@@ -474,6 +477,12 @@ public class LevelGenerator : MonoBehaviour
         if (_entities.ContainsKey(chunkId) == false)
         {
             _entities.Add(chunkId, new Dictionary<int, EntityModel>());
+        }
+
+        // TODO fix this correcetly.
+        if(_entities[chunkId].ContainsKey(id) == true)
+        {
+            return;
         }
 
         entityModel.Setup(id, position.x, position.y, entityType);

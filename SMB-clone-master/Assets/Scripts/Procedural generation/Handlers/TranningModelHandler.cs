@@ -50,14 +50,14 @@ public class TranningModelHandler : MonoBehaviour
                     GenerateLongJumpModels();
                     break;
                 case TranningType.Platform:
-                    GeneratePlatformModels(2, 6, 3, 4, 0, false, true, true, true);
+                    GeneratePlatformModels(2, 8, 2, 4, 0, false, true, true, false);
                     break;
                 default:
                     GenerateShortJumpModels();
                     GenerateMediumJumpModels();
                     GenerateLongJumpModels();
                     GenerateEnemies(1, (Enemytype)Random.Range(0, 2));
-                    GeneratePlatformModels(2, 6, 3, 4, 0, true, true, true, false);
+                    GeneratePlatformModels(2, 6, 2, 4, 0, true, true, true, false);
                     break;
             }
         }
@@ -79,7 +79,7 @@ public class TranningModelHandler : MonoBehaviour
                 new ElevationModel
                 {
                     heigth = Random.Range(1, 1),
-                    width = Random.Range(1, 5),
+                    width = Random.Range(1, 8),
                     hasEnemies = hasEnemies && Random.Range(0, 100) > minChance
                 });
         }
@@ -93,7 +93,7 @@ public class TranningModelHandler : MonoBehaviour
                 new ElevationModel
                 {
                     heigth = Random.Range(3, 4),
-                    width = Random.Range(3, 5),
+                    width = Random.Range(2, 10),
                     hasEnemies = hasEnemies && Random.Range(0, 100) > minChance
                 });
         }
