@@ -91,7 +91,7 @@ public class LevelGenerator : MonoBehaviour
         }
 
         _maxWidth = _maxLearningWidth;
-        SetupNewSpawnPosition(_previousChunkWidthEnd - 5, 6);
+        SetupNewSpawnPosition(_previousChunkWidthEnd - 5, _maxHeigth);
 
         var chunk = new GameObject();
         var maxX = _previousChunkWidthEnd + _maxWidth;
