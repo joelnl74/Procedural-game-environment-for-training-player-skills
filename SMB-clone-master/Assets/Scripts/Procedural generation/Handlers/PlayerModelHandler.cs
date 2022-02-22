@@ -166,6 +166,8 @@ public class PlayerModelHandler : MonoBehaviour
         tranningModelHandler.GenerateModelsBasedOnSkill(_tranningTypes);
         _levelGenerator.ReachedEndOfChunk(chunkId, _tranningTypes);
 
+        _PCGEventManager.onTranningGoalsGenerated?.Invoke(_tranningTypes);
+
         SetTimer(30);
         ClearChunkStats();
     }
