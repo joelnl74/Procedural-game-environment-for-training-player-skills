@@ -563,15 +563,21 @@ public class LevelManager : MonoBehaviour {
 
 	/****************** Misc */
 	public Vector3 FindSpawnPosition() {
-		Vector3 spawnPosition;
+		Vector3 spawnPosition = new Vector3();
+
 		GameStateManager t_GameStateManager = FindObjectOfType<GameStateManager>();
 		Debug.Log (this.name + " FindSpawnPosition: GSM spawnFromPoint=" + t_GameStateManager.spawnFromPoint.ToString()
 			+ " spawnPipeIdx= " + t_GameStateManager.spawnPipeIdx.ToString() 
 			+ " spawnPointIdx=" + t_GameStateManager.spawnPointIdx.ToString());
+
 		if (t_GameStateManager.spawnFromPoint) 
 		{
 			var spawnPoints = GameObject.Find("Spawn Points").transform;
-			spawnPosition = spawnPoints.GetChild (t_GameStateManager.spawnPointIdx).transform.position;
+
+			if(spawnPoints.childCount > 0)
+            {
+				spawnPosition = spawnPoints.GetChild(t_GameStateManager.spawnPointIdx).transform.position;
+			}
 		} 
 		else if(GameObject.Find("Spawn Pipes") != null) 
 		{
@@ -582,7 +588,7 @@ public class LevelManager : MonoBehaviour {
 			spawnPosition = mario.transform.position;
         }
 
-		return spawnPosition;
+        return spawnPosition;
 	}
 
 	public string GetWorldName(string sceneName) {

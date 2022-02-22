@@ -2826,6 +2826,11 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 2136102205}
+    - target: {fileID: 114562383339627640, guid: 2edb2b8e476654f0ea2807c7a8261a76,
+        type: 3}
+      propertyPath: canMove
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2edb2b8e476654f0ea2807c7a8261a76, type: 3}
 --- !u!1 &2136102205 stripped
