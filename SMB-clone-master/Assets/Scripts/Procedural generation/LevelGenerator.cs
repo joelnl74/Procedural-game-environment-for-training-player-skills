@@ -175,23 +175,13 @@ public class LevelGenerator : MonoBehaviour
         foreach (var model in _tranningModelHandler.elevationModels)
         {
             var xPos = Random.Range(minX, maxX - model.width);
-            var yPos = FindHighestBlock(xPos, model.width, chunkId) + 1;
-            var previousBlockHeigth = FindBlockHighestPosition(chunkId, xPos - 1, yPos, model.heigth);
+            var previousBlockHeigth = FindBlockHighestPosition(chunkId, xPos, model.heigth);
 
-            if (yPos + model.heigth - previousBlockHeigth > 4)
-            {
-                if(yPos + 1 - previousBlockHeigth > 4)
-                {
-                    model.heigth = 0;
-                }
-                else
-                {
-                    model.heigth = 1;
-                }
-            }
+            var modelHeigth = previousBlockHeigth + model.heigth;
+            var maxHeigth = Mathf.Clamp(modelHeigth, 0, Mathf.Min(modelHeigth, 4));
 
-            var beginposition = new Vector2Int(xPos, 1);
-            var endPosition = new Vector2Int(xPos + model.width, yPos + model.heigth);
+            var beginposition = new Vector2Int(xPos, previousBlockHeigth);
+            var endPosition = new Vector2Int(xPos + model.width, previousBlockHeigth + maxHeigth);
             
             var chunk = _chunks[chunkId];
 
@@ -305,6 +295,10 @@ public class LevelGenerator : MonoBehaviour
                 if (y >= _maxHeigth)
                     break;
 
+                // does this kill the loop?
+                if (_entities[_lastGeneratedChunk].ContainsKey(GetId(x, y, _lastGeneratedChunk)) == true)
+                    continue;
+
                 GameObject go = null;
                 int chance = 0;
 
@@ -350,7 +344,6 @@ public class LevelGenerator : MonoBehaviour
 
         AddEntity(_lastGeneratedChunk, pos, component, EntityType.Enemy);
     }
-
 
     private void GenerateChasmBlocks(Vector2Int begin, Vector2Int end, int chunkId, bool ignoreCheck = false)
     {
@@ -433,7 +426,7 @@ public class LevelGenerator : MonoBehaviour
         return null;
     }
 
-    private int FindBlockHighestPosition(int chunkId, int x, int y, int heigth)
+    private int FindBlockHighestPosition(int chunkId, int x, int heigth)
     {
         int highestPositon = 0;
 
@@ -456,12 +449,6 @@ public class LevelGenerator : MonoBehaviour
     private int FindHighestBlock(int x, int width, int chunkId)
     {
         int highestYPos = 0;
-
-        if(x <= _previousChunkWidthEnd)
-        {
-            return 0;
-        }
-
         var chunk = _entities[chunkId];
 
         foreach(var block in chunk)
@@ -489,11 +476,8 @@ public class LevelGenerator : MonoBehaviour
             _entities.Add(chunkId, new Dictionary<int, EntityModel>());
         }
 
-        if (_entities[chunkId].ContainsKey(id) == false)
-        {
-            entityModel.Setup(id, position.x, position.y, entityType);
-            _entities[chunkId].Add(id, entityModel);
-        }
+        entityModel.Setup(id, position.x, position.y, entityType);
+        _entities[chunkId].Add(id, entityModel);
     }
 
     private int GetId(int x, int y, int chunkId)
