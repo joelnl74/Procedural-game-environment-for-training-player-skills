@@ -13,7 +13,7 @@ public class PlayerModel
     public int jumpTotalDeaths = 0;
     public int enemiesTotalDeaths = 0;
 
-    private Dictionary<int, ChunkInformation> _chunkStats;
+    private Dictionary<int, ChunkInformation> _chunkStats = new Dictionary<int, ChunkInformation>();
 
     public void UpdateChunk(int chunkId, int jumpDeaths, int enemyDeaths)
     {
