@@ -6,7 +6,7 @@ using System;
 [Serializable]
 public class TraningSkillClass
 {
-    public TranningType TranningType;
+    public string name;
     public int maxObjects;
 
     public List<SkillParameters> skillParameters;

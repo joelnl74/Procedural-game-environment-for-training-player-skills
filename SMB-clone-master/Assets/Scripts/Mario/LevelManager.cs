@@ -312,7 +312,8 @@ public class LevelManager : MonoBehaviour {
 		if(SceneManager.GetActiveScene().name == "PCG")
         {
 			mario.UnFreeAndLive();
-        }
+			isPoweringDown = false;
+		}
 		else if (!isRespawning) {
 			isRespawning = true;
 

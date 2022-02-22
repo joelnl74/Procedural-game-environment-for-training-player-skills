@@ -17,6 +17,8 @@ public class LevelGenerator : MonoBehaviour
 
     [SerializeField] private GameObject[] _specialBlocks;
 
+    [SerializeField] private TranningModelHandler _tranningModelHandler;
+
     [SerializeField] private Mario _mario;
     [SerializeField] private GameObject _clouds;
 
@@ -28,10 +30,10 @@ public class LevelGenerator : MonoBehaviour
 
     private int minHeigth = 1;
 
-    private TranningHandler tranningHandler;
+    private PlayerModelHandler tranningHandler;
     private int _maxWidth;
 
-    public void SetupLevel(TranningHandler handler)
+    public void SetupLevel(PlayerModelHandler handler)
     {
         _entities = new Dictionary<int, Dictionary<int, EntityModel>>();
         _chunks = new Dictionary<int, GameObject>();
@@ -170,7 +172,7 @@ public class LevelGenerator : MonoBehaviour
         var minX = _previousChunkWidthEnd + 1;
         var maxX = _previousChunkWidthEnd + _maxWidth;
 
-        foreach (var model in tranningHandler.GetElevationModels())
+        foreach (var model in _tranningModelHandler.elevationModels)
         {
             var xPos = Random.Range(minX, maxX - model.width);
             var yPos = FindHighestBlock(xPos, model.width, chunkId) + 1;
@@ -202,13 +204,14 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
+
     private void HandlePlatforms(int chunkId)
     {
         var minX = _previousChunkWidthEnd;
         var maxX = _previousChunkWidthEnd + _maxWidth;
         var chunk = _chunks[chunkId];
 
-        foreach (var model in tranningHandler.GetPlatformModels())
+        foreach (var model in _tranningModelHandler.platformModels)
         {
             var xPos = Random.Range(minX, maxX - model.width);
             var yPos = FindHighestBlock(xPos, model.width - 1, chunkId) + model.heigth;
@@ -234,7 +237,7 @@ public class LevelGenerator : MonoBehaviour
                 var startX = halfLength;
                 var endX = startX + model.chasmModel.width;
 
-                GenerateChasmBlocks(new Vector2Int(startX, minHeigth), new Vector2Int(endX, yPos - 1), chunkId);
+                GenerateChasmBlocks(new Vector2Int(startX, minHeigth), new Vector2Int(endX, yPos - 1), chunkId, true);
             }
         }
     }
@@ -245,7 +248,7 @@ public class LevelGenerator : MonoBehaviour
         var maxX = _previousChunkWidthEnd + _maxWidth;
         var chunk = _chunks[chunkId];
 
-        foreach (var model in tranningHandler.GetEnemyModels())
+        foreach (var model in _tranningModelHandler.enemyModels)
         {
             var xPosition = Random.Range(minX, maxX);
             var position = new Vector2Int(xPosition, _maxHeigth);
@@ -270,7 +273,7 @@ public class LevelGenerator : MonoBehaviour
         var minX = _previousChunkWidthEnd;
         var maxX = _previousChunkWidthEnd + _maxWidth;
 
-        foreach (var model in tranningHandler.GetChasmModels())
+        foreach (var model in _tranningModelHandler.chasmModels)
         {
             var xPos = Random.Range(minX, maxX - model.width);
 
@@ -453,6 +456,11 @@ public class LevelGenerator : MonoBehaviour
     private int FindHighestBlock(int x, int width, int chunkId)
     {
         int highestYPos = 0;
+
+        if(x <= _previousChunkWidthEnd)
+        {
+            return 0;
+        }
 
         var chunk = _entities[chunkId];
 

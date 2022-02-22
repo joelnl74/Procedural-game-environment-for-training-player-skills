@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class TranningModelHandler : MonoBehaviour
@@ -19,17 +18,17 @@ public class TranningModelHandler : MonoBehaviour
         model.SetPlayerSkillConfiguration(_skillsCollection);
 
         // TODO Load in from external file.
-        model.SetTranningType(new List<TranningType> { TranningType.Walking });
+        model.SetTranningType((int)TranningType.Walking);
     }
 
-    public List<TranningType> GetTranningType()
-        => model.GetCurrentTrannigType();
+    public SkillsCollectionConfiguration Get()
+        => _skillsCollection;
 
-    public void GenerateModelsBasedOnSkill()
+    public void GenerateModelsBasedOnSkill(List<TranningType> modelsToGenerate)
     {
         Clear();
 
-        foreach(var tranningType in model.GetCurrentTrannigType())
+        foreach (var tranningType in modelsToGenerate)
         {
             switch (tranningType)
             {
@@ -133,7 +132,7 @@ public class TranningModelHandler : MonoBehaviour
             var containsEnemies = hasEnemies && Random.Range(0, 100) > minChance;
             var containsCoins = hasCoins && Random.Range(0, 100) > 50;
             var containsChasm = HasChasm && Random.Range(0, 100) > 33 || forceChasm;
-            var containsSpecialBlocks = GetTranningType().Max() > TranningType.Platform && containsChasm == false;
+            var containsSpecialBlocks = containsChasm == false;
 
             ChasmModel chasmModel = null;
 
