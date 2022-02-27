@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 public class ChunkInformation
 {
@@ -19,9 +20,11 @@ public class PlayerModel
     public int enemiesTotalDeaths = 0;
     public int totalFireBarDeaths = 0;
 
+    public int difficultyScore = 0;
+
     public ChunkInformation chunkInformation = new ChunkInformation();
 
-    private Dictionary<int, ChunkInformation> _chunkStats = new Dictionary<int, ChunkInformation>();
+    private Dictionary<int, ChunkInformation> _previousChunkStats = new Dictionary<int, ChunkInformation>();
 
     public PlayerModel()
     {
@@ -84,12 +87,73 @@ public class PlayerModel
     {
         chunkInformation.completedChunk = completed;
 
-        _chunkStats.Add(chunkId, chunkInformation);
+        _previousChunkStats.Add(chunkId, chunkInformation);
         chunkInformation = new ChunkInformation();
     }
 
-    public int ReturnDifficulty()
+    public int ReturnDifficultyOfMechanic(TranningType type)
     {
-        return 50;
+        switch (type)
+        {
+            case TranningType.None:
+                return 0;
+            case TranningType.Walking:
+                return 0;
+            case TranningType.Short_Jump:
+                return 1;
+            case TranningType.Medium_Jump:
+                return 2;
+            case TranningType.Enemies:
+                return 4;
+            case TranningType.Platform:
+                return 6;
+            case TranningType.Long_Jump:
+                return 8;
+            case TranningType.FireBar:
+                return 8;
+            default:
+                return 0;
+        }
+    }
+
+    public List<TranningType> GetTranningTypes(List<TranningType> previousTranningTypes)
+    {
+        var lastChunk = _previousChunkStats.Last();
+        var completed = lastChunk.Value.completedChunk;
+
+        // Increase difficulty;
+        if (completed)
+        {
+            return GetTranningTypesForIncreasedDifficulty(previousTranningTypes);
+        }
+        // Check if chunk before that also failed in traning.
+        else
+        {
+            if (_previousChunkStats.Count <= 1)
+            {
+                return previousTranningTypes;
+            }
+
+            var hasFailedPreviousChunk = _previousChunkStats[_previousChunkStats.Count - 2].completedChunk;
+
+            // If chunk before last one also failed and total death count of last chunk is smaller or equal to two generate same type of level.
+            if (hasFailedPreviousChunk == false && lastChunk.Value.deathCount <= 2)
+            {
+                return previousTranningTypes;
+            }
+
+            // If all conditions above lead to this code we decrease the difficulty for the player.
+            return GetTranningTypesForDecreasedDifficulty(previousTranningTypes);
+        }
+    }
+
+    private List<TranningType> GetTranningTypesForIncreasedDifficulty(List<TranningType> previousTranningTypes)
+    {
+        return new List<TranningType>();
+    }
+
+    private List<TranningType> GetTranningTypesForDecreasedDifficulty(List<TranningType> previousTranningTypes)
+    {
+        return new List<TranningType>();
     }
 }

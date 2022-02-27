@@ -149,14 +149,15 @@ public class PlayerModelHandler : MonoBehaviour
     /// <returns></returns>
     private List<TranningType> GenerateTranningType(TranningType previousTranningTypes)
     {
-        var types = new List<TranningType>();
         var tranningTypes = tranningModelHandler.Get();
 
         // Has completed basic list, now work on adaptive part;
         if(_index + 1 > tranningTypes.skillParameters.Count)
         {
-            return GenerateAdaptiveTranningType(previousTranningTypes);
+            return _playerModel.GetTranningTypes(_tranningTypes);
         }
+
+        var types = new List<TranningType>();
 
         _index = Mathf.Clamp(_index + 1, 0, tranningTypes.skillParameters.Count - 1);
 
@@ -169,12 +170,6 @@ public class PlayerModelHandler : MonoBehaviour
 
         return types;
     }
-
-    private List<TranningType> GenerateAdaptiveTranningType(TranningType previousTranningTypes)
-    {
-        return new List<TranningType>();
-    }
-
 
     private bool DidCompleteTranningType(TranningType type)
     {
