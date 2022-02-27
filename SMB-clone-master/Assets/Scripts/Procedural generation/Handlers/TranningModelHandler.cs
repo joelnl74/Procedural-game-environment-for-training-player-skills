@@ -8,6 +8,7 @@ public class TranningModelHandler : MonoBehaviour
     public List<ElevationModel> elevationModels = new List<ElevationModel>();
     public List<ChasmModel> chasmModels = new List<ChasmModel>();
     public List<PlatformModel> platformModels = new List<PlatformModel>();
+    public List<FireBarModel> fireBarModels = new List<FireBarModel>();
     public List<EnemyModel> enemyModels = new List<EnemyModel>();
 
     public TranningModel model;
@@ -52,6 +53,9 @@ public class TranningModelHandler : MonoBehaviour
                 case TranningType.Platform:
                     GeneratePlatformModels(2, 8, 2, 4, 0, false, true, true, false);
                     break;
+                case TranningType.FireBar:
+                    GenerateFireBarModel();
+                    break;
                 default:
                     GenerateShortJumpModels();
                     GenerateMediumJumpModels();
@@ -69,6 +73,7 @@ public class TranningModelHandler : MonoBehaviour
         chasmModels.Clear();
         platformModels.Clear();
         enemyModels.Clear();
+        fireBarModels.Clear();
     }
 
     private void GenerateShortJumpModels(bool hasEnemies = false, int minChance = 100)
@@ -108,6 +113,14 @@ public class TranningModelHandler : MonoBehaviour
                 {
                     width = Random.Range(3, 4),
                 });
+        }
+    }
+
+    private void GenerateFireBarModel()
+    {
+        for (int i = 0; i < model.FireBarSkill; i++)
+        {
+            fireBarModels.Add(new FireBarModel());
         }
     }
 

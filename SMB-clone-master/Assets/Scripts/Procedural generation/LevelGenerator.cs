@@ -10,11 +10,15 @@ public class LevelGenerator : MonoBehaviour
 
     [SerializeField] private GameObject _spawnPoints;
     [SerializeField] private GameObject _endOfChunk;
+
     [SerializeField] private GameObject _groundBlock;
     [SerializeField] private GameObject _goomba;
     [SerializeField] private GameObject _shell;
-    [SerializeField] private GameObject _coin;
+    [SerializeField] private GameObject _flyingShell;
+    [SerializeField] private GameObject _fireBar;
+    [SerializeField] private GameObject _piranhaPlant;
 
+    [SerializeField] private GameObject _coin;
     [SerializeField] private GameObject[] _specialBlocks;
 
     [SerializeField] private TranningModelHandler _tranningModelHandler;
@@ -52,7 +56,7 @@ public class LevelGenerator : MonoBehaviour
     {
         var currentId = id - 1;
 
-        if(currentId == 0)
+        if (currentId == 0)
         {
             GenerateChunk();
 
@@ -72,7 +76,7 @@ public class LevelGenerator : MonoBehaviour
 
         if (id % 10 == 0)
         {
-            _clouds.transform.position = new Vector2((id -1) * _maxWidth, _clouds.transform.position.y);
+            _clouds.transform.position = new Vector2((id - 1) * _maxWidth, _clouds.transform.position.y);
         }
     }
 
@@ -83,7 +87,7 @@ public class LevelGenerator : MonoBehaviour
 
     private void GenerateChunk()
     {
-        if(_lastGeneratedChunk % 2 == 0)
+        if (_lastGeneratedChunk % 2 == 0)
         {
             GenerateCooldownChunk();
 
@@ -114,6 +118,8 @@ public class LevelGenerator : MonoBehaviour
         HandleChasm(_lastGeneratedChunk);
         HandlePlatforms(_lastGeneratedChunk);
         HandleEnemies(_lastGeneratedChunk);
+        HandleFireBar(_lastGeneratedChunk);
+
 
         SetupEndOfChunk(chunk, maxX + 1, 0);
 
@@ -149,7 +155,7 @@ public class LevelGenerator : MonoBehaviour
     {
         var spawnPos = Instantiate(new GameObject(), _spawnPoints.transform);
         _mario.respawnPositionPCG = new Vector2(x + 1, y);
-       
+
         spawnPos.name = "Spawn position";
     }
 
@@ -182,7 +188,7 @@ public class LevelGenerator : MonoBehaviour
 
             var beginposition = new Vector2Int(xPos, 1);
             var endPosition = new Vector2Int(xPos + model.width, previousBlockHeigth + maxHeigth);
-            
+
             var chunk = _chunks[chunkId];
 
             GenerateBlocks(beginposition, endPosition, chunk);
@@ -190,10 +196,28 @@ public class LevelGenerator : MonoBehaviour
             if (model.hasEnemies)
             {
                 GenerateGoomba(chunk, endPosition);
-            }        
+            }
         }
     }
 
+    private void HandleFireBar(int chunkId)
+    {
+        var minX = _previousChunkWidthEnd;
+        var maxX = _previousChunkWidthEnd + _maxWidth;
+        var chunk = _chunks[chunkId];
+
+        foreach (var model in _tranningModelHandler.fireBarModels)
+        {
+            var emptySpot = FindEmptySpot(Random.Range(minX, maxX), chunkId);
+
+            GenerateFireBar(emptySpot.x, emptySpot.y, chunk);
+        }
+    }
+
+    private void HandlePirinahaPlantSpawn()
+    {
+
+    }
 
     private void HandlePlatforms(int chunkId)
     {
@@ -288,6 +312,18 @@ public class LevelGenerator : MonoBehaviour
         AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), component, EntityType.Coin);
     }
 
+    private void GenerateFireBar(int x, int y, GameObject chunk)
+    {
+        var go = Instantiate(_fireBar, chunk.transform);
+        var pos = new Vector2(x, y);
+        var component = go.AddComponent<EntityModel>();
+
+        go.name = "Fire Bar";
+        go.transform.position = pos;
+
+        AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), component, EntityType.FireBar);
+    }
+
     private void GenerateBlocks(Vector2Int begin, Vector2Int end, GameObject chunk, bool hasSpecial = false)
     {
         for(int x = begin.x; x < end.x; x++)
@@ -346,6 +382,14 @@ public class LevelGenerator : MonoBehaviour
         go.transform.position = new Vector2(pos.x, pos.y);
 
         AddEntity(_lastGeneratedChunk, pos, component, EntityType.Enemy);
+    }
+
+    private Vector2Int FindEmptySpot(int x, int chunkId)
+    {
+        var chunk = _chunks[chunkId];
+        var yPos = FindHighestBlock(x, 1, chunkId);
+
+        return new Vector2Int(x, yPos + 1);
     }
 
     private void GenerateChasmBlocks(Vector2Int begin, Vector2Int end, int chunkId, bool ignoreCheck = false)

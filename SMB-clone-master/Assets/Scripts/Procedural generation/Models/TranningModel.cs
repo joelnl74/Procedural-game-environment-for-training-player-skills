@@ -7,13 +7,10 @@ public enum TranningType
     Short_Jump = 2,
     Medium_Jump = 3,
     Enemies = 4,
-    Enemies_Jump = 5,
-    Long_Jump = 6,
-    Enemies_long_jump = 7,
-    Platform = 8,
-    Enemies_platform = 9,
-    Enemies_chasm_platform = 10,
-    BasicsTest = 11,
+    Long_Jump = 5,
+    Platform = 6,
+    FireBar = 7,
+    BasicsTest = 8,
 }
 
 public class TranningModel
@@ -26,6 +23,7 @@ public class TranningModel
     public int LongJumpSkill = 0;
     public int HighJumpSkill = 0;
     public int EnemySkill = 0;
+    public int FireBarSkill = 0;
 
     private SkillsCollectionConfiguration _skillsCollectionConfiguration;
 
@@ -68,6 +66,10 @@ public class TranningModel
                 case TranningType.Long_Jump:
                     LongJumpSkill += Random.Range(traningSkill.min, traningSkill.max);
                     _totalPlacedObjects += LongJumpSkill;
+                    break;
+                case TranningType.FireBar:
+                    FireBarSkill += Random.Range(traningSkill.min, traningSkill.max);
+                    _totalPlacedObjects += FireBarSkill;
                     break;
                 case TranningType.Platform:
                     HighJumpSkill += Random.Range(traningSkill.min, traningSkill.max);

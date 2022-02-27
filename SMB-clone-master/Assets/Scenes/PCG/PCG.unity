@@ -2821,6 +2821,11 @@ PrefabInstance:
       propertyPath: m_Size.x
       value: 100000
       objectReference: {fileID: 0}
+    - target: {fileID: 61871369003808298, guid: 2edb2b8e476654f0ea2807c7a8261a76,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 114562383339627640, guid: 2edb2b8e476654f0ea2807c7a8261a76,
         type: 3}
       propertyPath: target
@@ -2882,6 +2887,12 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
         type: 3}
+      propertyPath: _fireBar
+      value: 
+      objectReference: {fileID: 1277372729967270, guid: 6ab7adeca8ea944a18c2ad340290133f,
+        type: 3}
+    - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
+        type: 3}
       propertyPath: _maxWidth
       value: 32
       objectReference: {fileID: 0}
@@ -2890,6 +2901,12 @@ PrefabInstance:
       propertyPath: _maxHeigth
       value: 12
       objectReference: {fileID: 0}
+    - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
+        type: 3}
+      propertyPath: _flyingShell
+      value: 
+      objectReference: {fileID: 1634588294109348, guid: 8d77726d27e7f41d2969d5645704de86,
+        type: 3}
     - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
         type: 3}
       propertyPath: _groundBlock
@@ -2901,6 +2918,12 @@ PrefabInstance:
       propertyPath: _spawnPoints
       value: 
       objectReference: {fileID: 350379960}
+    - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
+        type: 3}
+      propertyPath: _piranhaPlant
+      value: 
+      objectReference: {fileID: 468248056534855261, guid: d6855ec32e567c24a9d811ca07374ab1,
+        type: 3}
     - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
         type: 3}
       propertyPath: _chunksToGenerate

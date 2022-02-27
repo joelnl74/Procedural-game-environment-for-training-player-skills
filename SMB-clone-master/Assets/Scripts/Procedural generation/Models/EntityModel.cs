@@ -2,10 +2,11 @@ using UnityEngine;
 
 public enum EntityType
 {
-    Unknown = 3,
+    Unknown = 0,
     Solid = 1,
     Enemy = 2,
-    Coin = 3
+    Coin = 3,
+    FireBar = 4,
 }
 
 public class EntityModel : MonoBehaviour
