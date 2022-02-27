@@ -34,25 +34,9 @@ public class PlayerModelHandler : MonoBehaviour
 
     private void Start()
     {
-        _PCGEventManager.onFallDeath += HandleDeathByFalling;
-        _PCGEventManager.onDeathByEnemy += HandleDeathByEnemy;
-        _PCGEventManager.onKilledEnemy += HandleKilledEnemy;
-
         tranningModelHandler.model.SetTranningType(_index);
         tranningModelHandler.GenerateModelsBasedOnSkill(_tranningTypes);
         _levelGenerator.SetupLevel(this);
-    }
-
-    private void OnDestroy()
-    {
-        if (_PCGEventManager == null)
-        {
-            return;
-        }
-
-        _PCGEventManager.onFallDeath -= HandleDeathByFalling;
-        _PCGEventManager.onDeathByEnemy -= HandleDeathByEnemy;
-        _PCGEventManager.onKilledEnemy -= HandleKilledEnemy;
     }
 
     private void Update()
@@ -79,20 +63,6 @@ public class PlayerModelHandler : MonoBehaviour
 
     public List<TranningType> GetTranningTypes()
         => _tranningTypes;
-
-    private void HandleDeathByFalling()
-    {
-        _chunkJumpDeaths++;
-    }
-
-    private void HandleDeathByEnemy(Enemytype obj)
-    {
-        _chunkEnemiesDeaths++;
-    }
-
-    private void HandleKilledEnemy(Enemytype obj)
-    {
-    }
 
     private void ClearChunkStats()
     {
@@ -143,7 +113,7 @@ public class PlayerModelHandler : MonoBehaviour
         {
             _failedIndex = _index; ;
             _tranningChunkSucces = playerSucces;
-            _playerModel.UpdateChunk(chunkId, _chunkJumpDeaths, _chunkEnemiesDeaths);
+            _playerModel.UpdateChunkInformation(chunkId, playerSucces);
         }
   
         if (_tranningChunkSucces && isCoolDownChunk == false)
@@ -182,6 +152,12 @@ public class PlayerModelHandler : MonoBehaviour
         var types = new List<TranningType>();
         var tranningTypes = tranningModelHandler.Get();
 
+        // Has completed basic list, now work on adaptive part;
+        if(_index + 1 > tranningTypes.skillParameters.Count)
+        {
+            return GenerateAdaptiveTranningType(previousTranningTypes);
+        }
+
         _index = Mathf.Clamp(_index + 1, 0, tranningTypes.skillParameters.Count - 1);
 
         var returningType = tranningTypes.skillParameters[_index];
@@ -193,6 +169,12 @@ public class PlayerModelHandler : MonoBehaviour
 
         return types;
     }
+
+    private List<TranningType> GenerateAdaptiveTranningType(TranningType previousTranningTypes)
+    {
+        return new List<TranningType>();
+    }
+
 
     private bool DidCompleteTranningType(TranningType type)
     {
@@ -211,7 +193,7 @@ public class PlayerModelHandler : MonoBehaviour
             case TranningType.Long_Jump:
                 return DidCompleteJumpTranning();
             case TranningType.Platform:
-                return DidCompletePlatformTranning(); // TODO add something that check you have reached a platform.
+                return DidCompletePlatformTranning();
             case TranningType.BasicsTest:
                 break;
         }
