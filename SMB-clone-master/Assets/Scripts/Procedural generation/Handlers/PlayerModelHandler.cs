@@ -152,7 +152,7 @@ public class PlayerModelHandler : MonoBehaviour
         var tranningTypes = tranningModelHandler.Get();
 
         // Has completed basic list, now work on adaptive part;
-        if(_index + 1 > tranningTypes.skillParameters.Count)
+        if(_index + 1 >= tranningTypes.skillParameters.Count)
         {
             return _playerModel.GetTranningTypes(_tranningTypes);
         }

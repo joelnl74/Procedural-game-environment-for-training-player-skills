@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class ChunkInformation
 {
@@ -20,7 +21,7 @@ public class PlayerModel
     public int enemiesTotalDeaths = 0;
     public int totalFireBarDeaths = 0;
 
-    public int difficultyScore = 0;
+    public int currentDifficultyScore = 50;
 
     public ChunkInformation chunkInformation = new ChunkInformation();
 
@@ -91,28 +92,28 @@ public class PlayerModel
         chunkInformation = new ChunkInformation();
     }
 
-    public int ReturnDifficultyOfMechanic(TranningType type)
+    public (int, TranningType) ReturnDifficultyOfMechanic(int score)
     {
+        // TODO frequencies take into account failures and take into account current difficulty level;
+        int[] arr = {0, 1, 2, 3, 4};
+        int[] freq = { 1, 4, 2, 2, 0};
+
+        var type = myRand(arr, freq);
+
         switch (type)
         {
-            case TranningType.None:
-                return 0;
-            case TranningType.Walking:
-                return 0;
-            case TranningType.Short_Jump:
-                return 1;
-            case TranningType.Medium_Jump:
-                return 2;
-            case TranningType.Enemies:
-                return 4;
-            case TranningType.Platform:
-                return 6;
-            case TranningType.Long_Jump:
-                return 8;
-            case TranningType.FireBar:
-                return 8;
+            case 0:
+                return (2, TranningType.Medium_Jump);
+            case 1:
+                return (4, TranningType.Enemies);
+            case 2:
+                return (6, TranningType.Long_Jump);
+            case 3:
+                return (8, TranningType.Platform);
+            case 4:
+                return (8, TranningType.FireBar);
             default:
-                return 0;
+                return (0, TranningType.None);
         }
     }
 
@@ -149,11 +150,55 @@ public class PlayerModel
 
     private List<TranningType> GetTranningTypesForIncreasedDifficulty(List<TranningType> previousTranningTypes)
     {
-        return new List<TranningType>();
+        var current = 0;
+        var completed = false;
+        List<TranningType> tranningTypes = new List<TranningType>();
+
+        while(completed == false)
+        {
+            var difference = currentDifficultyScore - current;
+
+            if (difference < 0)
+            {
+                completed = true;
+                return tranningTypes;
+            }
+
+            var type = ReturnDifficultyOfMechanic(difference);
+
+            tranningTypes.Add(type.Item2);
+            current += type.Item1;
+        }
+
+
+        return tranningTypes;
     }
 
     private List<TranningType> GetTranningTypesForDecreasedDifficulty(List<TranningType> previousTranningTypes)
     {
         return new List<TranningType>();
+    }
+
+    // The main function that returns a random number
+    // from arr[] according to distribution array 
+    // defined by freq[]. n is size of arrays. 
+    static int myRand(int[] arr, int[] freq)
+    {
+        int[] prefix = new int[freq.Sum()];
+        var index = 0;
+
+        for (int x = 0; x < freq.Length; x++)
+        {
+            var frequency = freq[x];
+
+            for(int y = 0; y < frequency; y++)
+            {
+                prefix[index + y] = arr[x];
+            }
+
+            index += frequency;
+        }
+
+        return prefix[(Random.Range(0, prefix.Length - 1))];
     }
 }

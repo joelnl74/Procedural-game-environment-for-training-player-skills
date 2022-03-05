@@ -200,6 +200,11 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
+    private Vector2 FindEmptySpot()
+    {
+        return new Vector2();
+    }
+
     private void HandleFireBar(int chunkId)
     {
         var minX = _previousChunkWidthEnd;

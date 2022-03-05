@@ -91,21 +91,3 @@ MonoBehaviour:
     - tranningType: 6
       min: 1
       max: 2
-  - name: All mechanics
-    maxObjects: 8
-    skillParameters:
-    - tranningType: 3
-      min: 0
-      max: 2
-    - tranningType: 4
-      min: 0
-      max: 2
-    - tranningType: 6
-      min: 0
-      max: 3
-    - tranningType: 5
-      min: 0
-      max: 3
-    - tranningType: 7
-      min: 0
-      max: 3
