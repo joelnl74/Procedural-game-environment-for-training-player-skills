@@ -308,13 +308,10 @@ public class LevelManager : MonoBehaviour {
 		isPoweringDown = false;
 	}
 
-	public void MarioRespawn(bool timeup = false) {
-		if(SceneManager.GetActiveScene().name == "PCG")
-        {
-			mario.UnFreeAndLive();
-			isPoweringDown = false;
-		}
-		else if (!isRespawning) {
+	public void MarioRespawn(bool timeup = false) 
+	{
+		if (!isRespawning) 
+		{
 			isRespawning = true;
 
 			marioSize = 0;
@@ -333,9 +330,15 @@ public class LevelManager : MonoBehaviour {
 			}
 			Debug.Log (this.name + " MarioRespawn: lives left=" + lives.ToString ());
 
-			if (lives > 0) {
+			if (SceneManager.GetActiveScene().name == "PCG")
+			{
+				RespawnWithDelay(deadSound.length);
+			}
+			else if (lives > 0) 
+			{
 				ReloadCurrentLevel (deadSound.length, timeup);
-			} else {
+			} else 
+			{
 				LoadGameOver (deadSound.length, timeup);
 				Debug.Log(this.name + " MarioRespawn: all dead");
 			}
@@ -385,6 +388,34 @@ public class LevelManager : MonoBehaviour {
 		StartCoroutine (LoadSceneDelayCo (sceneName, delay));
 	}
 
+	/****************** Scene loading */
+	void RespawnWithDelay(float delay)
+	{
+		StartCoroutine(RespawnCourotine(loadSceneDelay));
+	}
+
+	IEnumerator RespawnCourotine(float delay)
+	{
+		float waited = 0;
+		while (waited < delay)
+		{
+			if (!gamePaused)
+			{ // should not count delay while game paused
+				waited += Time.unscaledDeltaTime;
+			}
+			yield return null;
+		}
+		yield return new WaitWhile(() => gamePaused);
+
+		soundSource.Play();
+		musicSource.Play();
+		musicPaused = false;
+		isRespawning = false;
+		isPoweringDown = false;
+		Time.timeScale = 1;
+		mario.UnFreeAndLive();
+	}
+
 	IEnumerator LoadSceneDelayCo(string sceneName, float delay) {
 		Debug.Log (this.name + " LoadSceneDelayCo: starts loading " + sceneName);
 
@@ -427,7 +458,8 @@ public class LevelManager : MonoBehaviour {
 			+ t_GameStateManager.spawnPipeIdx.ToString ());
 	}
 
-	public void ReloadCurrentLevel(float delay = loadSceneDelay, bool timeup = false) {
+	public void ReloadCurrentLevel(float delay = loadSceneDelay, bool timeup = false) 
+	{
 		t_GameStateManager.SaveGameState ();
 		t_GameStateManager.ConfigReplayedLevel ();
 		t_GameStateManager.sceneToLoad = SceneManager.GetActiveScene ().name;

@@ -240,7 +240,7 @@ public class Mario : MonoBehaviour {
 		}
 
 		/******** Set params */
-		m_Rigidbody2D.velocity = new Vector2 (moveDirectionX*currentSpeedX, m_Rigidbody2D.velocity.y);
+		m_Rigidbody2D.velocity = new Vector2 (moveDirectionX * currentSpeedX, m_Rigidbody2D.velocity.y);
 
 		m_Animator.SetBool ("isJumping", isJumping);
 		m_Animator.SetBool ("isFallingNotFromJump", isFalling && !isJumping);
@@ -305,8 +305,18 @@ public class Mario : MonoBehaviour {
 		transform.position = respawnPositionPCG;
 		Camera.main.transform.position = new Vector3(respawnPositionPCG.x, cameraPos.y, cameraPos.z);
 
-		inputFreezed = false;
+		isDying = false;
+		deadUpTimer = .25f;
+
+		gameObject.layer = LayerMask.NameToLayer("Mario");
+		gameObject.GetComponent<SpriteRenderer>().sortingLayerName = "Player";
+
+		m_Animator.ResetTrigger("respawn");
+		m_Animator.Rebind();
+
 		m_Rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
+
+		UnfreezeUserInput();
 	}
 
 	public void EnablePhysics()
