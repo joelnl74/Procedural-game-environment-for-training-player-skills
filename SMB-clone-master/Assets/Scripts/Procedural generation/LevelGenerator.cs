@@ -11,12 +11,15 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private GameObject _spawnPoints;
     [SerializeField] private GameObject _endOfChunk;
 
+    // Over world sprites
     [SerializeField] private GameObject _groundBlock;
     [SerializeField] private GameObject _goomba;
     [SerializeField] private GameObject _shell;
     [SerializeField] private GameObject _flyingShell;
     [SerializeField] private GameObject _fireBar;
     [SerializeField] private GameObject _piranhaPlant;
+
+    // Underworld sprites
 
     [SerializeField] private GameObject _coin;
     [SerializeField] private GameObject[] _specialBlocks;
@@ -94,8 +97,9 @@ public class LevelGenerator : MonoBehaviour
             return;
         }
 
+        SetupNewSpawnPosition(_lastGeneratedChunk - 1);
+
         _maxWidth = _maxLearningWidth;
-        SetupNewSpawnPosition(_previousChunkWidthEnd - 5, _maxHeigth);
 
         var chunk = new GameObject();
         var maxX = _previousChunkWidthEnd + _maxWidth;
@@ -119,7 +123,6 @@ public class LevelGenerator : MonoBehaviour
         HandlePlatforms(_lastGeneratedChunk);
         HandleEnemies(_lastGeneratedChunk);
         HandleFireBar(_lastGeneratedChunk);
-
 
         SetupEndOfChunk(chunk, maxX + 1, 0);
 
@@ -151,10 +154,18 @@ public class LevelGenerator : MonoBehaviour
         _previousChunkWidthEnd += _maxCooldownWidth;
     }
 
-    private void SetupNewSpawnPosition(int x, int y)
+    private void SetupNewSpawnPosition(int chunkId)
     {
+        if(chunkId <= 0)
+        {
+            return;
+        }
+
+        var position = FindHighestEmptyPoint(chunkId);
         var spawnPos = Instantiate(new GameObject(), _spawnPoints.transform);
-        _mario.respawnPositionPCG = new Vector2(x + 1, y);
+
+        spawnPos.transform.position = new Vector3(position.x, position.y, 0);
+        _mario.respawnPositionPCG = position;
 
         spawnPos.name = "Spawn position";
     }
@@ -198,11 +209,6 @@ public class LevelGenerator : MonoBehaviour
                 GenerateGoomba(chunk, endPosition);
             }
         }
-    }
-
-    private Vector2 FindEmptySpot()
-    {
-        return new Vector2();
     }
 
     private void HandleFireBar(int chunkId)
@@ -388,6 +394,27 @@ public class LevelGenerator : MonoBehaviour
 
         AddEntity(_lastGeneratedChunk, pos, component, EntityType.Enemy);
     }
+
+    private Vector2Int FindHighestEmptyPoint(int chunkId)
+    {
+        var chunk = _entities[chunkId];
+        var yPos = -1;
+        var Xpos = -1;
+
+        foreach(var block in chunk)
+        {
+            if(block.Value.yPos > yPos)
+            {
+                var entity = block.Value;
+
+                yPos = entity.yPos;
+                Xpos = entity.xPos;
+            }
+        }
+
+        return new Vector2Int(Xpos, yPos + 1);
+    }
+
 
     private Vector2Int FindEmptySpot(int x, int chunkId)
     {
