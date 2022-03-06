@@ -35,7 +35,7 @@ public class PlayerModelHandler : MonoBehaviour
     private void Start()
     {
         tranningModelHandler.model.SetTranningType(_index);
-        tranningModelHandler.GenerateModelsBasedOnSkill(_tranningTypes);
+        tranningModelHandler.GenerateModelsBasedOnSkill();
         _levelGenerator.SetupLevel(this);
     }
 
@@ -60,6 +60,9 @@ public class PlayerModelHandler : MonoBehaviour
             }
         }
     }
+
+    public int GetDifficulty()
+        => _playerModel.currentDifficultyScore;
 
     public List<TranningType> GetTranningTypes()
         => _tranningTypes;
@@ -120,8 +123,6 @@ public class PlayerModelHandler : MonoBehaviour
         {
             _tranningTypes.Clear();
             _tranningTypes = GenerateTranningType(currentTranningType);
-
-            tranningModelHandler.model.SetTranningType(_index);
         }
         else if(_tranningChunkSucces == false && isCoolDownChunk == false)
         {
@@ -133,7 +134,7 @@ public class PlayerModelHandler : MonoBehaviour
             tranningModelHandler.model.SetTranningType((int)TranningType.Short_Jump);
         }
 
-        tranningModelHandler.GenerateModelsBasedOnSkill(_tranningTypes);
+        tranningModelHandler.GenerateModelsBasedOnSkill();
         _levelGenerator.ReachedEndOfChunk(chunkId, _tranningTypes);
 
         _PCGEventManager.onTranningGoalsGenerated?.Invoke(_tranningTypes);
@@ -154,7 +155,11 @@ public class PlayerModelHandler : MonoBehaviour
         // Has completed basic list, now work on adaptive part;
         if(_index + 1 >= tranningTypes.skillParameters.Count)
         {
-            return _playerModel.GetTranningTypes(_tranningTypes);
+            var adaptiveTypes = _playerModel.GetTranningTypes(_tranningTypes);
+
+            tranningModelHandler.model.SetAdaptiveTranningType(adaptiveTypes);
+
+            return adaptiveTypes;
         }
 
         var types = new List<TranningType>();
@@ -167,6 +172,8 @@ public class PlayerModelHandler : MonoBehaviour
         {
             types.Add(type.tranningType);
         }
+
+        tranningModelHandler.model.SetTranningType(_index);
 
         return types;
     }

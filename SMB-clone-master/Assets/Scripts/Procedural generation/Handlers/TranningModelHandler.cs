@@ -25,46 +25,16 @@ public class TranningModelHandler : MonoBehaviour
     public SkillsCollectionConfiguration Get()
         => _skillsCollection;
 
-    public void GenerateModelsBasedOnSkill(List<TranningType> modelsToGenerate)
+    public void GenerateModelsBasedOnSkill()
     {
         Clear();
 
-        foreach (var tranningType in modelsToGenerate)
-        {
-            switch (tranningType)
-            {
-                case TranningType.None:
-                    break;
-                case TranningType.Walking:
-                    break;
-                case TranningType.Short_Jump:
-                    GenerateShortJumpModels();
-                    break;
-                case TranningType.Enemies:
-                    GenerateEnemies(1, (Enemytype)Random.Range(0, 2));
-                    break;
-                case TranningType.Medium_Jump:
-                    GenerateShortJumpModels();
-                    GenerateMediumJumpModels();
-                    break;
-                case TranningType.Long_Jump:
-                    GenerateLongJumpModels();
-                    break;
-                case TranningType.Platform:
-                    GeneratePlatformModels(2, 8, 2, 4, 0, false, true, true, false);
-                    break;
-                case TranningType.FireBar:
-                    GenerateFireBarModel();
-                    break;
-                default:
-                    GenerateShortJumpModels();
-                    GenerateMediumJumpModels();
-                    GenerateLongJumpModels();
-                    GenerateEnemies(1, (Enemytype)Random.Range(0, 2));
-                    GeneratePlatformModels(2, 6, 2, 4, 0, true, true, true, false);
-                    break;
-            }
-        }
+        GenerateShortJumpModels();
+        GenerateMediumJumpModels();
+        GenerateEnemies(1, (Enemytype)Random.Range(0, 2));
+        GenerateLongJumpModels();
+        GeneratePlatformModels(2, 5, 2, 4, 0, false, true, true, false);
+        GenerateFireBarModel();
     }
 
     private void Clear()
@@ -84,7 +54,7 @@ public class TranningModelHandler : MonoBehaviour
                 new ElevationModel
                 {
                     heigth = Random.Range(1, 1),
-                    width = Random.Range(1, 8),
+                    width = Random.Range(1, 4),
                     hasEnemies = hasEnemies && Random.Range(0, 100) > minChance
                 });
         }
@@ -98,7 +68,7 @@ public class TranningModelHandler : MonoBehaviour
                 new ElevationModel
                 {
                     heigth = Random.Range(3, 4),
-                    width = Random.Range(2, 10),
+                    width = Random.Range(2, 6),
                     hasEnemies = hasEnemies && Random.Range(0, 100) > minChance
                 });
         }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum TranningType
@@ -16,6 +17,7 @@ public enum TranningType
 public class TranningModel
 {
     private int _totalPlacedObjects;
+    private const int _maxObjects = 8;
 
     public int WalkingSkill = 0;
     public int ShortJumpSkill = 0;
@@ -30,6 +32,52 @@ public class TranningModel
     public void SetPlayerSkillConfiguration(SkillsCollectionConfiguration skillsCollectionConfiguration)
     {
         _skillsCollectionConfiguration = skillsCollectionConfiguration;
+    }
+
+    public void SetAdaptiveTranningType(List<TranningType> items)
+    {
+        ResetSkills();
+
+        foreach (var traningSkill in items)
+        {
+            if(_totalPlacedObjects > _maxObjects)
+            {
+                break;
+            }
+
+            switch (traningSkill)
+            {
+                case TranningType.None:
+                    break;
+                case TranningType.Walking:
+                    break;
+                case TranningType.Short_Jump:
+                    ShortJumpSkill += 1;
+                    _totalPlacedObjects += ShortJumpSkill;
+                    break;
+                case TranningType.Medium_Jump:
+                    MediumJumpSkill += 1;
+                    break;
+                case TranningType.Enemies:
+                    EnemySkill += 1;
+                    break;
+                case TranningType.Long_Jump:
+                    LongJumpSkill += 1;
+                    break;
+                case TranningType.FireBar:
+                    FireBarSkill += 1;
+                    break;
+                case TranningType.Platform:
+                    HighJumpSkill += 1;
+                    break;
+                case TranningType.BasicsTest:
+                default:
+                    break;
+            }
+
+            _totalPlacedObjects += traningSkill != TranningType.Enemies ? 1 : 0;
+        }
+
     }
 
     public void SetTranningType(int index)

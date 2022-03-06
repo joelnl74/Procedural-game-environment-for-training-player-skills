@@ -12,7 +12,7 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private GameObject _endOfChunk;
 
     // Over world sprites
-    [SerializeField] private GameObject _groundBlock;
+    [SerializeField] private GameObject _groundBlockOver;
     [SerializeField] private GameObject _goomba;
     [SerializeField] private GameObject _shell;
     [SerializeField] private GameObject _flyingShell;
@@ -20,6 +20,7 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private GameObject _piranhaPlant;
 
     // Underworld sprites
+    [SerializeField] private GameObject _groundBlockUnder;
 
     [SerializeField] private GameObject _coin;
     [SerializeField] private GameObject[] _specialBlocks;
@@ -31,6 +32,8 @@ public class LevelGenerator : MonoBehaviour
 
     private Dictionary<int, Dictionary<int, EntityModel>> _entities;
     private Dictionary<int, GameObject> _chunks;
+
+    private GameObject _groundBlock;
 
     private int _previousChunkWidthEnd = 0;
     private int _lastGeneratedChunk = 1;
@@ -46,6 +49,8 @@ public class LevelGenerator : MonoBehaviour
         _chunks = new Dictionary<int, GameObject>();
         tranningHandler = handler;
 
+        SetupSprites(true);
+
         var spawnPos = Instantiate(new GameObject(), _spawnPoints.transform);
         spawnPos.name = "Spawn position";
 
@@ -53,6 +58,11 @@ public class LevelGenerator : MonoBehaviour
         {
             GenerateChunk();
         }
+    }
+
+    public void SetupSprites(bool overworld)
+    {
+        _groundBlock = overworld == true ? _groundBlockOver : _groundBlockUnder;
     }
 
     public void ReachedEndOfChunk(int id, List<TranningType> tranningTypes)
@@ -90,6 +100,8 @@ public class LevelGenerator : MonoBehaviour
 
     private void GenerateChunk()
     {
+        SetupSprites(tranningHandler.GetDifficulty() < 60);
+
         if (_lastGeneratedChunk % 2 == 0)
         {
             GenerateCooldownChunk();

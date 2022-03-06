@@ -94,9 +94,9 @@ public class PlayerModel
 
     public (int, TranningType) ReturnDifficultyOfMechanic(int score)
     {
-        // TODO frequencies take into account failures and take into account current difficulty level;
+        // TODO frequencies take into account failures and take into account current difficulty level.
         int[] arr = {0, 1, 2, 3, 4};
-        int[] freq = { 1, 4, 2, 2, 0};
+        int[] freq = { 1, 4, 1, 2, currentDifficultyScore > 59 ? 2 : 0};
 
         var type = myRand(arr, freq);
 
@@ -105,13 +105,13 @@ public class PlayerModel
             case 0:
                 return (2, TranningType.Medium_Jump);
             case 1:
-                return (4, TranningType.Enemies);
+                return (6, TranningType.Enemies);
             case 2:
-                return (6, TranningType.Long_Jump);
+                return (8, TranningType.Long_Jump);
             case 3:
                 return (8, TranningType.Platform);
             case 4:
-                return (8, TranningType.FireBar);
+                return (10, TranningType.FireBar);
             default:
                 return (0, TranningType.None);
         }
@@ -125,6 +125,8 @@ public class PlayerModel
         // Increase difficulty;
         if (completed)
         {
+            currentDifficultyScore += 5;
+
             return GetTranningTypesForIncreasedDifficulty(previousTranningTypes);
         }
         // Check if chunk before that also failed in traning.

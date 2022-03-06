@@ -2926,9 +2926,21 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
         type: 3}
+      propertyPath: _groundBlockOver
+      value: 
+      objectReference: {fileID: 6737341182380910768, guid: 388253eb9851eb84a952569bfefb798e,
+        type: 3}
+    - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
+        type: 3}
       propertyPath: _chunksToGenerate
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
+        type: 3}
+      propertyPath: _groundBlockUnder
+      value: 
+      objectReference: {fileID: 1459510623962730, guid: dfa1e9ce67c154caf9d1eb6f187c26c6,
+        type: 3}
     - target: {fileID: 4617614379025424904, guid: 79b1ce8897009bb4b9162a0f9f111fa0,
         type: 3}
       propertyPath: _maxCooldownWidth
