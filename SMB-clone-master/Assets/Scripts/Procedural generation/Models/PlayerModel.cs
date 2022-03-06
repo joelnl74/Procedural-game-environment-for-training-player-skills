@@ -145,8 +145,10 @@ public class PlayerModel
                 return previousTranningTypes;
             }
 
+            currentDifficultyScore -= 5;
+
             // If all conditions above lead to this code we decrease the difficulty for the player.
-            return GetTranningTypesForDecreasedDifficulty(previousTranningTypes);
+            return GetTranningTypesForIncreasedDifficulty(previousTranningTypes); //GetTranningTypesForDecreasedDifficulty(previousTranningTypes);
         }
     }
 
