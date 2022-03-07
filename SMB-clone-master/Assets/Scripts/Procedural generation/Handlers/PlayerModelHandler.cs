@@ -24,9 +24,9 @@ public class PlayerModelHandler : MonoBehaviour
 
     private void Awake()
     {
-        _playerModel = new PlayerModel();
         _index = (int)TranningType.Walking;
         _PCGEventManager = PCGEventManager.Instance;
+        _playerModel = new PlayerModel(_PCGEventManager);
         _tranningTypes = new List<TranningType> { TranningType.Walking};
 
         _PCGEventManager.onReachedEndOfChunk += CheckEndOfChunk;

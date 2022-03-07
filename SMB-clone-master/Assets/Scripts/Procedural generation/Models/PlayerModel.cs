@@ -28,13 +28,12 @@ public class PlayerModel
 
     private Dictionary<int, ChunkInformation> _previousChunkStats = new Dictionary<int, ChunkInformation>();
 
-    public PlayerModel()
+    public PlayerModel(PCGEventManager eventManager)
     {
-        var eventManager = PCGEventManager.Instance;
-
         eventManager.onDeathByEnemy += HandleDeathByEnemy;
         eventManager.onFallDeath += HandleDeathByFalling;
         eventManager.onKilledEnemy += HandleKilledEnemy;
+        eventManager.onDeathByFireBar += HandleDeathByFireBar;
     }
 
     private void HandleDeathByFalling()
@@ -49,7 +48,6 @@ public class PlayerModel
 
     private void HandleDeathByEnemy(Enemytype type)
     {
-        chunkInformation.deathCount++;
         chunkInformation.enemiesDeaths++;
 
         switch (type)
@@ -97,7 +95,7 @@ public class PlayerModel
     {
         // TODO frequencies take into account failures and take into account current difficulty level.
         int[] arr = {0, 1, 2, 3, 4};
-        int[] freq = { 1, _precentageEnemyDeaths, _precentageJumpDeaths, 1, currentDifficultyScore > 59 ? _precentageFireBarDeaths : 0};
+        int[] freq = { 5, _precentageEnemyDeaths, _precentageJumpDeaths, 15, currentDifficultyScore > 59 ? _precentageFireBarDeaths : 0};
 
         var type = myRand(arr, freq);
 

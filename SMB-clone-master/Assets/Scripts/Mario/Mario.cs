@@ -265,7 +265,7 @@ public class Mario : MonoBehaviour {
 			}
 		}
 
-		isFalling = m_Rigidbody2D.velocity.y < 0 && !isGrounded;
+		isFalling = m_Rigidbody2D.velocity.y < 0.1 && !isGrounded;
 		isGrounded = Physics2D.OverlapPoint (m_GroundCheck1.position, GroundLayers) || Physics2D.OverlapPoint (m_GroundCheck2.position, GroundLayers); 
 		isChangingDirection = currentSpeedX > 0 && faceDirectionX * moveDirectionX < 0;
 
@@ -416,24 +416,31 @@ public class Mario : MonoBehaviour {
 		Vector2 bottomSide = new Vector2 (0f, 1f);
 		bool bottomHit = normal == bottomSide;
 
-		if (other.gameObject.tag.Contains ("Enemy")) { // TODO: koopa shell static does no damage
+		if (other.gameObject.tag.Contains ("Enemy"))
+		{
 			Enemy enemy = other.gameObject.GetComponent<Enemy> ();
+			var enemyTransform = enemy.transform;
 
 			if (!t_LevelManager.isInvincible ()) {
 				if (!other.gameObject.GetComponent<KoopaShell> () || 
 					other.gameObject.GetComponent<KoopaShell> ().isRolling ||  // non-rolling shell should do no damage
-					!bottomHit || (bottomHit && !enemy.isBeingStomped)) 
+					!bottomHit || (bottomHit && !enemy.isBeingStomped) && enemyTransform.position.y >= transform.position.y) 
 				{
 					Debug.Log (this.name + " OnCollisionEnter2D: Damaged by " + other.gameObject.name
 						+ " from " + normal.ToString () + "; isFalling=" + isFalling); // TODO sometimes fire before stompbox reacts
+
+					PCGEventManager.Instance.onDeathByEnemy?.Invoke(Enemytype.Goomba);
 					t_LevelManager.MarioPowerDown ();
 				}
 
-			} else if (t_LevelManager.isInvincibleStarman) {
+			} else if (t_LevelManager.isInvincibleStarman) 
+			{
 				t_LevelManager.MarioStarmanTouchEnemy (enemy);
 			}
 		
-		} else if (other.gameObject.tag == "Goal" && isClimbingFlagPole && bottomHit) {
+		} 
+		else if (other.gameObject.tag == "Goal" && isClimbingFlagPole && bottomHit)
+		{
 			Debug.Log (this.name + ": Mario hits bottom of flag pole");
 			isClimbingFlagPole = false;
 			JumpOffPole ();
