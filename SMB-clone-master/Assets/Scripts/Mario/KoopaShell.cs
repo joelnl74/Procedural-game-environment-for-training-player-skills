@@ -32,29 +32,38 @@ public class KoopaShell : Enemy {
 	}
 
 	void Update() {
-		if (!isReviving && !isRolling) {
+		if (!isReviving && !isRolling) 
+		{
 			waitTillRevive -= Time.deltaTime;
 			if (waitTillRevive <= 0) {
 				m_Animator.SetTrigger ("revived");
 				isReviving = true;
 			}
-		} else if (isReviving && !isRolling) {
+		} 
+		else if (isReviving && !isRolling) 
+		{
 			waitTillRespawn -= Time.deltaTime;
-			if (waitTillRespawn <= 0) {
+
+			if (waitTillRespawn <= 0) 
+			{
 				Instantiate (Koopa, transform.position, Quaternion.identity);
 				Destroy (gameObject);
 			}
-		} else if (isRolling) {
+		} 
+		else if (isRolling) 
+		{
 			m_Rigidbody2D.velocity = new Vector2 (currentRollVelocityX, m_Rigidbody2D.velocity.y);
 		}
 
-		if (hasBeenStomped) {
+		if (hasBeenStomped) 
+		{
 			stompBonus = 0;
 		}
 	}
 
 	public override void TouchedByRollingShell() {
-		if (!isRolling) {
+		if (!isRolling) 
+		{
 			FlipAndDie ();
 		} else { // change direction if touched by another rolling shell
 			currentRollVelocityX = -currentRollVelocityX;
@@ -67,9 +76,11 @@ public class KoopaShell : Enemy {
 		isBeingStomped = true;
 		if (!isRolling) {
 			// start rolling left/right depending on Mario's direction
-			if (mario.transform.localScale.x == 1) {
+			if (mario.transform.localScale.x == 1) 
+			{
 				currentRollVelocityX = rollSpeedX;
-			} else if (mario.transform.localScale.x == -1) {
+			} else if (mario.transform.localScale.x == -1) 
+			{
 				currentRollVelocityX = -rollSpeedX;
 			}
 			isRolling = true;

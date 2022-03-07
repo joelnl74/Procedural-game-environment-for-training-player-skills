@@ -418,12 +418,12 @@ public class Mario : MonoBehaviour {
 
 		if (other.gameObject.tag.Contains ("Enemy"))
 		{
-			Enemy enemy = other.gameObject.GetComponent<Enemy> ();
+			var enemy = other.gameObject.GetComponent<Enemy> ();
+			var shell = other.gameObject.GetComponent<KoopaShell>();
 			var enemyTransform = enemy.transform;
 
 			if (!t_LevelManager.isInvincible ()) {
-				if (!other.gameObject.GetComponent<KoopaShell> () || 
-					other.gameObject.GetComponent<KoopaShell> ().isRolling ||  // non-rolling shell should do no damage
+				if (shell != null && shell.isRolling && enemyTransform.position.y >= transform.position.y  ||  // non-rolling shell should do no damage
 					!bottomHit || (bottomHit && !enemy.isBeingStomped) && enemyTransform.position.y >= transform.position.y) 
 				{
 					Debug.Log (this.name + " OnCollisionEnter2D: Damaged by " + other.gameObject.name
@@ -433,7 +433,8 @@ public class Mario : MonoBehaviour {
 					t_LevelManager.MarioPowerDown ();
 				}
 
-			} else if (t_LevelManager.isInvincibleStarman) 
+			} 
+			else if (t_LevelManager.isInvincibleStarman) 
 			{
 				t_LevelManager.MarioStarmanTouchEnemy (enemy);
 			}
