@@ -16,10 +16,11 @@ public class ChunkInformation
 
 public class PlayerModel
 {
-    public int deathTotalCount = 0;
-    public int jumpTotalDeaths = 0;
-    public int enemiesTotalDeaths = 0;
-    public int totalFireBarDeaths = 0;
+    private const int _maxPlatforms = 2;
+
+    private int _precentageEnemyDeaths;
+    private int _precentageJumpDeaths;
+    private int _precentageFireBarDeaths;
 
     public int currentDifficultyScore = 50;
 
@@ -38,23 +39,16 @@ public class PlayerModel
 
     private void HandleDeathByFalling()
     {
-        deathTotalCount++;
         chunkInformation.deathCount++;
-        jumpTotalDeaths++;
     }
 
     private void HandleDeathByFireBar()
     {
-        deathTotalCount++;
         chunkInformation.fireBarDeaths++;
-        totalFireBarDeaths++;
     }
 
     private void HandleDeathByEnemy(Enemytype type)
     {
-        deathTotalCount++;
-        enemiesTotalDeaths++;
-
         chunkInformation.deathCount++;
         chunkInformation.enemiesDeaths++;
 
@@ -86,9 +80,16 @@ public class PlayerModel
 
     public void UpdateChunkInformation(int chunkId, bool completed)
     {
+        if(_previousChunkStats.Count >= 5)
+        {
+            _previousChunkStats.Remove(_previousChunkStats.First().Key);
+        }
+
         chunkInformation.completedChunk = completed;
 
         _previousChunkStats.Add(chunkId, chunkInformation);
+        CalculatePrecentages();
+
         chunkInformation = new ChunkInformation();
     }
 
@@ -96,7 +97,7 @@ public class PlayerModel
     {
         // TODO frequencies take into account failures and take into account current difficulty level.
         int[] arr = {0, 1, 2, 3, 4};
-        int[] freq = { 1, 4, 1, 2, currentDifficultyScore > 59 ? 2 : 0};
+        int[] freq = { 1, _precentageEnemyDeaths, _precentageJumpDeaths, 1, currentDifficultyScore > 59 ? _precentageFireBarDeaths : 0};
 
         var type = myRand(arr, freq);
 
@@ -150,6 +151,23 @@ public class PlayerModel
             // If all conditions above lead to this code we decrease the difficulty for the player.
             return GetTranningTypesForIncreasedDifficulty(previousTranningTypes); //GetTranningTypesForDecreasedDifficulty(previousTranningTypes);
         }
+    }
+
+    private void CalculatePrecentages()
+    {
+        var totalEnemyDeaths =_previousChunkStats.Sum(x => x.Value.enemiesDeaths);
+        var totalJumpDeaths = _previousChunkStats.Sum(x => x.Value.jumpDeaths);
+        var totalFireBarDeaths = _previousChunkStats.Sum(x => x.Value.fireBarDeaths);
+
+        var total = totalEnemyDeaths + totalJumpDeaths + totalFireBarDeaths;
+
+        var precentageEnemyDeaths = totalEnemyDeaths != 0 ? totalEnemyDeaths / total * 100 : 50;
+        var precentageJumpDeaths = totalJumpDeaths != 0 ? totalJumpDeaths / total * 100 : 20;
+        var precentageFireBarDeaths = totalFireBarDeaths != 0 ? totalFireBarDeaths / total * 100 : 30;
+
+        _precentageEnemyDeaths = precentageEnemyDeaths;
+        _precentageJumpDeaths = precentageJumpDeaths;
+        _precentageFireBarDeaths = precentageFireBarDeaths;
     }
 
     private List<TranningType> GetTranningTypesForIncreasedDifficulty(List<TranningType> previousTranningTypes)

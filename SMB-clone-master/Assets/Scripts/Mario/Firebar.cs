@@ -48,8 +48,10 @@ public class Firebar : Enemy {
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
-		if (other.tag == "Player") {
+		if (other.tag == "Player") 
+		{
 			t_LevelManager.MarioPowerDown ();
+			PCGEventManager.Instance.onDeathByFireBar?.Invoke();
 		}
 	}
 
