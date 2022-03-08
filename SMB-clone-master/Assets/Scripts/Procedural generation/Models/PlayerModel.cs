@@ -38,7 +38,7 @@ public class PlayerModel
 
     private void HandleDeathByFalling()
     {
-        chunkInformation.deathCount++;
+        chunkInformation.jumpDeaths++;
     }
 
     private void HandleDeathByFireBar()
@@ -99,21 +99,15 @@ public class PlayerModel
 
         var type = myRand(arr, freq);
 
-        switch (type)
+        return type switch
         {
-            case 0:
-                return (2, TranningType.Medium_Jump);
-            case 1:
-                return (6, TranningType.Enemies);
-            case 2:
-                return (8, TranningType.Long_Jump);
-            case 3:
-                return (8, TranningType.Platform);
-            case 4:
-                return (10, TranningType.FireBar);
-            default:
-                return (0, TranningType.None);
-        }
+            0 => (2, TranningType.Medium_Jump),
+            1 => (6, TranningType.Enemies),
+            2 => (8, TranningType.Long_Jump),
+            3 => (8, TranningType.Platform),
+            4 => (10, TranningType.FireBar),
+            _ => (0, TranningType.None),
+        };
     }
 
     public List<TranningType> GetTranningTypes(List<TranningType> previousTranningTypes)

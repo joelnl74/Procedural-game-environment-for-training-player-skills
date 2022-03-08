@@ -141,6 +141,28 @@ public class LevelGenerator : MonoBehaviour
         _previousChunkWidthEnd += _maxWidth;
     }
 
+    private Vector2Int GetEmptySpotOnMap(int chunkId)
+    {
+        var randomXPos = Random.Range(_previousChunkWidthEnd + 1, _previousChunkWidthEnd + _maxWidth - 1);
+        var entities = _entities[chunkId];
+        var highestYpos = -1;
+
+        foreach(var entity in entities)
+        {
+            if (entity.Value.xPos == randomXPos)
+            {
+                var ypos = entity.Value.yPos;
+
+                if (ypos > highestYpos)
+                {
+                    highestYpos = ypos;
+                }
+            }
+        }
+
+        return new Vector2Int(randomXPos, highestYpos + 1);
+    }
+
     private void GenerateCooldownChunk()
     {
         var chunk = new GameObject();
@@ -231,7 +253,7 @@ public class LevelGenerator : MonoBehaviour
 
         foreach (var model in _tranningModelHandler.fireBarModels)
         {
-            var emptySpot = FindEmptySpot(Random.Range(minX, maxX), chunkId);
+            var emptySpot = GetEmptySpotOnMap(chunkId);
 
             GenerateFireBar(emptySpot.x, emptySpot.y, chunk);
         }
@@ -289,8 +311,8 @@ public class LevelGenerator : MonoBehaviour
 
         foreach (var model in _tranningModelHandler.enemyModels)
         {
-            var xPosition = Random.Range(minX, maxX);
-            var position = new Vector2Int(xPosition, _maxHeigth);
+            var emptySpot = GetEmptySpotOnMap(chunkId);
+            var position = new Vector2Int(emptySpot.x, emptySpot.y);
 
             switch(model.enemytype)
             {
