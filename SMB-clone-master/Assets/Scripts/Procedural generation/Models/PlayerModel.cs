@@ -21,6 +21,7 @@ public class PlayerModel
     private int _precentageEnemyDeaths;
     private int _precentageJumpDeaths;
     private int _precentageFireBarDeaths;
+    private int _precentageElevation;
 
     public int currentDifficultyScore = 50;
 
@@ -95,7 +96,7 @@ public class PlayerModel
     {
         // TODO frequencies take into account failures and take into account current difficulty level.
         int[] arr = {0, 1, 2, 3, 4};
-        int[] freq = { 5, _precentageEnemyDeaths, _precentageJumpDeaths, 15, currentDifficultyScore > 59 ? _precentageFireBarDeaths : 0};
+        int[] freq = { _precentageElevation, _precentageEnemyDeaths, _precentageJumpDeaths, 15, currentDifficultyScore > 59 ? _precentageFireBarDeaths : 0};
 
         var type = myRand(arr, freq);
 
@@ -153,13 +154,15 @@ public class PlayerModel
 
         var total = totalEnemyDeaths + totalJumpDeaths + totalFireBarDeaths;
 
-        var precentageEnemyDeaths = totalEnemyDeaths != 0 ? totalEnemyDeaths / total * 100 : 50;
-        var precentageJumpDeaths = totalJumpDeaths != 0 ? totalJumpDeaths / total * 100 : 20;
-        var precentageFireBarDeaths = totalFireBarDeaths != 0 ? totalFireBarDeaths / total * 100 : 30;
+        // TODO add clamps.
+        var precentageEnemyDeaths = totalEnemyDeaths != 0 ? Mathf.Clamp(totalEnemyDeaths / total * 100, 10, 50) : 50;
+        var precentageJumpDeaths = totalJumpDeaths != 0 ? Mathf.Clamp(totalJumpDeaths / total * 100, 10, 30) : 20;
+        var precentageFireBarDeaths = totalFireBarDeaths != 0 ? Mathf.Clamp(totalFireBarDeaths / total * 100, 10, 35) : 30;
 
         _precentageEnemyDeaths = precentageEnemyDeaths;
         _precentageJumpDeaths = precentageJumpDeaths;
         _precentageFireBarDeaths = precentageFireBarDeaths;
+        _precentageElevation = 10;
     }
 
     private List<TranningType> GetTranningTypesForIncreasedDifficulty(List<TranningType> previousTranningTypes)

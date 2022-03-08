@@ -141,7 +141,7 @@ public class LevelGenerator : MonoBehaviour
         _previousChunkWidthEnd += _maxWidth;
     }
 
-    private Vector2Int GetEmptySpotOnMap(int chunkId)
+    private Vector2Int GetEmptySpotOnMap(int chunkId, TranningType tranningType)
     {
         var randomXPos = Random.Range(_previousChunkWidthEnd + 1, _previousChunkWidthEnd + _maxWidth - 1);
         var entities = _entities[chunkId];
@@ -151,11 +151,25 @@ public class LevelGenerator : MonoBehaviour
         {
             if (entity.Value.xPos == randomXPos)
             {
-                var ypos = entity.Value.yPos;
+                var entityValue = entity.Value;
+                var ypos = entityValue.yPos;
 
                 if (ypos > highestYpos)
                 {
-                    highestYpos = ypos;
+                    if (tranningType == TranningType.FireBar)
+                    {
+                        var id = GetId(entityValue.xPos - 1, entityValue.yPos, chunkId);
+                        var PreviousEntity = entities[id];
+
+                        if (PreviousEntity != null)
+                        {
+                            highestYpos = ypos;
+                        }
+                    }
+                    else
+                    {
+                        highestYpos = ypos;
+                    }
                 }
             }
         }
@@ -247,13 +261,11 @@ public class LevelGenerator : MonoBehaviour
 
     private void HandleFireBar(int chunkId)
     {
-        var minX = _previousChunkWidthEnd;
-        var maxX = _previousChunkWidthEnd + _maxWidth;
         var chunk = _chunks[chunkId];
 
         foreach (var model in _tranningModelHandler.fireBarModels)
         {
-            var emptySpot = GetEmptySpotOnMap(chunkId);
+            var emptySpot = GetEmptySpotOnMap(chunkId, TranningType.FireBar);
 
             GenerateFireBar(emptySpot.x, emptySpot.y, chunk);
         }
@@ -311,7 +323,7 @@ public class LevelGenerator : MonoBehaviour
 
         foreach (var model in _tranningModelHandler.enemyModels)
         {
-            var emptySpot = GetEmptySpotOnMap(chunkId);
+            var emptySpot = GetEmptySpotOnMap(chunkId, TranningType.Enemies);
             var position = new Vector2Int(emptySpot.x, emptySpot.y);
 
             switch(model.enemytype)

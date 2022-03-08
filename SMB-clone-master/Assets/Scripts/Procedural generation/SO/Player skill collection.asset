@@ -58,7 +58,7 @@ MonoBehaviour:
   - name: Killeable jumps with enemies
     maxObjects: 12
     skillParameters:
-    - tranningType: 6
+    - tranningType: 5
       min: 1
       max: 2
     - tranningType: 4
