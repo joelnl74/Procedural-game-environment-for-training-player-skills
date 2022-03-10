@@ -159,9 +159,9 @@ public class LevelGenerator : MonoBehaviour
                     if (tranningType == TranningType.FireBar)
                     {
                         var id = GetId(entityValue.xPos - 1, entityValue.yPos, chunkId);
-                        var PreviousEntity = entities[id];
+                        var PreviousEntity = entities.ContainsKey(id);
 
-                        if (PreviousEntity != null)
+                        if (PreviousEntity)
                         {
                             highestYpos = ypos;
                         }
