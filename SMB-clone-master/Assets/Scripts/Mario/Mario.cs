@@ -134,7 +134,7 @@ public class Mario : MonoBehaviour {
 			if (isChangingDirection) {
 				if (currentSpeedX > skidTurnaroundSpeedX) {
 					moveDirectionX = -faceDirectionX;
-					m_Animator.SetBool ("isSkidding", true);
+					m_Animator.SetBool ("isSkidding", isJumping ? false : true);
 					currentSpeedX = DecreaseWithinBound (currentSpeedX, skidDecelerationX, 0);
 				} else {
 					moveDirectionX = faceDirectionX;
@@ -213,7 +213,7 @@ public class Mario : MonoBehaviour {
 		}
 
 		/******** Horizontal orientation */
-		if (faceDirectionX > 0) {
+		if (faceDirectionX > 0 && isJumping) {
 			transform.localScale = new Vector2 (1, 1); // facing right
 		} else if (faceDirectionX < 0) {
 			transform.localScale = new Vector2 (-1, 1);
@@ -267,7 +267,7 @@ public class Mario : MonoBehaviour {
 
 		isFalling = m_Rigidbody2D.velocity.y < 0.1 && !isGrounded;
 		isGrounded = Physics2D.OverlapPoint (m_GroundCheck1.position, GroundLayers) || Physics2D.OverlapPoint (m_GroundCheck2.position, GroundLayers); 
-		isChangingDirection = currentSpeedX > 0 && faceDirectionX * moveDirectionX < 0;
+		isChangingDirection = currentSpeedX > 0 && faceDirectionX * moveDirectionX < 0 && isJumping == false && isFalling == false && isGrounded == true;
 
 		if (inputFreezed && !t_LevelManager.gamePaused) {
 			if (isDying) {

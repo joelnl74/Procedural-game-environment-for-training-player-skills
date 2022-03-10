@@ -250,12 +250,7 @@ public class LevelGenerator : MonoBehaviour
 
             var chunk = _chunks[chunkId];
 
-            GenerateBlocks(beginposition, endPosition, chunk);
-
-            if (model.hasEnemies)
-            {
-                GenerateGoomba(chunk, endPosition);
-            }
+            GenerateBlocks(beginposition, endPosition, chunk, false, Random.Range(1, 3) / 2 == 0);
         }
     }
 
@@ -381,9 +376,11 @@ public class LevelGenerator : MonoBehaviour
         AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), component, EntityType.FireBar);
     }
 
-    private void GenerateBlocks(Vector2Int begin, Vector2Int end, GameObject chunk, bool hasSpecial = false)
+    private void GenerateBlocks(Vector2Int begin, Vector2Int end, GameObject chunk, bool hasSpecial = false, bool stayAtHeigth = false)
     {
-        for(int x = begin.x; x < end.x; x++)
+        var endPointX = stayAtHeigth == false ? end.x : _previousChunkWidthEnd + _maxWidth;
+
+        for(int x = begin.x; x < endPointX; x++)
         {
             for(int y = begin.y; y < end.y; y++)
             {
