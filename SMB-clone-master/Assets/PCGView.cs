@@ -11,6 +11,11 @@ public class PCGView : MonoBehaviour
 
     [SerializeField] private CanvasGroup _feedbackCanvas;
 
+    private void Awake()
+    {
+        _feedbackCanvas.alpha = 0;
+    }
+
     public void SetGoals(List<TranningType> tranningTypes)
     {
         var addedTypes = new List<TranningType>();
@@ -34,6 +39,7 @@ public class PCGView : MonoBehaviour
     {
         var sequence = DOTween.Sequence();
 
+        sequence.SetLink(_feedbackCanvas.gameObject);
         sequence.Append(_feedbackCanvas.DOFade(1, 0.1f));
         sequence.AppendCallback(() =>
         {

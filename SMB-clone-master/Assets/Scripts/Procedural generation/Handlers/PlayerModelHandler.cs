@@ -95,7 +95,7 @@ public class PlayerModelHandler : MonoBehaviour
         var playerSucces = false;
         var currentTranningType = (TranningType)_index;
 
-        if (currentTranningType != TranningType.BasicsTest && isCoolDownChunk == false)
+        if (isCoolDownChunk == false)
         {
             foreach (var tranningType in chunkTranningTypes)
             {
@@ -117,21 +117,9 @@ public class PlayerModelHandler : MonoBehaviour
             _failedIndex = _index; ;
             _tranningChunkSucces = playerSucces;
             _playerModel.UpdateChunkInformation(chunkId, playerSucces);
-        }
-  
-        if (_tranningChunkSucces && isCoolDownChunk == false)
-        {
-            _tranningTypes.Clear();
-            _tranningTypes = GenerateTranningType(currentTranningType);
 
-            _PCGEventManager.onCompleted?.Invoke("Well done!");
-        }
-        else if(_tranningChunkSucces == false && isCoolDownChunk == false)
-        {
             _tranningTypes.Clear();
-            tranningModelHandler.model.SetTranningType(_index);
-
-            _PCGEventManager.onCompleted?.Invoke("Well done!");
+            _tranningTypes = GenerateTranningType(currentTranningType, playerSucces);
         }
         else
         {
@@ -141,6 +129,7 @@ public class PlayerModelHandler : MonoBehaviour
         tranningModelHandler.GenerateModelsBasedOnSkill();
         _levelGenerator.ReachedEndOfChunk(chunkId, _tranningTypes);
 
+        _PCGEventManager.onShowMessage?.Invoke(playerSucces ? "Well done increasing difficulty!" : "Try again");
         _PCGEventManager.onTranningGoalsGenerated?.Invoke(_tranningTypes);
 
         SetTimer(30);
@@ -152,7 +141,7 @@ public class PlayerModelHandler : MonoBehaviour
     /// </summary>
     /// <param name="currentTypes">Previous chunk tranning types.</param>
     /// <returns></returns>
-    private List<TranningType> GenerateTranningType(TranningType previousTranningTypes)
+    private List<TranningType> GenerateTranningType(TranningType previousTranningTypes, bool succes)
     {
         var tranningTypes = tranningModelHandler.Get();
 
@@ -168,7 +157,7 @@ public class PlayerModelHandler : MonoBehaviour
 
         var types = new List<TranningType>();
 
-        _index = Mathf.Clamp(_index + 1, 0, tranningTypes.skillParameters.Count - 1);
+        _index = Mathf.Clamp(succes ? _index + 1 : _index - 1, 0, tranningTypes.skillParameters.Count - 1);
 
         var returningType = tranningTypes.skillParameters[_index];
 
@@ -176,7 +165,7 @@ public class PlayerModelHandler : MonoBehaviour
         {
             types.Add(type.tranningType);
         }
-
+        
         tranningModelHandler.model.SetTranningType(_index);
 
         return types;
@@ -219,7 +208,7 @@ public class PlayerModelHandler : MonoBehaviour
 
     private bool DidCompleteJumpTranning()
     {
-        if (_chunkJumpDeaths > 2 || _outOfTime)
+        if (_playerModel.chunkInformation.jumpDeaths > 2 || _outOfTime)
         {
             return false;
         }
@@ -229,7 +218,7 @@ public class PlayerModelHandler : MonoBehaviour
 
     private bool DidCompletePlatformTranning()
     {
-        if (_chunkJumpDeaths > 2 || _outOfTime)
+        if (_playerModel.chunkInformation.jumpDeaths > 2 || _outOfTime)
         {
             return false;
         }
@@ -239,7 +228,7 @@ public class PlayerModelHandler : MonoBehaviour
 
     private bool DidCompleteEnemies()
     {
-        if (_chunkEnemiesDeaths > 2 && _outOfTime == false)
+        if (_playerModel.chunkInformation.enemiesDeaths > 2 || _outOfTime)
         {
             return false;
         }
