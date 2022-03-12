@@ -12,6 +12,9 @@ public class ViewController : MonoBehaviour
     {
         _PCGEventManager = PCGEventManager.Instance;
         _PCGEventManager.onTranningGoalsGenerated += OnReceivedTranningTypes;
+        _PCGEventManager.onCompleted += OnCompletedChunk;
+        _PCGEventManager.onFailed += OnFailedChunk;
+
     }
 
     private void OnDestroy()
@@ -26,4 +29,14 @@ public class ViewController : MonoBehaviour
     {
         _view.SetGoals(tranningTypes);
     }
+    private void OnCompletedChunk(string text)
+    {
+        _view.ShowTip(text);
+    }
+
+    private void OnFailedChunk(string text)
+    {
+        _view.ShowTip(text);
+    }
+
 }

@@ -611,9 +611,6 @@ public class LevelGenerator : MonoBehaviour
     private int GetId(int x, int y, int chunkId)
         => x * y * chunkId;
 
-    private bool ContainsId(int id, int chunkId)
-        => _entities[chunkId].ContainsKey(id);
-
     private void CleanEntitiesInChunk(int chunkId)
         => _entities.Remove(chunkId);
 }

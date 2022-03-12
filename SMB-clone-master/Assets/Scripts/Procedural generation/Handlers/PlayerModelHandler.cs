@@ -123,15 +123,19 @@ public class PlayerModelHandler : MonoBehaviour
         {
             _tranningTypes.Clear();
             _tranningTypes = GenerateTranningType(currentTranningType);
+
+            _PCGEventManager.onCompleted?.Invoke("Well done!");
         }
         else if(_tranningChunkSucces == false && isCoolDownChunk == false)
         {
             _tranningTypes.Clear();
             tranningModelHandler.model.SetTranningType(_index);
+
+            _PCGEventManager.onCompleted?.Invoke("Well done!");
         }
         else
         {
-            tranningModelHandler.model.SetTranningType((int)TranningType.Short_Jump);
+            tranningModelHandler.model.SetTranningType((int)TranningType.Medium_Jump);
         }
 
         tranningModelHandler.GenerateModelsBasedOnSkill();
