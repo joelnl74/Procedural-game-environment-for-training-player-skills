@@ -18,7 +18,10 @@ MonoBehaviour:
     skillParameters: []
   - name: Walking
     maxObjects: 0
-    skillParameters: []
+    skillParameters:
+    - tranningType: 1
+      min: 0
+      max: 0
   - name: Jumping
     maxObjects: 5
     skillParameters:

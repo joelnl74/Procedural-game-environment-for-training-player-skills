@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class PlayerModelHandler : MonoBehaviour
 {
@@ -17,24 +18,29 @@ public class PlayerModelHandler : MonoBehaviour
     private float _timer;
     private bool _outOfTime = false;
     private bool _buttonPressed;
-    private bool _tranningChunkSucces;
-
-    private int _chunkJumpDeaths = 0;
-    private int _chunkEnemiesDeaths = 0;
 
     private void Awake()
     {
         _index = (int)TranningType.Walking;
         _PCGEventManager = PCGEventManager.Instance;
         _playerModel = new PlayerModel(_PCGEventManager);
-        _tranningTypes = new List<TranningType> { TranningType.Walking};
+
+        if(_playerModel.HasSafe())
+        {
+            var lastCunk = _playerModel._previousChunkStats.Last();
+            var tranningTypes = tranningModelHandler.Get();
+
+            _index = Mathf.Clamp(lastCunk.Value.index, 1, tranningTypes.skillParameters.Count - 1);
+        }
+
+        _tranningTypes = new List<TranningType> { TranningType.Walking };
 
         _PCGEventManager.onReachedEndOfChunk += CheckEndOfChunk;
     }
 
     private void Start()
     {
-        tranningModelHandler.model.SetTranningType(_index);
+        tranningModelHandler.model.SetTranningType(1);
         tranningModelHandler.GenerateModelsBasedOnSkill();
         _levelGenerator.SetupLevel(this);
     }
@@ -66,12 +72,6 @@ public class PlayerModelHandler : MonoBehaviour
 
     public List<TranningType> GetTranningTypes()
         => _tranningTypes;
-
-    private void ClearChunkStats()
-    {
-        _chunkJumpDeaths = 0;
-        _chunkEnemiesDeaths = 0;
-    }
 
     private void EndOfTimerReached()
     {
@@ -115,8 +115,7 @@ public class PlayerModelHandler : MonoBehaviour
         if (isCoolDownChunk == false)
         {
             _failedIndex = _index; ;
-            _tranningChunkSucces = playerSucces;
-            _playerModel.UpdateChunkInformation(chunkId, playerSucces);
+            _playerModel.UpdateChunkInformation(chunkId, _index, playerSucces);
 
             _tranningTypes.Clear();
             _tranningTypes = GenerateTranningType(currentTranningType, playerSucces);
@@ -133,7 +132,6 @@ public class PlayerModelHandler : MonoBehaviour
         _PCGEventManager.onTranningGoalsGenerated?.Invoke(_tranningTypes);
 
         SetTimer(30);
-        ClearChunkStats();
     }
 
     /// <summary>

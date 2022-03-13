@@ -11,12 +11,19 @@ public class ChunkInformation
     public int shellDeaths = 0;
     public int flyingShellDeaths = 0;
     public int fireBarDeaths = 0;
+
+    public int difficultyScore = 0;
+
+    public int index = 0;
+
     public bool completedChunk = false;
 }
 
 public class PlayerModel
 {
     private const int _maxPlatforms = 2;
+
+    private SerializeData serializeData;
 
     private int _precentageEnemyDeaths;
     private int _precentageJumpDeaths;
@@ -27,7 +34,7 @@ public class PlayerModel
 
     public ChunkInformation chunkInformation = new ChunkInformation();
 
-    private Dictionary<int, ChunkInformation> _previousChunkStats = new Dictionary<int, ChunkInformation>();
+    public Dictionary<int, ChunkInformation> _previousChunkStats = new Dictionary<int, ChunkInformation>();
 
     public PlayerModel(PCGEventManager eventManager)
     {
@@ -35,6 +42,18 @@ public class PlayerModel
         eventManager.onFallDeath += HandleDeathByFalling;
         eventManager.onKilledEnemy += HandleKilledEnemy;
         eventManager.onDeathByFireBar += HandleDeathByFireBar;
+
+        serializeData = new SerializeData();
+
+        if (serializeData.CheckSafe())
+        {
+            _previousChunkStats = serializeData.LoadData();
+        }
+    }
+
+    public bool HasSafe()
+    {
+        return _previousChunkStats.Count > 0;
     }
 
     private void HandleDeathByFalling()
@@ -77,17 +96,25 @@ public class PlayerModel
         }
     }
 
-    public void UpdateChunkInformation(int chunkId, bool completed)
+    public void UpdateChunkInformation(int chunkId, int index, bool completed)
     {
-        if(_previousChunkStats.Count >= 5)
+        if (_previousChunkStats.ContainsKey(chunkId))
+        {
+            return;
+        }
+        if (_previousChunkStats.Count >= 5)
         {
             _previousChunkStats.Remove(_previousChunkStats.First().Key);
         }
 
         chunkInformation.completedChunk = completed;
+        chunkInformation.difficultyScore = currentDifficultyScore;
+        chunkInformation.index = index;
 
         _previousChunkStats.Add(chunkId, chunkInformation);
         CalculatePrecentages();
+
+        serializeData.SaveData(_previousChunkStats);
 
         chunkInformation = new ChunkInformation();
     }
@@ -121,8 +148,9 @@ public class PlayerModel
         {
             currentDifficultyScore += 5;
 
-            return GetTranningTypesForIncreasedDifficulty(previousTranningTypes);
+            return GetTranningTypesForIncreasedDifficulty();
         }
+
         // Check if chunk before that also failed in traning.
         else
         {
@@ -142,7 +170,7 @@ public class PlayerModel
             currentDifficultyScore -= 5;
 
             // If all conditions above lead to this code we decrease the difficulty for the player.
-            return GetTranningTypesForIncreasedDifficulty(previousTranningTypes); //GetTranningTypesForDecreasedDifficulty(previousTranningTypes);
+            return GetTranningTypesForIncreasedDifficulty(); 
         }
     }
 
@@ -165,7 +193,7 @@ public class PlayerModel
         _precentageElevation = 10;
     }
 
-    private List<TranningType> GetTranningTypesForIncreasedDifficulty(List<TranningType> previousTranningTypes)
+    private List<TranningType> GetTranningTypesForIncreasedDifficulty()
     {
         var current = 0;
         var completed = false;
