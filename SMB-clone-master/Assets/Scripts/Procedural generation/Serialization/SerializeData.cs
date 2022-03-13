@@ -15,11 +15,9 @@ public class SerializeData
         return File.Exists(destination);
     }
 
-    public void DeleteSate()
+    public void DeleteSave()
     {
         var destination = Application.persistentDataPath + "/save.dat";
-
-        FileStream file;
 
         if (File.Exists(destination))
         {
