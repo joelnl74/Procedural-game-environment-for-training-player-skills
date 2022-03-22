@@ -266,11 +266,6 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    private void HandlePirinahaPlantSpawn()
-    {
-
-    }
-
     private void HandlePlatforms(int chunkId)
     {
         var minX = _previousChunkWidthEnd;
@@ -328,6 +323,9 @@ public class LevelGenerator : MonoBehaviour
                     break;
                 case Enemytype.Goomba:
                     GenerateGoomba(chunk, position);
+                    break;
+                case Enemytype.FlyingShell:
+                    GenerateFlyingShell(chunk, position);
                     break;
                 default:
                     GenerateGoomba(chunk, position);
@@ -421,6 +419,18 @@ public class LevelGenerator : MonoBehaviour
         var component = go.AddComponent<EntityModel>();
 
         go.name = "goomba";
+        go.transform.position = new Vector2(pos.x, pos.y);
+
+        AddEntity(_lastGeneratedChunk, pos, component, EntityType.Enemy);
+    }
+
+    private void GenerateFlyingShell(GameObject chunk, Vector2Int end)
+    {
+        var go = Instantiate(_flyingShell, chunk.transform);
+        var pos = new Vector2Int(end.x, end.y + 1);
+        var component = go.AddComponent<EntityModel>();
+
+        go.name = "Flying shell";
         go.transform.position = new Vector2(pos.x, pos.y);
 
         AddEntity(_lastGeneratedChunk, pos, component, EntityType.Enemy);

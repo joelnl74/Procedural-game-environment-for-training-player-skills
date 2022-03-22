@@ -128,10 +128,28 @@ public class PlayerModelHandler : MonoBehaviour
         tranningModelHandler.GenerateModelsBasedOnSkill();
         _levelGenerator.ReachedEndOfChunk(chunkId, _tranningTypes);
 
-        _PCGEventManager.onShowMessage?.Invoke(playerSucces ? "Well done increasing difficulty!" : "Try again");
+        _PCGEventManager.onShowMessage?.Invoke(playerSucces ? "Well done increasing difficulty!" : GetTipText(_playerModel.lastTranningTypeFailure));
         _PCGEventManager.onTranningGoalsGenerated?.Invoke(_tranningTypes);
 
         SetTimer(30);
+    }
+
+    private string GetTipText(TranningType tranningType)
+    {
+        switch (tranningType)
+        {
+            case TranningType.Enemies:
+
+                return "Try jumping on top of the enemies!";
+            case TranningType.Long_Jump:
+                return "Try jumping timing your jumps a bit better!";
+            case TranningType.Platform:
+                return "Try jumping timing your jumps a bit better!";
+            case TranningType.FireBar:
+                return "Try jumping timing your jumps based on the position of the fire bar!";
+        }
+
+        return "Please try again!";
     }
 
     /// <summary>

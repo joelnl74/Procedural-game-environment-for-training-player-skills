@@ -77,7 +77,6 @@ public class TranningModel
 
             _totalPlacedObjects += traningSkill != TranningType.Enemies ? 1 : 0;
         }
-
     }
 
     public void SetTranningType(int index)

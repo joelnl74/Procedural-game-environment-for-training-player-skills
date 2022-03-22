@@ -35,6 +35,7 @@ public class PlayerModel
     public ChunkInformation chunkInformation = new ChunkInformation();
 
     public Dictionary<int, ChunkInformation> _previousChunkStats = new Dictionary<int, ChunkInformation>();
+    public TranningType lastTranningTypeFailure;
 
     public PlayerModel(PCGEventManager eventManager)
     {
@@ -59,11 +60,13 @@ public class PlayerModel
     private void HandleDeathByFalling()
     {
         chunkInformation.jumpDeaths++;
+        lastTranningTypeFailure = TranningType.Long_Jump;
     }
 
     private void HandleDeathByFireBar()
     {
         chunkInformation.fireBarDeaths++;
+        lastTranningTypeFailure = TranningType.FireBar;
     }
 
     private void HandleDeathByEnemy(Enemytype type)
@@ -82,6 +85,8 @@ public class PlayerModel
                 chunkInformation.flyingShellDeaths++;
                 break;
         }
+
+        lastTranningTypeFailure = TranningType.Enemies;
     }
     private void HandleKilledEnemy(Enemytype type)
     {

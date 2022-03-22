@@ -31,7 +31,7 @@ public class TranningModelHandler : MonoBehaviour
 
         GenerateShortJumpModels();
         GenerateMediumJumpModels();
-        GenerateEnemies(1, (Enemytype)Random.Range(0, 2));
+        GenerateEnemies(1);
         GenerateLongJumpModels();
         GeneratePlatformModels(2, 5, 2, 4, 0, false, true, true, false);
         GenerateFireBarModel();
@@ -94,14 +94,14 @@ public class TranningModelHandler : MonoBehaviour
         }
     }
 
-    private void GenerateEnemies(int amount = 1, Enemytype type = Enemytype.Goomba)
+    private void GenerateEnemies(int amount = 1)
     {
         for(int i = 0; i < model.EnemySkill; i++)
         {
             enemyModels.Add(new EnemyModel
             {
                 amount = amount,
-                enemytype = type
+                enemytype = (Enemytype)Random.Range(0, 3)
             });
         }
     }
