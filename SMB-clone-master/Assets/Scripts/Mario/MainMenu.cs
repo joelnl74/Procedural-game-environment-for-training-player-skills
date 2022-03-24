@@ -9,6 +9,9 @@ public class MainMenu : MonoBehaviour {
 	private GameStateManager t_GameStateManager;
 	public Text TopText;
 
+	[SerializeField] private LeaderboardView _leaderboardView;
+	[SerializeField] private Button _leaderboardButton;
+
 	public bool enableFireBase = false;
 
 	public GameObject VolumePanel;
@@ -44,6 +47,8 @@ public class MainMenu : MonoBehaviour {
 		Debug.Log (this.name + " Start: Volume Setting sound=" + PlayerPrefs.GetFloat ("soundVolume")
 			+ "; music=" + PlayerPrefs.GetFloat ("musicVolume"));
 
+		_leaderboardView.EnableDisable(false);
+		_leaderboardButton.onClick.AddListener(EnableLeaderBoard);
 	}
 
 	public void OnMouseHover(Button button) {
@@ -99,4 +104,8 @@ public class MainMenu : MonoBehaviour {
 		volumePanelActive = false;
 	}
 
+	public void EnableLeaderBoard()
+    {
+		_leaderboardView.EnableDisable(true);
+    }
 }

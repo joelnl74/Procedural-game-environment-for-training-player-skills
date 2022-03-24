@@ -2,6 +2,16 @@ using UnityEngine;
 using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
+using System.Collections;
+using System;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+
+public struct LeaderBoardEntry
+{
+    public int score;
+    public string userName;
+}
 
 public class FirebaseManager : MonoSingleton<FirebaseManager>
 {
@@ -11,6 +21,8 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
     private FirebaseDatabase database;
 
     private bool setup = false;
+
+    public Action<List<LeaderBoardEntry>> OnLeaderBoardDataReceived;
 
     public void Setup()
     {
@@ -26,6 +38,8 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
                 setup = true;
             }
         });
+
+        StartCoroutine(GetLeaderBoards());
     }
 
     public void UpdateDatabase(string data)
@@ -36,6 +50,39 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
         }
 
         var task = database.RootReference.Child("users").Child(user.UserId).Child("playerInfo").SetRawJsonValueAsync(data);
+    }
+
+    public IEnumerator GetLeaderBoards()
+    {
+        yield return new WaitForSeconds(2);
+
+        var task = database.RootReference.Child("users").GetValueAsync();
+
+        yield return new WaitUntil(predicate: () => task.IsCompleted);
+
+        var shot = task.Result;
+        var leaderboard = new List<LeaderBoardEntry>();
+
+        foreach(var snapshot in shot.Children)
+        {
+            var key = snapshot.Key;
+            var jsonValue = snapshot.Child("playerInfo");
+            var highestScore = 0;
+
+            foreach(var items in jsonValue.Children)
+            {
+                var score = Convert.ToInt32(items.Child("difficultyScore").Value);
+
+                if(score > highestScore)
+                {
+                    highestScore = score;
+                }
+            }
+
+            leaderboard.Add(new LeaderBoardEntry { userName = key, score = highestScore});
+        }
+
+        OnLeaderBoardDataReceived?.Invoke(leaderboard);
     }
 
     private void InitializeFirebase()
