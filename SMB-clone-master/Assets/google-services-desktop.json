@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "957035990656",
+    "firebase_url": "https://apcg-mario-project-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "apcg-mario-project",
+    "storage_bucket": "apcg-mario-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:957035990656:android:b05e647190c844f3af2065",
+        "android_client_info": {
+          "package_name": "com.uu.pcg.mario"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "957035990656-meofqnbtnm0au0e0rcu97srl57dscn6k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-vwgOyY79g27h8nIDtiM78OCQK7tGrmY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "957035990656-meofqnbtnm0au0e0rcu97srl57dscn6k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -46,6 +46,8 @@ public class SerializeData
         var bf = new BinaryFormatter();
 
         bf.Serialize(file, jsonDictonary);
+        FirebaseManager.Instance.UpdateDatabase(jsonDictonary);
+
 
         file.Close();
     }
