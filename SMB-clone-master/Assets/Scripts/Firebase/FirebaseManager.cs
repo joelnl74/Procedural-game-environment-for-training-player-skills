@@ -2,7 +2,6 @@ using UnityEngine;
 using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
-using System;
 
 public class FirebaseManager : MonoSingleton<FirebaseManager>
 {
@@ -11,7 +10,9 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
     private FirebaseUser user;
     private FirebaseDatabase database;
 
-    private void Awake()
+    private bool setup = false;
+
+    public void Setup()
     {
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(check =>
         {
@@ -21,8 +22,20 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
             {
                 InitializeFirebase();
                 SignIn();
+
+                setup = true;
             }
         });
+    }
+
+    public void UpdateDatabase(string data)
+    {
+        if (setup == false)
+        {
+            return;
+        }
+
+        var task = database.RootReference.Child("users").Child(user.UserId).Child("playerInfo").SetRawJsonValueAsync(data);
     }
 
     private void InitializeFirebase()
@@ -70,11 +83,6 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
 
            database = FirebaseDatabase.DefaultInstance;
        });
-    }
-
-    public void UpdateDatabase(string data)
-    {
-        var task = database.RootReference.Child("users").Child(user.UserId).Child("playerInfo").SetRawJsonValueAsync(data);
     }
 }
 

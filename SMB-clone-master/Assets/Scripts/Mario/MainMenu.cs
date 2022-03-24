@@ -9,6 +9,8 @@ public class MainMenu : MonoBehaviour {
 	private GameStateManager t_GameStateManager;
 	public Text TopText;
 
+	public bool enableFireBase = false;
+
 	public GameObject VolumePanel;
 	public GameObject SoundSlider;
 	public GameObject MusicSlider;
@@ -19,6 +21,11 @@ public class MainMenu : MonoBehaviour {
 	void Start () {
 		t_GameStateManager = FindObjectOfType<GameStateManager> ();
 		t_GameStateManager.ConfigNewGame ();
+
+		if(enableFireBase)
+        {
+			FirebaseManager.Instance.Setup();
+		}
 
 		int currentHighScore = PlayerPrefs.GetInt ("highScore", 0);
 		TopText.text = "TOP- " + currentHighScore.ToString ("D6");
@@ -36,6 +43,7 @@ public class MainMenu : MonoBehaviour {
 
 		Debug.Log (this.name + " Start: Volume Setting sound=" + PlayerPrefs.GetFloat ("soundVolume")
 			+ "; music=" + PlayerPrefs.GetFloat ("musicVolume"));
+
 	}
 
 	public void OnMouseHover(Button button) {
