@@ -2,7 +2,16 @@ using UnityEngine;
 using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
+using System.Collections;
 using System;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+
+public struct LeaderBoardEntry
+{
+    public int score;
+    public string userName;
+}
 
 public class FirebaseManager : MonoSingleton<FirebaseManager>
 {
@@ -11,7 +20,11 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
     private FirebaseUser user;
     private FirebaseDatabase database;
 
-    private void Awake()
+    private bool setup = false;
+
+    public Action<List<LeaderBoardEntry>> OnLeaderBoardDataReceived;
+
+    public void Setup()
     {
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(check =>
         {
@@ -21,8 +34,60 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
             {
                 InitializeFirebase();
                 SignIn();
+
+                setup = true;
             }
         });
+
+        StartCoroutine(GetLeaderBoards());
+    }
+
+    public void UpdateDatabase(string data)
+    {
+        if (setup == false)
+        {
+            return;
+        }
+
+        var task = database.RootReference.Child("users").Child(user.UserId).Child("playerInfo").SetRawJsonValueAsync(data);
+    }
+
+    public IEnumerator GetLeaderBoards()
+    {
+        if (setup == false)
+        {
+            yield break;
+        }
+
+        yield return new WaitForSeconds(2);
+
+        var task = database.RootReference.Child("users").GetValueAsync();
+
+        yield return new WaitUntil(predicate: () => task.IsCompleted);
+
+        var shot = task.Result;
+        var leaderboard = new List<LeaderBoardEntry>();
+
+        foreach(var snapshot in shot.Children)
+        {
+            var key = snapshot.Key;
+            var jsonValue = snapshot.Child("playerInfo");
+            var highestScore = 0;
+
+            foreach(var items in jsonValue.Children)
+            {
+                var score = Convert.ToInt32(items.Child("difficultyScore").Value);
+
+                if(score > highestScore)
+                {
+                    highestScore = score;
+                }
+            }
+
+            leaderboard.Add(new LeaderBoardEntry { userName = key, score = highestScore});
+        }
+
+        OnLeaderBoardDataReceived?.Invoke(leaderboard);
     }
 
     private void InitializeFirebase()
@@ -70,11 +135,6 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
 
            database = FirebaseDatabase.DefaultInstance;
        });
-    }
-
-    public void UpdateDatabase(string data)
-    {
-        var task = database.RootReference.Child("users").Child(user.UserId).Child("playerInfo").SetRawJsonValueAsync(data);
     }
 }
 
