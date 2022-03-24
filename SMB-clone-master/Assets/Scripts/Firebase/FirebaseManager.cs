@@ -54,6 +54,11 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
 
     public IEnumerator GetLeaderBoards()
     {
+        if (setup == false)
+        {
+            yield break;
+        }
+
         yield return new WaitForSeconds(2);
 
         var task = database.RootReference.Child("users").GetValueAsync();
