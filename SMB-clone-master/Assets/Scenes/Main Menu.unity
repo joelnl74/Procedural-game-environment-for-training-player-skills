@@ -3784,7 +3784,7 @@ MonoBehaviour:
   TopText: {fileID: 507420483}
   _leaderboardView: {fileID: 283529872}
   _leaderboardButton: {fileID: 1013770975}
-  enableFireBase: 1
+  enableFireBase: 0
   VolumePanel: {fileID: 198275884}
   SoundSlider: {fileID: 210649602}
   MusicSlider: {fileID: 2113933151}
