@@ -30,7 +30,7 @@ public class PlayerModel
     private int _precentageFireBarDeaths;
     private int _precentageElevation;
 
-    public int currentDifficultyScore = 50;
+    public int currentDifficultyScore = 25;
 
     public ChunkInformation chunkInformation = new ChunkInformation();
 

@@ -38,8 +38,6 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
                 setup = true;
             }
         });
-
-        StartCoroutine(GetLeaderBoards());
     }
 
     public void UpdateDatabase(string data)
@@ -52,7 +50,12 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
         var task = database.RootReference.Child("users").Child(user.UserId).Child("playerInfo").SetRawJsonValueAsync(data);
     }
 
-    public IEnumerator GetLeaderBoards()
+    public void LoadLeaderboardAsync()
+    {
+        StartCoroutine(GetLeaderBoards());
+    }
+
+    private IEnumerator GetLeaderBoards()
     {
         if (setup == false)
         {

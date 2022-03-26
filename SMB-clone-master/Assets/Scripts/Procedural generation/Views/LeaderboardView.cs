@@ -10,6 +10,8 @@ public class LeaderboardView : MonoBehaviour
     [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private Button closeButton;
 
+    private bool fetched;
+
     private void Start()
     {
         FirebaseManager.Instance.OnLeaderBoardDataReceived += Configure;
@@ -17,6 +19,18 @@ public class LeaderboardView : MonoBehaviour
         {
             EnableDisable(false);
         });
+    }
+
+    public void LoadData()
+    {
+        if (fetched)
+        {
+            return;
+        }
+
+        FirebaseManager.Instance.LoadLeaderboardAsync();
+
+        fetched = true;
     }
 
     public void Configure(List<LeaderBoardEntry> entries)
@@ -33,5 +47,10 @@ public class LeaderboardView : MonoBehaviour
         canvasGroup.interactable = enable;
         canvasGroup.alpha = enable == true ? 1 : 0;
         canvasGroup.blocksRaycasts = enable;
+
+        if (enable)
+        {
+            LoadData();
+        }
     }
 }
