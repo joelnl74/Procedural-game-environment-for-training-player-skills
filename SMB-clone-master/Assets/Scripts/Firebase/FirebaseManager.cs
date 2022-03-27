@@ -4,8 +4,8 @@ using Firebase.Auth;
 using Firebase.Database;
 using System.Collections;
 using System;
-using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 
 public struct LeaderBoardEntry
 {
@@ -89,6 +89,8 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
 
             leaderboard.Add(new LeaderBoardEntry { userName = key, score = highestScore});
         }
+
+        leaderboard = leaderboard.OrderBy(x => x.score).ToList();
 
         OnLeaderBoardDataReceived?.Invoke(leaderboard);
     }
