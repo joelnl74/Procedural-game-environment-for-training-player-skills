@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System;
 
 public class ChunkInformation
 {
@@ -17,6 +18,11 @@ public class ChunkInformation
     public int index = 0;
 
     public bool completedChunk = false;
+
+    public int GetTotalDeaths()
+    {
+        return jumpDeaths + enemiesDeaths + fireBarDeaths;
+    }
 }
 
 public class PlayerModel
@@ -57,49 +63,8 @@ public class PlayerModel
         return _previousChunkStats.Count > 0;
     }
 
-    private void HandleDeathByFalling()
-    {
-        chunkInformation.jumpDeaths++;
-        lastTranningTypeFailure = TranningType.Long_Jump;
-    }
-
-    private void HandleDeathByFireBar()
-    {
-        chunkInformation.fireBarDeaths++;
-        lastTranningTypeFailure = TranningType.FireBar;
-    }
-
-    private void HandleDeathByEnemy(Enemytype type)
-    {
-        chunkInformation.enemiesDeaths++;
-
-        switch (type)
-        {
-            case Enemytype.Goomba:
-                chunkInformation.goombaDeaths++;
-                break;
-            case Enemytype.Shell:
-                chunkInformation.shellDeaths++;
-                break;
-            case Enemytype.FlyingShell:
-                chunkInformation.flyingShellDeaths++;
-                break;
-        }
-
-        lastTranningTypeFailure = TranningType.Enemies;
-    }
-    private void HandleKilledEnemy(Enemytype type)
-    {
-        switch (type)
-        {
-            case Enemytype.Goomba:
-                break;
-            case Enemytype.Shell:
-                break;
-            case Enemytype.FlyingShell:
-                break;
-        }
-    }
+    public void ResetChunkInformation()
+        => chunkInformation = new ChunkInformation();
 
     public void UpdateChunkInformation(int chunkId, int index, bool completed)
     {
@@ -122,25 +87,6 @@ public class PlayerModel
         serializeData.SaveData(_previousChunkStats);
 
         chunkInformation = new ChunkInformation();
-    }
-
-    public (int, TranningType) ReturnDifficultyOfMechanic(int score)
-    {
-        // TODO frequencies take into account failures and take into account current difficulty level.
-        int[] arr = {0, 1, 2, 3, 4};
-        int[] freq = { _precentageElevation, _precentageEnemyDeaths, _precentageJumpDeaths, 15, currentDifficultyScore > 59 ? _precentageFireBarDeaths : 0};
-
-        var type = myRand(arr, freq);
-
-        return type switch
-        {
-            0 => (2, TranningType.Medium_Jump),
-            1 => (6, TranningType.Enemies),
-            2 => (8, TranningType.Long_Jump),
-            3 => (8, TranningType.Platform),
-            4 => (10, TranningType.FireBar),
-            _ => (0, TranningType.None),
-        };
     }
 
     public List<TranningType> GetTranningTypes(List<TranningType> previousTranningTypes)
@@ -175,7 +121,77 @@ public class PlayerModel
             currentDifficultyScore -= 5;
 
             // If all conditions above lead to this code we decrease the difficulty for the player.
-            return GetTranningTypesForIncreasedDifficulty(); 
+            return GetTranningTypesForIncreasedDifficulty();
+        }
+    }
+
+    private (int, TranningType) ReturnDifficultyOfMechanic(int score)
+    {
+        // TODO frequencies take into account failures and take into account current difficulty level.
+        int[] arr = { 0, 1, 2, 3, 4 };
+        int[] freq = { _precentageElevation, _precentageEnemyDeaths, _precentageJumpDeaths, 15, currentDifficultyScore > 59 ? _precentageFireBarDeaths : 0 };
+
+        var type = myRand(arr, freq);
+
+        return type switch
+        {
+            0 => (2, TranningType.Medium_Jump),
+            1 => (6, TranningType.Enemies),
+            2 => (8, TranningType.Long_Jump),
+            3 => (8, TranningType.Platform),
+            4 => (10, TranningType.FireBar),
+            _ => (0, TranningType.None),
+        };
+    }
+
+    private void HandleDeathByFalling()
+    {
+        chunkInformation.jumpDeaths++;
+        lastTranningTypeFailure = TranningType.Long_Jump;
+
+        PCGEventManager.Instance.onPlayerModelUpdated(_previousChunkStats.Keys.Max());
+    }
+
+    private void HandleDeathByFireBar()
+    {
+        chunkInformation.fireBarDeaths++;
+        lastTranningTypeFailure = TranningType.FireBar;
+
+        PCGEventManager.Instance.onPlayerModelUpdated(_previousChunkStats.Keys.Max());
+    }
+
+    private void HandleDeathByEnemy(Enemytype type)
+    {
+        chunkInformation.enemiesDeaths++;
+
+        switch (type)
+        {
+            case Enemytype.Goomba:
+                chunkInformation.goombaDeaths++;
+                break;
+            case Enemytype.Shell:
+                chunkInformation.shellDeaths++;
+                break;
+            case Enemytype.FlyingShell:
+                chunkInformation.flyingShellDeaths++;
+                break;
+        }
+
+        lastTranningTypeFailure = TranningType.Enemies;
+
+        PCGEventManager.Instance.onPlayerModelUpdated(_previousChunkStats.Keys.Max());
+    }
+
+    private void HandleKilledEnemy(Enemytype type)
+    {
+        switch (type)
+        {
+            case Enemytype.Goomba:
+                break;
+            case Enemytype.Shell:
+                break;
+            case Enemytype.FlyingShell:
+                break;
         }
     }
 
@@ -249,6 +265,6 @@ public class PlayerModel
             index += frequency;
         }
 
-        return prefix[(Random.Range(0, prefix.Length - 1))];
+        return prefix[(UnityEngine.Random.Range(0, prefix.Length - 1))];
     }
 }

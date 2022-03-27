@@ -49,6 +49,8 @@ public class LevelGenerator : MonoBehaviour
         _chunks = new Dictionary<int, GameObject>();
         tranningHandler = handler;
 
+        PCGEventManager.Instance.onRegenerateChunk += RegenerateChunk;
+
         SetupSprites(true);
 
         var spawnPos = Instantiate(new GameObject(), _spawnPoints.transform);
@@ -96,6 +98,32 @@ public class LevelGenerator : MonoBehaviour
     private void Start()
     {
         _mario.EnablePhysics();
+    }
+
+    private void RegenerateChunk(int chunkId)
+    {
+        var chunkToRegenerate = chunkId + 2;
+        var lastWidthEnd = _previousChunkWidthEnd;
+        var lastChunk = _lastGeneratedChunk;
+
+        _previousChunkWidthEnd = _previousChunkWidthEnd - (_maxWidth + _maxCooldownWidth + _maxCooldownWidth);
+
+        if (_chunks.ContainsKey(chunkToRegenerate))
+        {
+            var chunk = _chunks[chunkToRegenerate];
+            
+            _entities.Remove(chunkToRegenerate);
+            _chunks.Remove(chunkToRegenerate);
+
+            Destroy(chunk);
+
+            _lastGeneratedChunk = chunkToRegenerate;
+
+            GenerateChunk();
+        }
+
+        _previousChunkWidthEnd = lastWidthEnd;
+        _lastGeneratedChunk = lastChunk;
     }
 
     private void GenerateChunk()
@@ -466,15 +494,6 @@ public class LevelGenerator : MonoBehaviour
         }
 
         return new Vector2Int(Xpos, yPos + 1);
-    }
-
-
-    private Vector2Int FindEmptySpot(int x, int chunkId)
-    {
-        var chunk = _chunks[chunkId];
-        var yPos = FindHighestBlock(x, 1, chunkId);
-
-        return new Vector2Int(x, yPos + 1);
     }
 
     private void GenerateChasmBlocks(Vector2Int begin, Vector2Int end, int chunkId, bool ignoreCheck = false)

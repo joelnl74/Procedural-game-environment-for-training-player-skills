@@ -36,6 +36,7 @@ public class PlayerModelHandler : MonoBehaviour
         _tranningTypes = new List<TranningType> { TranningType.Walking };
 
         _PCGEventManager.onReachedEndOfChunk += CheckEndOfChunk;
+        _PCGEventManager.onPlayerModelUpdated += HandlePlayerModelUpdated;
     }
 
     private void Start()
@@ -57,13 +58,10 @@ public class PlayerModelHandler : MonoBehaviour
             return;
         }
 
-        // TODO make this boolean based to make it faster.
-        if (_tranningTypes.Contains(TranningType.Walking))
+        if (_outOfTime)
         {
-            if (_outOfTime)
-            {
-                // TODO show something that makes it clear the player has to move.
-            }
+            // TODO show something that makes it clear the player has to move.
+            _PCGEventManager.onShowMessage?.Invoke("Try using WASD or The Arrow keys to move");
         }
     }
 
@@ -210,6 +208,25 @@ public class PlayerModelHandler : MonoBehaviour
         }
 
         return true;
+    }
+
+    private void HandlePlayerModelUpdated(int chunkId)
+    {
+        var total = _playerModel.chunkInformation.GetTotalDeaths();
+
+        if (total > 10)
+        {
+            _tranningTypes.Clear();
+
+            var currentTranningType = (TranningType)_index;
+
+            _tranningTypes = GenerateTranningType(currentTranningType, false);
+
+            tranningModelHandler.GenerateModelsBasedOnSkill();
+            _PCGEventManager.onRegenerateChunk?.Invoke(chunkId);
+            _playerModel.ResetChunkInformation();
+            _PCGEventManager.onTranningGoalsGenerated?.Invoke(_tranningTypes);
+        }
     }
 
     private bool DidCompleteWalkingTranning()

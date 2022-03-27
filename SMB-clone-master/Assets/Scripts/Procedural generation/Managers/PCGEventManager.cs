@@ -16,6 +16,9 @@ public class PCGEventManager : MonoSingleton<PCGEventManager>
     public Action onFallDeath;
     public Action onDeathByFireBar;
     public Action<List<TranningType>> onTranningGoalsGenerated;
+    public Action<int> onRegenerateChunk;
+    public Action<int> onPlayerModelUpdated;
 
     public Action<string> onShowMessage;
+
 }
