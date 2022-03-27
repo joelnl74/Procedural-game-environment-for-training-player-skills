@@ -164,7 +164,7 @@ public class PlayerModelHandler : MonoBehaviour
         {
             var adaptiveTypes = _playerModel.GetTranningTypes(_tranningTypes);
 
-            tranningModelHandler.model.SetAdaptiveTranningType(adaptiveTypes);
+            tranningModelHandler.model.SetAdaptiveTranningType(adaptiveTypes, _playerModel.currentDifficultyScore);
 
             return adaptiveTypes;
         }

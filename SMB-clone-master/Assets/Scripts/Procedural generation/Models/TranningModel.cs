@@ -27,6 +27,8 @@ public class TranningModel
     public int EnemySkill = 0;
     public int FireBarSkill = 0;
 
+    public int Difficulty;
+
     private SkillsCollectionConfiguration _skillsCollectionConfiguration;
 
     public void SetPlayerSkillConfiguration(SkillsCollectionConfiguration skillsCollectionConfiguration)
@@ -34,8 +36,10 @@ public class TranningModel
         _skillsCollectionConfiguration = skillsCollectionConfiguration;
     }
 
-    public void SetAdaptiveTranningType(List<TranningType> items)
+    public void SetAdaptiveTranningType(List<TranningType> items, int difficulty)
     {
+        Difficulty = difficulty;
+
         ResetSkills();
 
         foreach (var traningSkill in items)

@@ -101,7 +101,7 @@ public class TranningModelHandler : MonoBehaviour
             enemyModels.Add(new EnemyModel
             {
                 amount = amount,
-                enemytype = (Enemytype)Random.Range(0, 3)
+                enemytype = (Enemytype)Random.Range(0, model.Difficulty > 40 ? 3 : 2)
             });
         }
     }
