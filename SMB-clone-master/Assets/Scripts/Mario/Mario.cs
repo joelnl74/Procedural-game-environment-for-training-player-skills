@@ -131,7 +131,7 @@ public class Mario : MonoBehaviour {
 			}
 
 			// If change direction, skid until lose all momentum then turn around
-			if (isChangingDirection) {
+			if (isChangingDirection && isGrounded) {
 				if (currentSpeedX > skidTurnaroundSpeedX) {
 					moveDirectionX = -faceDirectionX;
 					m_Animator.SetBool ("isSkidding", isJumping ? false : true);
@@ -266,9 +266,9 @@ public class Mario : MonoBehaviour {
 			}
 		}
 
-		isFalling = m_Rigidbody2D.velocity.y < 0.1 && !isGrounded;
-		isGrounded = Physics2D.OverlapPoint (m_GroundCheck1.position, GroundLayers) || Physics2D.OverlapPoint (m_GroundCheck2.position, GroundLayers); 
-		isChangingDirection = currentSpeedX > 0 && faceDirectionX * moveDirectionX < 0 && isJumping == false && isFalling == false && isGrounded;
+		isFalling = m_Rigidbody2D.velocity.y < 0 && !isGrounded;
+		isGrounded = Physics2D.OverlapPoint(m_GroundCheck1.position, GroundLayers) || Physics2D.OverlapPoint(m_GroundCheck2.position, GroundLayers);
+		isChangingDirection = currentSpeedX > 0 && faceDirectionX * moveDirectionX < 0;
 
 		if (inputFreezed && !t_LevelManager.gamePaused) {
 			if (isDying) {

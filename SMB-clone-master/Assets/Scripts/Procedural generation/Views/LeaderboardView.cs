@@ -35,7 +35,7 @@ public class LeaderboardView : MonoBehaviour
 
     public void Configure(List<LeaderBoardEntry> entries)
     {
-        foreach(var entry in entries)
+        foreach (var entry in entries)
         {
             var go = Instantiate(_leaderboardEntry, _root.transform);
             go.GetComponent<LeaderboardEntry>().Configure(entry.userName, entry.score);
