@@ -37,6 +37,17 @@ public class PlayerModelHandler : MonoBehaviour
 
         _PCGEventManager.onReachedEndOfChunk += CheckEndOfChunk;
         _PCGEventManager.onPlayerModelUpdated += HandlePlayerModelUpdated;
+        _PCGEventManager.onRegenerateLevelSelected += HandleRegenerateLevel;
+    }
+
+    private void OnDestroy()
+    {
+        if(_PCGEventManager != null)
+        {
+            _PCGEventManager.onReachedEndOfChunk -= CheckEndOfChunk;
+            _PCGEventManager.onPlayerModelUpdated -= HandlePlayerModelUpdated;
+            _PCGEventManager.onRegenerateLevelSelected -= HandleRegenerateLevel;
+        }
     }
 
     private void Start()
@@ -214,19 +225,24 @@ public class PlayerModelHandler : MonoBehaviour
     {
         var total = _playerModel.chunkInformation.GetTotalDeaths();
 
-        if (total > 10)
+        if (total > 5)
         {
-            _tranningTypes.Clear();
-
-            var currentTranningType = (TranningType)_index;
-
-            _tranningTypes = GenerateTranningType(currentTranningType, false);
-
-            tranningModelHandler.GenerateModelsBasedOnSkill();
-            _PCGEventManager.onRegenerateChunk?.Invoke(chunkId);
-            _playerModel.ResetChunkInformation();
-            _PCGEventManager.onTranningGoalsGenerated?.Invoke(_tranningTypes);
+            _PCGEventManager.onShowRegenerateLevelMessage?.Invoke(chunkId);
         }
+    }
+
+    private void HandleRegenerateLevel(int chunkId)
+    {
+        _tranningTypes.Clear();
+
+        var currentTranningType = (TranningType)_index;
+
+        _tranningTypes = GenerateTranningType(currentTranningType, false);
+
+        tranningModelHandler.GenerateModelsBasedOnSkill();
+        _PCGEventManager.onRegenerateChunk?.Invoke(chunkId);
+        _playerModel.ResetChunkInformation();
+        _PCGEventManager.onTranningGoalsGenerated?.Invoke(_tranningTypes);
     }
 
     private bool DidCompleteWalkingTranning()

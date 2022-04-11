@@ -118,7 +118,7 @@ public class PlayerModel
                 return previousTranningTypes;
             }
 
-            currentDifficultyScore -= 5;
+            currentDifficultyScore -= lastChunk.Value.deathCount < 6 ? 5 : 10;
 
             // If all conditions above lead to this code we decrease the difficulty for the player.
             return GetTranningTypesForIncreasedDifficulty();
@@ -238,11 +238,6 @@ public class PlayerModel
 
 
         return tranningTypes;
-    }
-
-    private List<TranningType> GetTranningTypesForDecreasedDifficulty(List<TranningType> previousTranningTypes)
-    {
-        return new List<TranningType>();
     }
 
     // The main function that returns a random number
