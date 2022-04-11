@@ -4594,7 +4594,7 @@ MonoBehaviour:
   _continueButton: {fileID: 1960294323}
   _noButton: {fileID: 2059602393}
   _quitButton: {fileID: 213457503}
-  deleteSave: 1
+  deleteSave: 0
   canvasGroup: {fileID: 1667483778}
   skillsCollection: {fileID: 11400000, guid: 647951ac6e567e647a8d199a60c70e0b, type: 2}
 --- !u!114 &1667483780

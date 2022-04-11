@@ -9,6 +9,6 @@ public class PCGLevelSetup : MonoBehaviour
         stateManager = FindObjectOfType<GameStateManager>();
 
         stateManager.lives = 1000;
-        stateManager.timeLeft = 10000;
+        stateManager.timeLeft = 300;
     }
 }

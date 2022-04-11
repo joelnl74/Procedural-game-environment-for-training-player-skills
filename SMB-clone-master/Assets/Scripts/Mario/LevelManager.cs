@@ -138,6 +138,13 @@ public class LevelManager : MonoBehaviour {
 		}
 
 		if (timeLeftInt <= 0) {
+			if(SceneManager.GetActiveScene().name == "PCG")
+            {
+				SceneManager.LoadScene("Main Menu");
+
+				return;
+            }
+
 			MarioRespawn (true);
 		}
 
