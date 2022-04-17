@@ -21,6 +21,11 @@ public class LeaderboardView : MonoBehaviour
         });
     }
 
+    private void OnDestroy()
+    {
+        FirebaseManager.Instance.OnLeaderBoardDataReceived -= Configure;
+    }
+
     public void LoadData()
     {
         if (fetched)

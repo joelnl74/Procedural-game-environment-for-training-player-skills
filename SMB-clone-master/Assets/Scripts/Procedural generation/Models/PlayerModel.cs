@@ -60,6 +60,7 @@ public class PlayerModel
         if (serializeData.CheckSafe())
         {
             _previousChunkStats = serializeData.LoadData();
+            _previousChunkStats = _previousChunkStats.OrderBy(x => x.Value.difficultyScore).ToDictionary(x => x.Key, x => x.Value);
         }
     }
 
@@ -228,8 +229,8 @@ public class PlayerModel
         var total = totalEnemyDeaths + totalJumpDeaths + totalFireBarDeaths;
 
         // TODO add clamps.
-        var precentageEnemyDeaths = totalEnemyDeaths != 0 ? Mathf.Clamp(totalEnemyDeaths / total * 100, 10, 50) : 50;
-        var precentageJumpDeaths = totalJumpDeaths != 0 ? Mathf.Clamp(totalJumpDeaths / total * 100, 10, 30) : 20;
+        var precentageEnemyDeaths = totalEnemyDeaths != 0 ? Mathf.Clamp(totalEnemyDeaths / total * 100, 10, 100) : 50;
+        var precentageJumpDeaths = totalJumpDeaths != 0 ? Mathf.Clamp(totalJumpDeaths / total * 100, 10, 100) : 20;
         var precentageFireBarDeaths = totalFireBarDeaths != 0 ? Mathf.Clamp(totalFireBarDeaths / total * 100, 10, 35) : 30;
 
         _precentageEnemyDeaths = precentageEnemyDeaths;

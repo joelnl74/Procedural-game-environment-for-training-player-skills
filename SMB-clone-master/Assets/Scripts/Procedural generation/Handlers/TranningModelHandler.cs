@@ -68,7 +68,7 @@ public class TranningModelHandler : MonoBehaviour
                 new ElevationModel
                 {
                     heigth = Random.Range(3, 4),
-                    width = Random.Range(2, 6),
+                    width = Random.Range(2, 4),
                     hasEnemies = hasEnemies && Random.Range(0, 100) > minChance
                 });
         }
