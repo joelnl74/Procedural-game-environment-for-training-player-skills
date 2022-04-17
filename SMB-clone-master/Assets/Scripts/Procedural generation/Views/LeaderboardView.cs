@@ -33,7 +33,7 @@ public class LeaderboardView : MonoBehaviour
         fetched = true;
     }
 
-    public void Configure(List<LeaderBoardEntry> entries)
+    public void Configure(List<LeaderBoardEntryViewModel> entries)
     {
         for (var index = 0; index < entries.Count; index++)
         {

@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public struct LeaderBoardEntry
+public struct LeaderBoardEntryViewModel
 {
     public bool isOwn;
     public int score;
@@ -16,7 +16,7 @@ public struct LeaderBoardEntry
 
 public class FirebaseManager : MonoSingleton<FirebaseManager>
 {
-    public Action<List<LeaderBoardEntry>> OnLeaderBoardDataReceived;
+    public Action<List<LeaderBoardEntryViewModel>> OnLeaderBoardDataReceived;
     public bool setup;
 
     [Header("Firebase")]
@@ -69,7 +69,7 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
         yield return new WaitUntil(predicate: () => task.IsCompleted);
 
         var shot = task.Result;
-        var leaderboard = new List<LeaderBoardEntry>();
+        var leaderboard = new List<LeaderBoardEntryViewModel>();
 
         foreach(var snapshot in shot.Children)
         {
@@ -87,7 +87,7 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
                 }
             }
 
-            leaderboard.Add(new LeaderBoardEntry { userName = key, score = highestScore, isOwn = key == user.UserId});
+            leaderboard.Add(new LeaderBoardEntryViewModel { userName = key, score = highestScore, isOwn = key == user.UserId});
         }
 
         leaderboard = leaderboard.OrderByDescending(x => x.score).ToList();
