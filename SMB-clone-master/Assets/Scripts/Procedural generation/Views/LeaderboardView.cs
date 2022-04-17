@@ -38,7 +38,7 @@ public class LeaderboardView : MonoBehaviour
         for (var index = 0; index < entries.Count; index++)
         {
             var go = Instantiate(_leaderboardEntry, _root.transform);
-            go.GetComponent<LeaderboardEntry>().Configure(entries[index].userName, entries[index].score, index + 1);
+            go.GetComponent<LeaderboardEntry>().Configure(entries[index].userName, entries[index].score, index + 1, entries[index].isOwn);
         }
     }
 

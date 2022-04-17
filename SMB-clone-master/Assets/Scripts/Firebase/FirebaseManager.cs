@@ -9,6 +9,7 @@ using System.Linq;
 
 public struct LeaderBoardEntry
 {
+    public bool isOwn;
     public int score;
     public string userName;
 }
@@ -86,7 +87,7 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
                 }
             }
 
-            leaderboard.Add(new LeaderBoardEntry { userName = key, score = highestScore});
+            leaderboard.Add(new LeaderBoardEntry { userName = key, score = highestScore, isOwn = key == user.UserId});
         }
 
         leaderboard = leaderboard.OrderByDescending(x => x.score).ToList();
