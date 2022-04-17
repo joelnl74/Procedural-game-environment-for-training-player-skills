@@ -25,12 +25,14 @@ public class HasPlayedBeforeView : MonoBehaviour
         {
             _serializeData.DeleteSave();
         }
-        if (_serializeData.CheckSafe())
+        if (_serializeData.ContainsSkippedTutorial())
         {
             Disable();
         }
-
-        Enable();
+        else
+        {
+            Enable();
+        }
 
         _continueButton.onClick.AddListener(OnContinuePressed);
         _noButton.onClick.AddListener(NoButtonPressed);
@@ -46,6 +48,7 @@ public class HasPlayedBeforeView : MonoBehaviour
 
     private void OnContinuePressed()
     {
+        _serializeData.SetSkippedTutorial(true);
         _serializeData.SaveData(new Dictionary<int, ChunkInformation>
         {
             { 1, new ChunkInformation
@@ -66,6 +69,7 @@ public class HasPlayedBeforeView : MonoBehaviour
 
     private void NoButtonPressed()
     {
+        _serializeData.SetSkippedTutorial(false);
         Disable();
     }
 

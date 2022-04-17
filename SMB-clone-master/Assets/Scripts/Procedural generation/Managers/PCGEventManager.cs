@@ -22,4 +22,6 @@ public class PCGEventManager : MonoSingleton<PCGEventManager>
     public Action<string> onShowMessage;
     public Action<int> onRegenerateLevelSelected;
     public Action<int> onShowRegenerateLevelMessage;
+
+    public Action onSaveData;
 }

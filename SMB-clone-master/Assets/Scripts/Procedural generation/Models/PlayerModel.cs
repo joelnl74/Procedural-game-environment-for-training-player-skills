@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using System;
 
 public class ChunkInformation
 {
@@ -12,11 +11,13 @@ public class ChunkInformation
     public int shellDeaths = 0;
     public int flyingShellDeaths = 0;
     public int fireBarDeaths = 0;
+    public int timeCompleted;
 
     public int difficultyScore = 0;
 
     public int index = 0;
 
+    public bool hasSkippedTutorial;
     public bool completedChunk = false;
 
     public int GetTotalDeaths()
@@ -43,12 +44,16 @@ public class PlayerModel
     public Dictionary<int, ChunkInformation> _previousChunkStats = new Dictionary<int, ChunkInformation>();
     public TranningType lastTranningTypeFailure;
 
-    public PlayerModel(PCGEventManager eventManager)
+    private PCGEventManager eventManager;
+
+    public PlayerModel(PCGEventManager pCGEventManager)
     {
+        eventManager = pCGEventManager;
         eventManager.onDeathByEnemy += HandleDeathByEnemy;
         eventManager.onFallDeath += HandleDeathByFalling;
         eventManager.onKilledEnemy += HandleKilledEnemy;
         eventManager.onDeathByFireBar += HandleDeathByFireBar;
+        eventManager.onSaveData += SaveDataToFirebase;
 
         serializeData = new SerializeData();
 
@@ -56,6 +61,20 @@ public class PlayerModel
         {
             _previousChunkStats = serializeData.LoadData();
         }
+    }
+
+    ~PlayerModel()
+    {
+        if (eventManager == null)
+        {
+            return;
+        }
+
+        eventManager.onDeathByEnemy -= HandleDeathByEnemy;
+        eventManager.onFallDeath -= HandleDeathByFalling;
+        eventManager.onKilledEnemy -= HandleKilledEnemy;
+        eventManager.onDeathByFireBar -= HandleDeathByFireBar;
+        eventManager.onSaveData -= SaveDataToFirebase;
     }
 
     public bool HasSafe()
@@ -66,7 +85,7 @@ public class PlayerModel
     public void ResetChunkInformation()
         => chunkInformation = new ChunkInformation();
 
-    public void UpdateChunkInformation(int chunkId, int index, bool completed)
+    public void UpdateChunkInformation(int chunkId, int index, bool completed, int time)
     {
         if (_previousChunkStats.ContainsKey(chunkId))
         {
@@ -77,16 +96,21 @@ public class PlayerModel
             _previousChunkStats.Remove(_previousChunkStats.First().Key);
         }
 
+        chunkInformation.timeCompleted = time;
         chunkInformation.completedChunk = completed;
+        chunkInformation.hasSkippedTutorial = serializeData.GetSkippedTutorial();
         chunkInformation.difficultyScore = currentDifficultyScore;
         chunkInformation.index = index;
 
         _previousChunkStats.Add(chunkId, chunkInformation);
         CalculatePrecentages();
 
-        serializeData.SaveData(_previousChunkStats);
-
         chunkInformation = new ChunkInformation();
+    }
+
+    public void SaveDataToFirebase()
+    {
+        serializeData.SaveData(_previousChunkStats);
     }
 
     public List<TranningType> GetTranningTypes(List<TranningType> previousTranningTypes)
@@ -97,7 +121,7 @@ public class PlayerModel
         // Increase difficulty;
         if (completed)
         {
-            currentDifficultyScore += 5;
+            currentDifficultyScore += lastChunk.Value.timeCompleted < 15 ? 10 : 5;
 
             return GetTranningTypesForIncreasedDifficulty();
         }

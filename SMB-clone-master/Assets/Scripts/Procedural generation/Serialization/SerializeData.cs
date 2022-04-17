@@ -7,6 +7,15 @@ using System.Runtime.Serialization.Formatters.Binary;
 public class SerializeData
 {
     private const string saveDataKey = "PCG-SAVE-KEY";
+    private bool hasSkippedTutorial;
+
+    public SerializeData()
+    {
+        if (PlayerPrefs.HasKey("has_skipped_tutorial"))
+        {
+            hasSkippedTutorial = GetSkippedTutorial();
+        }
+    }
 
     public bool CheckSafe()
     {
@@ -79,5 +88,21 @@ public class SerializeData
         }
 
         return newDictonary;
+    }
+
+    public bool GetSkippedTutorial()
+    {
+        return hasSkippedTutorial;
+    }
+
+    public bool ContainsSkippedTutorial()
+    {
+        return PlayerPrefs.HasKey("has_skipped_tutorial");
+    }
+
+    public void SetSkippedTutorial(bool skipped)
+    {
+        hasSkippedTutorial = skipped;
+        PlayerPrefs.SetInt("has_skipped_tutorial", skipped == true ? 1 : 0);
     }
 }

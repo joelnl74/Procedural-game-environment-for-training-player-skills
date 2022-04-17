@@ -15,14 +15,13 @@ public struct LeaderBoardEntry
 
 public class FirebaseManager : MonoSingleton<FirebaseManager>
 {
+    public Action<List<LeaderBoardEntry>> OnLeaderBoardDataReceived;
+    public bool setup;
+
     [Header("Firebase")]
     private FirebaseAuth auth;
     private FirebaseUser user;
     private FirebaseDatabase database;
-
-    private bool setup = false;
-
-    public Action<List<LeaderBoardEntry>> OnLeaderBoardDataReceived;
 
     public void Setup()
     {
@@ -107,15 +106,14 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
         if (auth.CurrentUser != user)
         {
             bool signedIn = user != auth.CurrentUser && auth.CurrentUser != null;
+            
             if (!signedIn && user != null)
             {
                 Debug.Log("Signed out " + user.UserId);
             }
+            
             user = auth.CurrentUser;
-            if (signedIn)
-            {
-                Debug.Log("Signed in " + user.UserId);
-            }
+            Debug.Log("Signed in " + user.UserId);
         }
     }
 

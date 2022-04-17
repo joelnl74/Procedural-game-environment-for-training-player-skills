@@ -140,6 +140,7 @@ public class LevelManager : MonoBehaviour {
 		if (timeLeftInt <= 0) {
 			if(SceneManager.GetActiveScene().name == "PCG")
             {
+				PCGEventManager.Instance.onSaveData?.Invoke();
 				SceneManager.LoadScene("Main Menu");
 
 				return;

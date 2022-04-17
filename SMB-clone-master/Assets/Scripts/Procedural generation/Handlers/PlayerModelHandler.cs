@@ -124,7 +124,7 @@ public class PlayerModelHandler : MonoBehaviour
         if (isCoolDownChunk == false)
         {
             _failedIndex = _index; ;
-            _playerModel.UpdateChunkInformation(chunkId, _index, playerSucces);
+            _playerModel.UpdateChunkInformation(chunkId, _index, playerSucces, (int)_timer);
 
             _tranningTypes.Clear();
             _tranningTypes = GenerateTranningType(currentTranningType, playerSucces);

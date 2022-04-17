@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
@@ -21,11 +19,12 @@ public class MainMenu : MonoBehaviour {
 	public bool volumePanelActive;
 
 	// Use this for initialization
-	void Start () {
+	private void Start () 
+	{
 		t_GameStateManager = FindObjectOfType<GameStateManager> ();
 		t_GameStateManager.ConfigNewGame ();
 
-		if(enableFireBase)
+		if (enableFireBase)
         {
 			FirebaseManager.Instance.Setup();
 		}

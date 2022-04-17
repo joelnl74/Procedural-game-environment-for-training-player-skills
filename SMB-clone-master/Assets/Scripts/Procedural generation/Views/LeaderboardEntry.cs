@@ -7,8 +7,8 @@ public class LeaderboardEntry : MonoBehaviour
 {
     [SerializeField] private Text _entryText;
 
-    public void Configure(string name, int score)
+    public void Configure(string name, int score, int position)
     {
-        _entryText.text = $"{name} : {score}";
+        _entryText.text = $"{position} : {name} : {score}";
     }
 }
