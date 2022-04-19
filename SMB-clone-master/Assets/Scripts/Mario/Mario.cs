@@ -4,7 +4,6 @@ using UnityEngine;
 public class Mario : MonoBehaviour {
 	private LevelManager t_LevelManager;
 	private Transform m_GroundCheck1, m_GroundCheck2;
-	private GameObject m_StompBox;
 	private Animator m_Animator;
 	private Rigidbody2D m_Rigidbody2D;
 	private CircleCollider2D m_CircleCollider2D;
@@ -65,7 +64,6 @@ public class Mario : MonoBehaviour {
 		t_LevelManager = FindObjectOfType<LevelManager>();
 		m_GroundCheck1 = transform.Find ("Ground Check 1");
 		m_GroundCheck2 = transform.Find ("Ground Check 2");
-		m_StompBox = transform.Find ("Stomp Box").gameObject;
 		m_Animator = GetComponent<Animator> ();
 		m_Rigidbody2D = GetComponent<Rigidbody2D> ();
 		m_CircleCollider2D = GetComponent<CircleCollider2D> ();
@@ -200,16 +198,6 @@ public class Mario : MonoBehaviour {
 			} else {
 				m_Rigidbody2D.gravityScale = normalGravity * jumpDownGravity;
 			}
-		}
-
-		// Disable Stomp Box if not falling down
-		// Disable Circle Collider if falling down (to prevent multi collisions registered)
-		if (!isFalling) {
-			m_StompBox.SetActive (false);
-			m_CircleCollider2D.enabled = true;
-		} else {
-			m_StompBox.SetActive (true);
-			m_CircleCollider2D.enabled = false;
 		}
 
 		/******** Horizontal orientation */
@@ -423,7 +411,14 @@ public class Mario : MonoBehaviour {
 			var shell = other.gameObject.GetComponent<KoopaShell>();
 			var enemyTransform = enemy.transform;
 
-			if (!t_LevelManager.isInvincible ()) {
+			if (transform.position.y > enemy.transform.position.y && other.gameObject.tag != "Enemy/Piranha"
+			&& other.gameObject.tag != "Enemy/Bowser")
+            {
+				Debug.Log(this.name + " OnTriggerEnter2D: recognizes " + other.gameObject.name);
+				t_LevelManager.MarioStompEnemy(enemy);
+				Debug.Log(this.name + " OnTriggerEnter2D: finishes calling stomp method on " + other.gameObject.name);
+			}
+			else if (!t_LevelManager.isInvincible ()) {
 				if (shell != null && shell.isRolling && enemyTransform.position.y >= transform.position.y  ||  // non-rolling shell should do no damage
 					!bottomHit || (bottomHit && !enemy.isBeingStomped) && enemyTransform.position.y >= transform.position.y) 
 				{

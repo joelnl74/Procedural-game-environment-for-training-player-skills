@@ -11,10 +11,12 @@ public class LeaderboardView : MonoBehaviour
     [SerializeField] private Button closeButton;
 
     private bool fetched;
+    private FirebaseManager firebaseManager;
 
     private void Start()
     {
-        FirebaseManager.Instance.OnLeaderBoardDataReceived += Configure;
+        firebaseManager = FirebaseManager.Instance;
+        firebaseManager.OnLeaderBoardDataReceived += Configure;
         closeButton.onClick.AddListener(() => 
         {
             EnableDisable(false);
@@ -23,7 +25,12 @@ public class LeaderboardView : MonoBehaviour
 
     private void OnDestroy()
     {
-        FirebaseManager.Instance.OnLeaderBoardDataReceived -= Configure;
+        if (firebaseManager == null)
+        {
+            return;
+        }
+
+        firebaseManager.OnLeaderBoardDataReceived -= Configure;
     }
 
     public void LoadData()
@@ -33,7 +40,7 @@ public class LeaderboardView : MonoBehaviour
             return;
         }
 
-        FirebaseManager.Instance.LoadLeaderboardAsync();
+        firebaseManager.LoadLeaderboardAsync();
 
         fetched = true;
     }
