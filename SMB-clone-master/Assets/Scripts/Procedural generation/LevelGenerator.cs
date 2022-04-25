@@ -38,7 +38,7 @@ public class LevelGenerator : MonoBehaviour
     private int _previousChunkWidthEnd = 0;
     private int _lastGeneratedChunk = 1;
 
-    private int minHeigth = 1;
+    private int minHeigth = 3;
 
     private PlayerModelHandler tranningHandler;
     private int _maxWidth;
@@ -150,9 +150,9 @@ public class LevelGenerator : MonoBehaviour
 
         // TODO clean this up can be done easier with generate solid blocks.
         for (int x = _previousChunkWidthEnd; x < maxX; x++)
-            for (int y = minHeigth; y < _maxHeigth; y++)
+            for (int y = 1; y < _maxHeigth; y++)
             {
-                if (y == minHeigth)
+                if (y <= minHeigth)
                 {
                     GenerateFloorBlock(chunk, x, y);
                 }
@@ -167,6 +167,31 @@ public class LevelGenerator : MonoBehaviour
         SetupEndOfChunk(chunk, maxX + 1, 0);
 
         _previousChunkWidthEnd += _maxWidth;
+    }
+
+    private void GenerateCooldownChunk()
+    {
+        var chunk = new GameObject();
+        var maxX = _previousChunkWidthEnd + _maxCooldownWidth;
+
+        _maxWidth = _maxCooldownWidth;
+        chunk.name = $"Cooldown chunk {_lastGeneratedChunk}";
+
+        _chunks.Add(_lastGeneratedChunk, chunk);
+
+        for (int x = _previousChunkWidthEnd; x < maxX; x++)
+            for (int y = 1; y < _maxHeigth; y++)
+            {
+                if (y <= minHeigth)
+                {
+                    GenerateFloorBlock(chunk, x, y);
+                }
+            }
+
+        HandleElevation(_lastGeneratedChunk);
+        SetupEndOfChunk(chunk, maxX + 1, 0);
+
+        _previousChunkWidthEnd += _maxCooldownWidth;
     }
 
     private Vector2Int GetEmptySpotOnMap(int chunkId, TranningType tranningType)
@@ -203,31 +228,6 @@ public class LevelGenerator : MonoBehaviour
         }
 
         return new Vector2Int(randomXPos, highestYpos + 1);
-    }
-
-    private void GenerateCooldownChunk()
-    {
-        var chunk = new GameObject();
-        var maxX = _previousChunkWidthEnd + _maxCooldownWidth;
-
-        _maxWidth = _maxCooldownWidth;
-        chunk.name = $"Cooldown chunk {_lastGeneratedChunk}";
-
-        _chunks.Add(_lastGeneratedChunk, chunk);
-
-        for (int x = _previousChunkWidthEnd; x < maxX; x++)
-            for (int y = minHeigth; y < _maxHeigth; y++)
-            {
-                if (y == minHeigth)
-                {
-                    GenerateFloorBlock(chunk, x, y);
-                }
-            }
-
-        HandleElevation(_lastGeneratedChunk);
-        SetupEndOfChunk(chunk, maxX + 1, 0);
-
-        _previousChunkWidthEnd += _maxCooldownWidth;
     }
 
     private void SetupNewSpawnPosition(int chunkId)
@@ -328,7 +328,7 @@ public class LevelGenerator : MonoBehaviour
                 var startX = halfLength;
                 var endX = startX + model.chasmModel.width;
 
-                GenerateChasmBlocks(new Vector2Int(startX, minHeigth), new Vector2Int(endX, yPos - 1), chunkId, true);
+                GenerateChasmBlocks(new Vector2Int(startX, 1), new Vector2Int(endX, yPos - 1), chunkId, true);
             }
         }
     }
@@ -371,7 +371,7 @@ public class LevelGenerator : MonoBehaviour
         {
             var xPos = Random.Range(minX, maxX - model.width);
 
-            var beginposition = new Vector2Int(xPos, minHeigth);
+            var beginposition = new Vector2Int(xPos, 1);
             var endPosition = new Vector2Int(xPos + model.width, _maxHeigth);
 
             GenerateChasmBlocks(beginposition, endPosition, chunkId);
