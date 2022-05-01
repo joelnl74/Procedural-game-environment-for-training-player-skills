@@ -9,19 +9,20 @@ public enum EntityType
     FireBar = 4,
 }
 
-public class EntityModel : MonoBehaviour
+public class EntityModel
 {
     public EntityType entityType;
-
+    public GameObject gameObject;
     public int id;
     public int xPos;
     public int yPos;
     
-    public void Setup(int entityId, int x, int y, EntityType type)
+    public void Setup(int entityId, int x, int y, GameObject go, EntityType type)
     {
         id = entityId;
         xPos = x;
         yPos = y;
         entityType = type;
+        gameObject = go;
     }
 }

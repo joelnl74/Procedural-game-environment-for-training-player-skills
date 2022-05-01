@@ -129,6 +129,7 @@ public class LevelGenerator : MonoBehaviour
     private void GenerateChunk()
     {
         SetupSprites(tranningHandler.GetDifficulty() < 60);
+        _entities.Add(_lastGeneratedChunk, new Dictionary<int, EntityModel>());
 
         if (_lastGeneratedChunk % 2 == 0)
         {
@@ -251,12 +252,12 @@ public class LevelGenerator : MonoBehaviour
     {
         var go = Instantiate(_groundBlock, chunk.transform);
         var pos = new Vector2(x, y);
-        var component = go.AddComponent<EntityModel>();
+        var entityModel = new EntityModel();
 
         go.name = "ground_block";
         go.transform.position = pos;
 
-        AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), component, EntityType.Solid);
+        AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), entityModel, go, EntityType.Solid);
     }
 
     // Generate elevation in terrain.
@@ -382,24 +383,24 @@ public class LevelGenerator : MonoBehaviour
     {
         var go = Instantiate(_coin, chunk.transform);
         var pos = new Vector2(x, y);
-        var component = go.AddComponent<EntityModel>();
+        var entityModel = new EntityModel();
 
         go.name = "coin";
         go.transform.position = pos;
 
-        AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), component, EntityType.Coin);
+        AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), entityModel, go, EntityType.Coin);
     }
 
     private void GenerateFireBar(int x, int y, GameObject chunk)
     {
         var go = Instantiate(_fireBar, chunk.transform);
         var pos = new Vector2(x, y);
-        var component = go.AddComponent<EntityModel>();
+        var entityModel = new EntityModel();
 
         go.name = "Fire Bar";
         go.transform.position = pos;
 
-        AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), component, EntityType.FireBar);
+        AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), entityModel, go, EntityType.FireBar);
     }
 
     private void GenerateBlocks(Vector2Int begin, Vector2Int end, GameObject chunk, bool hasSpecial = false, bool stayAtHeigth = false)
@@ -430,12 +431,12 @@ public class LevelGenerator : MonoBehaviour
                     : Instantiate(_specialBlocks[Random.Range(0, _specialBlocks.Length - 1)], chunk.transform);
 
                 var pos = new Vector2(x, y);
-                var component = go.AddComponent<EntityModel>();
+                var entityModel = new EntityModel();
 
                 go.name = "block";
                 go.transform.position = pos;
 
-                AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), component, EntityType.Solid);
+                AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), entityModel, go, EntityType.Solid);
             }
         }
     }
@@ -444,36 +445,36 @@ public class LevelGenerator : MonoBehaviour
     {
         var go = Instantiate(_goomba, chunk.transform);
         var pos = new Vector2Int(end.x, end.y + 1);
-        var component = go.AddComponent<EntityModel>();
+        var entityModel = new EntityModel();
 
         go.name = "goomba";
         go.transform.position = new Vector2(pos.x, pos.y);
 
-        AddEntity(_lastGeneratedChunk, pos, component, EntityType.Enemy);
+        AddEntity(_lastGeneratedChunk, pos, entityModel, go, EntityType.Enemy);
     }
 
     private void GenerateFlyingShell(GameObject chunk, Vector2Int end)
     {
         var go = Instantiate(_flyingShell, chunk.transform);
         var pos = new Vector2Int(end.x, end.y + 1);
-        var component = go.AddComponent<EntityModel>();
+        var entityModel = new EntityModel();
 
         go.name = "Flying shell";
         go.transform.position = new Vector2(pos.x, pos.y);
 
-        AddEntity(_lastGeneratedChunk, pos, component, EntityType.Enemy);
+        AddEntity(_lastGeneratedChunk, pos, entityModel, go, EntityType.Enemy);
     }
 
     private void GenerateShell(GameObject chunk, Vector2Int end)
     {
         var go = Instantiate(_shell, chunk.transform);
         var pos = new Vector2Int(end.x, end.y + 1);
-        var component = go.AddComponent<EntityModel>();
+        var entityModel = new EntityModel();
 
         go.name = "shell";
         go.transform.position = new Vector2(pos.x, pos.y);
 
-        AddEntity(_lastGeneratedChunk, pos, component, EntityType.Enemy);
+        AddEntity(_lastGeneratedChunk, pos, entityModel, go, EntityType.Enemy);
     }
 
     private Vector2Int FindHighestEmptyPoint(int chunkId)
@@ -515,7 +516,11 @@ public class LevelGenerator : MonoBehaviour
 
                 if (block != null)
                 {
-                    Destroy(block.gameObject);
+                    if(block.gameObject != null)
+                    {
+                        Destroy(block.gameObject);
+                    }
+
                     _entities[chunkId].Remove(index);
                 }
             }
@@ -568,11 +573,22 @@ public class LevelGenerator : MonoBehaviour
 
     private EntityModel GetEntity(int x, int y, int chunk)
     {
-        var key = x * y * chunk;
+        var key = GetId(x, y, chunk);
         var contains = _entities[chunk].ContainsKey(key);
 
         if (contains)
             return _entities[chunk][key];
+
+        return null;
+    }
+
+    private GameObject GetEntityGameObject(int x, int y, int chunk)
+    {
+        var key = GetId(x, y, chunk);
+        var contains = _entities[chunk].ContainsKey(key);
+
+        if (contains)
+            return _entities[chunk][key].gameObject;
 
         return null;
     }
@@ -597,49 +613,21 @@ public class LevelGenerator : MonoBehaviour
         return highestPositon;
     }
 
-    private int FindHighestBlock(int x, int width, int chunkId)
-    {
-        int highestYPos = 0;
-        var chunk = _entities[chunkId];
-
-        foreach(var block in chunk)
-        {
-            var value = block.Value;
-
-            if (value.xPos >= x && value.xPos <= x + width)
-            {
-                if (block.Value.yPos > highestYPos)
-                {
-                    highestYPos = block.Value.yPos;
-                }
-            }
-        }
-
-        return highestYPos;
-    }
-
-    private void AddEntity(int chunkId, Vector2Int position, EntityModel entityModel, EntityType entityType)
+    private void AddEntity(int chunkId, Vector2Int position, EntityModel entityModel, GameObject go, EntityType entityType)
     {
         var id = GetId(position.x, position.y, chunkId);
 
-        if (_entities.ContainsKey(chunkId) == false)
-        {
-            _entities.Add(chunkId, new Dictionary<int, EntityModel>());
-        }
-
-        // TODO fix this correcetly.
-        if(_entities[chunkId].ContainsKey(id) == true)
-        {
-            return;
-        }
-
-        entityModel.Setup(id, position.x, position.y, entityType);
+        entityModel.Setup(id, position.x, position.y, go, entityType);
         _entities[chunkId].Add(id, entityModel);
     }
 
     private int GetId(int x, int y, int chunkId)
-        => x * y * chunkId;
+        => _maxWidth * chunkId * x + y ;
 
     private void CleanEntitiesInChunk(int chunkId)
         => _entities.Remove(chunkId);
+
+    private void HandleOnDeath()
+    {
+    }
 }
