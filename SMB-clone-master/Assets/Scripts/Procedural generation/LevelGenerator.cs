@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class LevelGenerator : MonoBehaviour
 {
@@ -34,6 +35,7 @@ public class LevelGenerator : MonoBehaviour
     private Dictionary<int, GameObject> _chunks;
 
     private GameObject _groundBlock;
+    private PCGEventManager pcgEventManager;
 
     private int _previousChunkWidthEnd = 0;
     private int _lastGeneratedChunk = 1;
@@ -48,8 +50,10 @@ public class LevelGenerator : MonoBehaviour
         _entities = new Dictionary<int, Dictionary<int, EntityModel>>();
         _chunks = new Dictionary<int, GameObject>();
         tranningHandler = handler;
+        pcgEventManager = PCGEventManager.Instance;
 
-        PCGEventManager.Instance.onRegenerateChunk += RegenerateChunk;
+        pcgEventManager.onRegenerateChunk += RegenerateChunk;
+        pcgEventManager.onPlayerDeath += HandleOnDeath;
 
         SetupSprites(true);
 
@@ -62,6 +66,15 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        if (pcgEventManager != null)
+        {
+            pcgEventManager.onRegenerateChunk -= RegenerateChunk;
+            pcgEventManager.onPlayerDeath -= HandleOnDeath;
+        }
+    }
+
     public void SetupSprites(bool overworld)
     {
         _groundBlock = overworld == true ? _groundBlockOver : _groundBlockUnder;
@@ -70,7 +83,6 @@ public class LevelGenerator : MonoBehaviour
     public void ReachedEndOfChunk(int id, List<TranningType> tranningTypes)
     {
         var currentId = id - 1;
-
         if (currentId == 0)
         {
             GenerateChunk();
@@ -93,6 +105,7 @@ public class LevelGenerator : MonoBehaviour
         {
             _clouds.transform.position = new Vector2((id - 1) * _maxWidth, _clouds.transform.position.y);
         }
+
     }
 
     private void Start()
@@ -164,6 +177,7 @@ public class LevelGenerator : MonoBehaviour
         HandlePlatforms(_lastGeneratedChunk);
         HandleEnemies(_lastGeneratedChunk);
         HandleFireBar(_lastGeneratedChunk);
+        HandleGenerateCoins(_lastGeneratedChunk);
 
         SetupEndOfChunk(chunk, maxX + 1, 0);
 
@@ -190,6 +204,7 @@ public class LevelGenerator : MonoBehaviour
             }
 
         HandleElevation(_lastGeneratedChunk);
+        HandleGenerateCoins(_lastGeneratedChunk);
         SetupEndOfChunk(chunk, maxX + 1, 0);
 
         _previousChunkWidthEnd += _maxCooldownWidth;
@@ -318,9 +333,14 @@ public class LevelGenerator : MonoBehaviour
             }
             if (model.hasCoins)
             {
-                for(int x = beginposition.x; x < endPosition.x; x++)
+                var yPosition = yPos + 1;
+
+                for (int x = beginposition.x; x < endPosition.x; x++)
                 {
-                    GenerateCoins(x, yPos + 1, chunk);
+                    if(CheckId(x, yPosition, chunkId))
+                    {
+                        GenerateCoin(x, yPosition, chunk);
+                    }
                 }
             }
             if (model.chasmModel != null)
@@ -331,6 +351,19 @@ public class LevelGenerator : MonoBehaviour
 
                 GenerateChasmBlocks(new Vector2Int(startX, 1), new Vector2Int(endX, yPos - 1), chunkId, true);
             }
+        }
+    }
+
+    private void HandleGenerateCoins(int chunkId)
+    {
+        var chunk = _chunks[chunkId];
+        var spawnCoins = Random.Range(0, 8);
+
+        for(int i = 0; i < spawnCoins; i++)
+        {
+            var emptySpot = GetEmptySpotOnMap(chunkId, TranningType.Walking);
+
+            GenerateCoin(emptySpot.x, emptySpot.y, chunk);
         }
     }
 
@@ -379,7 +412,7 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    private void GenerateCoins(int x, int y, GameObject chunk)
+    private void GenerateCoin(int x, int y, GameObject chunk)
     {
         var go = Instantiate(_coin, chunk.transform);
         var pos = new Vector2(x, y);
@@ -447,6 +480,7 @@ public class LevelGenerator : MonoBehaviour
         var pos = new Vector2Int(end.x, end.y + 1);
         var entityModel = new EntityModel();
 
+        entityModel.SetEnemyType(Enemytype.Goomba);
         go.name = "goomba";
         go.transform.position = new Vector2(pos.x, pos.y);
 
@@ -459,6 +493,7 @@ public class LevelGenerator : MonoBehaviour
         var pos = new Vector2Int(end.x, end.y + 1);
         var entityModel = new EntityModel();
 
+        entityModel.SetEnemyType(Enemytype.FlyingShell);
         go.name = "Flying shell";
         go.transform.position = new Vector2(pos.x, pos.y);
 
@@ -471,6 +506,7 @@ public class LevelGenerator : MonoBehaviour
         var pos = new Vector2Int(end.x, end.y + 1);
         var entityModel = new EntityModel();
 
+        entityModel.SetEnemyType(Enemytype.Shell);
         go.name = "shell";
         go.transform.position = new Vector2(pos.x, pos.y);
 
@@ -582,17 +618,6 @@ public class LevelGenerator : MonoBehaviour
         return null;
     }
 
-    private GameObject GetEntityGameObject(int x, int y, int chunk)
-    {
-        var key = GetId(x, y, chunk);
-        var contains = _entities[chunk].ContainsKey(key);
-
-        if (contains)
-            return _entities[chunk][key].gameObject;
-
-        return null;
-    }
-
     private int FindBlockHighestPosition(int chunkId, int x, int heigth)
     {
         int highestPositon = 0;
@@ -627,7 +652,55 @@ public class LevelGenerator : MonoBehaviour
     private void CleanEntitiesInChunk(int chunkId)
         => _entities.Remove(chunkId);
 
-    private void HandleOnDeath()
+    private bool CheckId(int x, int y, int chunkId)
     {
+        var id = GetId(x, y, chunkId);
+
+        return _entities[chunkId].ContainsKey(id);
+    }
+
+    private void HandleOnDeath(bool respawn)
+    {
+        if (respawn == false)
+        {
+            return;
+        }
+
+        for (var i = 0; i < _entities.Count; i++)
+        {
+            var entitiesInChunk = _entities.ElementAt(i).Value;
+            var chunkGo = _chunks.ElementAt(i).Value;
+
+            foreach (var model in entitiesInChunk.Values)
+            {
+                if (model.entityType == EntityType.Enemy)
+                {
+                    if (model.gameObject == null)
+                    {
+                        GameObject go = null;
+
+                        switch (model.enemytype)
+                        {
+                            case Enemytype.Goomba:
+                                go = Instantiate(_goomba, chunkGo.transform);
+                                go.name = "Goomba";
+                                break;
+                            case Enemytype.Shell:
+                                go = Instantiate(_shell, chunkGo.transform);
+                                go.name = "Shell";
+                                break;
+                            case Enemytype.FlyingShell:
+                                go = Instantiate(_flyingShell, chunkGo.transform);
+                                go.name = "Flying-shell";
+                                break;
+                        }
+
+                        model.gameObject = go;
+                    }
+
+                    model.gameObject.transform.position = new Vector2(model.xPos, model.yPos);
+                }
+            }
+        }
     }
 }

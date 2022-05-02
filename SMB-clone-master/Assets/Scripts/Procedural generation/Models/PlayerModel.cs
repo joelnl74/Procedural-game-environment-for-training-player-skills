@@ -19,6 +19,7 @@ public class ChunkInformation
 
     public bool hasSkippedTutorial;
     public bool completedChunk = false;
+    public bool outOfTime = false;
 
     public int GetTotalDeaths()
     {
@@ -86,7 +87,7 @@ public class PlayerModel
     public void ResetChunkInformation()
         => chunkInformation = new ChunkInformation();
 
-    public void UpdateChunkInformation(int chunkId, int index, bool completed, int time)
+    public void UpdateChunkInformation(int chunkId, int index, bool completed, int time, bool outOfTime)
     {
         if (_previousChunkStats.ContainsKey(chunkId))
         {
@@ -98,6 +99,7 @@ public class PlayerModel
         }
 
         chunkInformation.timeCompleted = time;
+        chunkInformation.outOfTime = outOfTime;
         chunkInformation.completedChunk = completed;
         chunkInformation.hasSkippedTutorial = serializeData.GetSkippedTutorial();
         chunkInformation.difficultyScore = currentDifficultyScore;
@@ -122,7 +124,7 @@ public class PlayerModel
         // Increase difficulty;
         if (completed)
         {
-            currentDifficultyScore += lastChunk.Value.timeCompleted < 15 ? 10 : 5;
+            currentDifficultyScore += IncreaseDifficulty(lastChunk.Value);
 
             return GetTranningTypesForIncreasedDifficulty();
         }
@@ -143,11 +145,36 @@ public class PlayerModel
                 return previousTranningTypes;
             }
 
-            currentDifficultyScore -= lastChunk.Value.deathCount < 6 ? 5 : 10;
+            currentDifficultyScore -= DecreaseDifficulty(lastChunk.Value);
 
             // If all conditions above lead to this code we decrease the difficulty for the player.
             return GetTranningTypesForIncreasedDifficulty();
         }
+    }
+
+    private int IncreaseDifficulty(ChunkInformation chunk)
+    {
+        var increaseDifficulty = 0;
+        var totalDeaths = chunk.deathCount;
+
+        increaseDifficulty += chunk.completedChunk ? 5 : 0;
+        increaseDifficulty += chunk.timeCompleted < 20 ? 5 : 0;
+        increaseDifficulty += totalDeaths == 0 ? 5 : 0;
+
+        return increaseDifficulty;
+    }
+
+    private int DecreaseDifficulty(ChunkInformation chunk)
+    {
+        var decreaseDifficulty = 0;
+        var totalDeaths = chunk.deathCount;
+
+        decreaseDifficulty += chunk.completedChunk ? 0 : 5;
+        decreaseDifficulty += chunk.timeCompleted < 20 ? 0 : 5;
+        decreaseDifficulty += totalDeaths > 5 ? 10 : 0;
+        decreaseDifficulty += totalDeaths > 1 ? 5 : 0;
+
+        return decreaseDifficulty;
     }
 
     private (int, TranningType) ReturnDifficultyOfMechanic(int score)
@@ -174,6 +201,7 @@ public class PlayerModel
         chunkInformation.jumpDeaths++;
         lastTranningTypeFailure = TranningType.Long_Jump;
 
+        PCGEventManager.Instance.onPlayerDeath?.Invoke(chunkInformation.enemiesDeaths < 4);
         PCGEventManager.Instance.onPlayerModelUpdated(_previousChunkStats.Keys.Max());
     }
 
@@ -182,6 +210,7 @@ public class PlayerModel
         chunkInformation.fireBarDeaths++;
         lastTranningTypeFailure = TranningType.FireBar;
 
+        PCGEventManager.Instance.onPlayerDeath?.Invoke(chunkInformation.enemiesDeaths < 4);
         PCGEventManager.Instance.onPlayerModelUpdated(_previousChunkStats.Keys.Max());
     }
 
@@ -204,6 +233,7 @@ public class PlayerModel
 
         lastTranningTypeFailure = TranningType.Enemies;
 
+        PCGEventManager.Instance.onPlayerDeath?.Invoke(chunkInformation.enemiesDeaths < 4);
         PCGEventManager.Instance.onPlayerModelUpdated(_previousChunkStats.Keys.Max());
     }
 

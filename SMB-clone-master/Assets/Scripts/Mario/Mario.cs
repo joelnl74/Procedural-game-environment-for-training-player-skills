@@ -1,12 +1,10 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Mario : MonoBehaviour {
 	private LevelManager t_LevelManager;
 	private Transform m_GroundCheck1, m_GroundCheck2;
 	private Animator m_Animator;
 	private Rigidbody2D m_Rigidbody2D;
-	private CircleCollider2D m_CircleCollider2D;
 
 	public LayerMask GroundLayers;
 	public GameObject Fireball;
@@ -39,6 +37,8 @@ public class Mario : MonoBehaviour {
 	private float automaticWalkSpeedX;
 	private float automaticGravity;
 
+	private float deadUpTimer = .25f;
+
 	public float castleWalkSpeedX = 5.86f;
 	public float levelEntryWalkSpeedX = 3.05f;
 
@@ -57,6 +57,8 @@ public class Mario : MonoBehaviour {
 
 	public bool inputFreezed;
 
+	public bool isDying = false;
+
 	public Vector2 respawnPositionPCG;
 
 	// Use this for initialization
@@ -66,7 +68,6 @@ public class Mario : MonoBehaviour {
 		m_GroundCheck2 = transform.Find ("Ground Check 2");
 		m_Animator = GetComponent<Animator> ();
 		m_Rigidbody2D = GetComponent<Rigidbody2D> ();
-		m_CircleCollider2D = GetComponent<CircleCollider2D> ();
 		normalGravity = m_Rigidbody2D.gravityScale;
 
 		// Set correct size
@@ -274,10 +275,6 @@ public class Mario : MonoBehaviour {
 		}
 	}
 
-	public bool isDying = false;
-	float deadUpTimer = .25f;
-//	Vector2 deadUpVelocity = new Vector2 (0, 10f);
-//	Vector2 deadDownVelocity = new Vector2 (0, -15f);
 	public void FreezeAndDie() {
 		FreezeUserInput ();
 		isDying = true;

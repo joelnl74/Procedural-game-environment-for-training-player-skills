@@ -18,6 +18,7 @@ public class PCGEventManager : MonoSingleton<PCGEventManager>
     public Action<List<TranningType>> onTranningGoalsGenerated;
     public Action<int> onRegenerateChunk;
     public Action<int> onPlayerModelUpdated;
+    public Action<bool> onPlayerDeath;
 
     public Action<string> onShowMessage;
     public Action<int> onRegenerateLevelSelected;

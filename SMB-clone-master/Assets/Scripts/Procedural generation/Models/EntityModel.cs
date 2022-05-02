@@ -12,6 +12,7 @@ public enum EntityType
 public class EntityModel
 {
     public EntityType entityType;
+    public Enemytype enemytype;
     public GameObject gameObject;
     public int id;
     public int xPos;
@@ -24,5 +25,10 @@ public class EntityModel
         yPos = y;
         entityType = type;
         gameObject = go;
+    }
+
+    public void SetEnemyType(Enemytype type)
+    {
+        enemytype = type;
     }
 }

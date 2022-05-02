@@ -16,16 +16,18 @@ public class PlayerModelHandler : MonoBehaviour
     private List<TranningType> _tranningTypes;
 
     private float _timer;
+    private float _chunkTimer;
     private bool _outOfTime = false;
-    private bool _buttonPressed;
+    private bool _buttonPressed = false;
 
     private void Awake()
     {
         _index = (int)TranningType.Walking;
         _PCGEventManager = PCGEventManager.Instance;
         _playerModel = new PlayerModel(_PCGEventManager);
+        _chunkTimer = 30;
 
-        if(_playerModel.HasSafe())
+        if (_playerModel.HasSafe())
         {
             var lastCunk = _playerModel._previousChunkStats.Last();
             var tranningTypes = tranningModelHandler.Get();
@@ -42,7 +44,7 @@ public class PlayerModelHandler : MonoBehaviour
 
     private void OnDestroy()
     {
-        if(_PCGEventManager != null)
+        if (_PCGEventManager != null)
         {
             _PCGEventManager.onReachedEndOfChunk -= CheckEndOfChunk;
             _PCGEventManager.onPlayerModelUpdated -= HandlePlayerModelUpdated;
@@ -59,7 +61,9 @@ public class PlayerModelHandler : MonoBehaviour
 
     private void Update()
     {
-        if (_timer < 0 && _outOfTime == false)
+        _timer += Time.deltaTime;
+
+        if (_timer >= _chunkTimer && _outOfTime == false)
         {
             EndOfTimerReached();
         }
@@ -69,10 +73,16 @@ public class PlayerModelHandler : MonoBehaviour
             return;
         }
 
-        if (_outOfTime)
+        if (Input.GetKeyDown(KeyCode.RightArrow)
+            || Input.GetKeyDown(KeyCode.LeftArrow)
+            || Input.GetKeyDown(KeyCode.Z))
         {
-            // TODO show something that makes it clear the player has to move.
-            _PCGEventManager.onShowMessage?.Invoke("Try using WASD or The Arrow keys to move");
+            _buttonPressed = true;
+        }
+
+        if (_timer > 8 && _buttonPressed == false)
+        {
+            GetHelpText((TranningType)_index);
         }
     }
 
@@ -82,6 +92,39 @@ public class PlayerModelHandler : MonoBehaviour
     public List<TranningType> GetTranningTypes()
         => _tranningTypes;
 
+    private void GetHelpText(TranningType tranningType)
+    {
+        switch (tranningType)
+        {
+            case TranningType.None:
+                break;
+            case TranningType.Walking:
+                _PCGEventManager.onShowMessage?.Invoke("Use the arrow keys to move");
+                break;
+            case TranningType.Short_Jump:
+                _PCGEventManager.onShowMessage?.Invoke("Use the  arrows keys + Z key To jump");
+                break;
+            case TranningType.Medium_Jump:
+                _PCGEventManager.onShowMessage?.Invoke("Holding the Z key a bit longer to jump higher");
+                break;
+            case TranningType.Enemies:
+                _PCGEventManager.onShowMessage?.Invoke("Jumping on top or over the enemies by using the Z key");
+                break;
+            case TranningType.Long_Jump:
+                _PCGEventManager.onShowMessage?.Invoke("Holding the Z key a bit longer to jump higher");
+                break;
+            case TranningType.Platform:
+                _PCGEventManager.onShowMessage?.Invoke("Holding the Z key a bit longer to jump higher");
+                break;
+            case TranningType.FireBar:
+                _PCGEventManager.onShowMessage?.Invoke("Holding the Z key a bit longer to jump higher");
+                break;
+            default:
+                _PCGEventManager.onShowMessage?.Invoke("Use the arrows keys to move and Z to jump");
+                break;
+        }
+    }
+
     private void EndOfTimerReached()
     {
         _outOfTime = true;
@@ -89,7 +132,9 @@ public class PlayerModelHandler : MonoBehaviour
 
     private void SetTimer(float time)
     {
-        _timer = time;
+        _buttonPressed = false;
+        _timer = 0;
+        _chunkTimer = time;
         _outOfTime = false;
     }
 
@@ -124,7 +169,7 @@ public class PlayerModelHandler : MonoBehaviour
         if (isCoolDownChunk == false)
         {
             _failedIndex = _index; ;
-            _playerModel.UpdateChunkInformation(chunkId, _index, playerSucces, (int)_timer);
+            _playerModel.UpdateChunkInformation(chunkId, _index, playerSucces, (int)_timer, _outOfTime);
 
             _tranningTypes.Clear();
             _tranningTypes = GenerateTranningType(currentTranningType, playerSucces);

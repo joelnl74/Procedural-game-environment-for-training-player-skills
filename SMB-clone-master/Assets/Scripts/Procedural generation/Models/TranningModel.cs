@@ -17,7 +17,7 @@ public enum TranningType
 public class TranningModel
 {
     private int _totalPlacedObjects;
-    private const int _maxObjects = 8;
+    private const int _maxObjects = 9;
 
     public int WalkingSkill = 0;
     public int ShortJumpSkill = 0;
