@@ -11,6 +11,7 @@ public class MainMenu : MonoBehaviour {
 	[SerializeField] private Button _leaderboardButton;
 
 	public bool enableFireBase = false;
+	public bool deleteSave = false;
 
 	public GameObject VolumePanel;
 	public GameObject SoundSlider;
@@ -24,9 +25,15 @@ public class MainMenu : MonoBehaviour {
 		t_GameStateManager = FindObjectOfType<GameStateManager> ();
 		t_GameStateManager.ConfigNewGame ();
 
+		var serializeData = new SerializeData();
+
 		if (enableFireBase)
         {
 			FirebaseManager.Instance.Setup();
+		}
+		if (deleteSave)
+		{
+			serializeData.DeleteSave();
 		}
 
 		int currentHighScore = PlayerPrefs.GetInt ("highScore", 0);

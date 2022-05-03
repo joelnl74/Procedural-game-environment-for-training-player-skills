@@ -17,9 +17,10 @@ public class ChunkInformation
 
     public int index = 0;
 
-    public bool hasSkippedTutorial;
     public bool completedChunk = false;
     public bool outOfTime = false;
+
+    public List<TranningType> tranningTypes;
 
     public int GetTotalDeaths()
     {
@@ -39,6 +40,8 @@ public class PlayerModel
     private int _precentageElevation;
 
     public int currentDifficultyScore = 25;
+
+    private bool setupCompleted = false;
 
     public ChunkInformation chunkInformation = new ChunkInformation();
 
@@ -87,7 +90,7 @@ public class PlayerModel
     public void ResetChunkInformation()
         => chunkInformation = new ChunkInformation();
 
-    public void UpdateChunkInformation(int chunkId, int index, bool completed, int time, bool outOfTime)
+    public void UpdateChunkInformation(int chunkId, int index, bool completed, int time, bool outOfTime, List<TranningType> tranningTypes)
     {
         if (_previousChunkStats.ContainsKey(chunkId))
         {
@@ -101,13 +104,14 @@ public class PlayerModel
         chunkInformation.timeCompleted = time;
         chunkInformation.outOfTime = outOfTime;
         chunkInformation.completedChunk = completed;
-        chunkInformation.hasSkippedTutorial = serializeData.GetSkippedTutorial();
         chunkInformation.difficultyScore = currentDifficultyScore;
         chunkInformation.index = index;
+        chunkInformation.tranningTypes = tranningTypes;
 
         _previousChunkStats.Add(chunkId, chunkInformation);
         CalculatePrecentages();
 
+        _previousChunkStats = _previousChunkStats.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
         chunkInformation = new ChunkInformation();
     }
 
@@ -121,10 +125,17 @@ public class PlayerModel
         var lastChunk = _previousChunkStats.Last();
         var completed = lastChunk.Value.completedChunk;
 
+        if (lastChunk.Value.tranningTypes != null && previousTranningTypes.Count == 0 && setupCompleted == false)
+        {
+            setupCompleted = true;
+            currentDifficultyScore = lastChunk.Value.difficultyScore;
+
+            return GetTranningTypesForIncreasedDifficulty();
+        }
         // Increase difficulty;
         if (completed)
         {
-            currentDifficultyScore += IncreaseDifficulty(lastChunk.Value);
+            currentDifficultyScore = Mathf.Clamp(currentDifficultyScore + IncreaseDifficulty(lastChunk.Value), 1, 100);
 
             return GetTranningTypesForIncreasedDifficulty();
         }
@@ -137,7 +148,7 @@ public class PlayerModel
                 return previousTranningTypes;
             }
 
-            var hasFailedPreviousChunk = _previousChunkStats[_previousChunkStats.Count - 2].completedChunk;
+            var hasFailedPreviousChunk = lastChunk.Value.completedChunk;
 
             // If chunk before last one also failed and total death count of last chunk is smaller or equal to two generate same type of level.
             if (hasFailedPreviousChunk == false && lastChunk.Value.deathCount <= 2)
@@ -145,7 +156,7 @@ public class PlayerModel
                 return previousTranningTypes;
             }
 
-            currentDifficultyScore -= DecreaseDifficulty(lastChunk.Value);
+            currentDifficultyScore = Mathf.Clamp(currentDifficultyScore - DecreaseDifficulty(lastChunk.Value), 1, 100);
 
             // If all conditions above lead to this code we decrease the difficulty for the player.
             return GetTranningTypesForIncreasedDifficulty();
@@ -181,7 +192,7 @@ public class PlayerModel
     {
         // TODO frequencies take into account failures and take into account current difficulty level.
         int[] arr = { 0, 1, 2, 3, 4 };
-        int[] freq = { _precentageElevation, _precentageEnemyDeaths, _precentageJumpDeaths, 15, currentDifficultyScore > 59 ? _precentageFireBarDeaths : 0 };
+        int[] freq = { _precentageElevation, _precentageEnemyDeaths, _precentageJumpDeaths, 20, currentDifficultyScore > 59 ? _precentageFireBarDeaths : 0 };
 
         var type = myRand(arr, freq);
 
@@ -258,10 +269,9 @@ public class PlayerModel
 
         var total = totalEnemyDeaths + totalJumpDeaths + totalFireBarDeaths;
 
-        // TODO add clamps.
-        var precentageEnemyDeaths = totalEnemyDeaths != 0 ? Mathf.Clamp(totalEnemyDeaths / total * 100, 10, 100) : 50;
-        var precentageJumpDeaths = totalJumpDeaths != 0 ? Mathf.Clamp(totalJumpDeaths / total * 100, 10, 100) : 20;
-        var precentageFireBarDeaths = totalFireBarDeaths != 0 ? Mathf.Clamp(totalFireBarDeaths / total * 100, 10, 35) : 30;
+        var precentageEnemyDeaths = totalEnemyDeaths != 0 ? Mathf.Clamp(totalEnemyDeaths / total * 100, 10, 90) : 45;
+        var precentageJumpDeaths = totalJumpDeaths != 0 ? Mathf.Clamp(totalJumpDeaths / total * 100, 10, 90) : 20;
+        var precentageFireBarDeaths = totalFireBarDeaths != 0 ? Mathf.Clamp(totalFireBarDeaths / total * 100, 10, 40) : 15;
 
         _precentageEnemyDeaths = precentageEnemyDeaths;
         _precentageJumpDeaths = precentageJumpDeaths;
@@ -275,7 +285,7 @@ public class PlayerModel
         var completed = false;
         List<TranningType> tranningTypes = new List<TranningType>();
 
-        while(completed == false)
+        while (completed == false)
         {
             var difference = currentDifficultyScore - current;
 
@@ -286,6 +296,12 @@ public class PlayerModel
             }
 
             var type = ReturnDifficultyOfMechanic(difference);
+
+            if (type.Item2 == TranningType.Enemies)
+            {
+                var count = tranningTypes.Count(x => x == TranningType.Enemies);
+                current += count;
+            }
 
             tranningTypes.Add(type.Item2);
             current += type.Item1;

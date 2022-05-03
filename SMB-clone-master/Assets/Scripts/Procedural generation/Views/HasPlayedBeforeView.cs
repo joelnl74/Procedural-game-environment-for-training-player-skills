@@ -8,8 +8,6 @@ public class HasPlayedBeforeView : MonoBehaviour
     [SerializeField] private Button _noButton;
     [SerializeField] private Button _quitButton;
 
-    [SerializeField] private bool deleteSave;
-
     [SerializeField] private CanvasGroup canvasGroup;
 
     [SerializeField] private SkillsCollectionConfiguration skillsCollection;
@@ -23,10 +21,6 @@ public class HasPlayedBeforeView : MonoBehaviour
         _serializeData = new SerializeData();
         _firebaseManager = FirebaseManager.Instance;
 
-        if (deleteSave)
-        {
-            _serializeData.DeleteSave();
-        }
         if (_serializeData.ContainsSkippedTutorial())
         {
             Disable();

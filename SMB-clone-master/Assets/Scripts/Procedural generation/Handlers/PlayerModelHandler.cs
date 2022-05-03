@@ -68,6 +68,11 @@ public class PlayerModelHandler : MonoBehaviour
             EndOfTimerReached();
         }
 
+        if(_timer >= 30)
+        {
+            GetHelpText((TranningType)_index);
+        }
+
         if (_buttonPressed)
         {
             return;
@@ -169,7 +174,7 @@ public class PlayerModelHandler : MonoBehaviour
         if (isCoolDownChunk == false)
         {
             _failedIndex = _index; ;
-            _playerModel.UpdateChunkInformation(chunkId, _index, playerSucces, (int)_timer, _outOfTime);
+            _playerModel.UpdateChunkInformation(chunkId, _index, playerSucces, (int)_timer, _outOfTime, _tranningTypes);
 
             _tranningTypes.Clear();
             _tranningTypes = GenerateTranningType(currentTranningType, playerSucces);
