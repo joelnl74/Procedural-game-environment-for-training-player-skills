@@ -50,6 +50,17 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
         var task = database.RootReference.Child("users").Child(user.UserId).Child("playerInfo").SetRawJsonValueAsync(data);
     }
 
+    public void SetSkippedTutorial(bool skipped)
+    {
+        if (setup == false)
+        {
+            return;
+        }
+
+        var data = $"HasSkippedTutrial : {skipped}";
+        var task = database.RootReference.Child("users").Child(user.UserId).SetRawJsonValueAsync(data);
+    }
+
     public void LoadLeaderboardAsync()
     {
         StartCoroutine(GetLeaderBoards());

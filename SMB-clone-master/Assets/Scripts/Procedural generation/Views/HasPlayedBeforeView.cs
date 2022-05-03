@@ -15,11 +15,13 @@ public class HasPlayedBeforeView : MonoBehaviour
     [SerializeField] private SkillsCollectionConfiguration skillsCollection;
 
     private SerializeData _serializeData;
+    private FirebaseManager _firebaseManager;
 
     // Start is called before the first frame update
     private void Start()
     {
         _serializeData = new SerializeData();
+        _firebaseManager = FirebaseManager.Instance;
 
         if (deleteSave)
         {
@@ -49,6 +51,7 @@ public class HasPlayedBeforeView : MonoBehaviour
     private void OnContinuePressed()
     {
         _serializeData.SetSkippedTutorial(true);
+        _firebaseManager.SetSkippedTutorial(true);
         _serializeData.SaveData(new Dictionary<int, ChunkInformation>
         {
             { 1, new ChunkInformation
@@ -70,6 +73,7 @@ public class HasPlayedBeforeView : MonoBehaviour
     private void NoButtonPressed()
     {
         _serializeData.SetSkippedTutorial(false);
+        _firebaseManager.SetSkippedTutorial(false);
         Disable();
     }
 
