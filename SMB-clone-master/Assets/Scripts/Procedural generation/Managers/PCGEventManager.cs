@@ -10,12 +10,12 @@ public enum Enemytype
 
 public class PCGEventManager : MonoSingleton<PCGEventManager>
 {
-    public Action<int, bool, List<TranningType>> onReachedEndOfChunk;
+    public Action<int, bool, List<TrainingType>> onReachedEndOfChunk;
     public Action<Enemytype> onDeathByEnemy;
     public Action<Enemytype> onKilledEnemy;
     public Action onFallDeath;
     public Action onDeathByFireBar;
-    public Action<List<TranningType>> onTranningGoalsGenerated;
+    public Action<List<TrainingType>> onTranningGoalsGenerated;
     public Action<int> onRegenerateChunk;
     public Action<int> onPlayerModelUpdated;
     public Action<bool> onPlayerDeath;

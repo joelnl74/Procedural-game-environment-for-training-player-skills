@@ -7,11 +7,11 @@ public class EndOfChunkCollider : MonoBehaviour
 
     private int _chunkId;
     private bool _isCooldownChunk;
-    private List<TranningType> _tranningTypes;
+    private List<TrainingType> _tranningTypes;
 
     private bool _triggerd = false;
 
-    public void Setup(int chunkId, bool isCooldownChunk, List<TranningType> tranningTypes)
+    public void Setup(int chunkId, bool isCooldownChunk, List<TrainingType> tranningTypes)
     {
         _chunkId = chunkId;
         _tranningTypes = tranningTypes;

@@ -23,9 +23,9 @@ public class PCGView : MonoBehaviour
         ShowRegenerateDialog(false);
     }
 
-    public void SetGoals(List<TranningType> tranningTypes)
+    public void SetGoals(List<TrainingType> tranningTypes)
     {
-        var addedTypes = new List<TranningType>();
+        var addedTypes = new List<TrainingType>();
 
         _goaltext.text = "";
 

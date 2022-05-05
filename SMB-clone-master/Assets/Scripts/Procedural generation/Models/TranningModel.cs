@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum TranningType
+public enum TrainingType
 {
     None = 0,
     Walking = 1,
@@ -36,7 +36,7 @@ public class TranningModel
         _skillsCollectionConfiguration = skillsCollectionConfiguration;
     }
 
-    public void SetAdaptiveTranningType(List<TranningType> items, int difficulty)
+    public void SetAdaptiveTranningType(List<TrainingType> items, int difficulty)
     {
         Difficulty = difficulty;
 
@@ -51,35 +51,35 @@ public class TranningModel
 
             switch (traningSkill)
             {
-                case TranningType.None:
+                case TrainingType.None:
                     break;
-                case TranningType.Walking:
+                case TrainingType.Walking:
                     break;
-                case TranningType.Short_Jump:
+                case TrainingType.Short_Jump:
                     ShortJumpSkill += 1;
                     _totalPlacedObjects += ShortJumpSkill;
                     break;
-                case TranningType.Medium_Jump:
+                case TrainingType.Medium_Jump:
                     MediumJumpSkill += 1;
                     break;
-                case TranningType.Enemies:
+                case TrainingType.Enemies:
                     EnemySkill += 1;
                     break;
-                case TranningType.Long_Jump:
+                case TrainingType.Long_Jump:
                     LongJumpSkill += 1;
                     break;
-                case TranningType.FireBar:
+                case TrainingType.FireBar:
                     FireBarSkill += 1;
                     break;
-                case TranningType.Platform:
+                case TrainingType.Platform:
                     HighJumpSkill += 1;
                     break;
-                case TranningType.BasicsTest:
+                case TrainingType.BasicsTest:
                 default:
                     break;
             }
 
-            _totalPlacedObjects += traningSkill != TranningType.Enemies ? 1 : 0;
+            _totalPlacedObjects += traningSkill != TrainingType.Enemies ? 1 : 0;
         }
     }
 
@@ -98,35 +98,35 @@ public class TranningModel
 
             switch (traningSkill.tranningType)
             {
-                case TranningType.None:
+                case TrainingType.None:
                     break;
-                case TranningType.Walking:
+                case TrainingType.Walking:
                     break;
-                case TranningType.Short_Jump:
+                case TrainingType.Short_Jump:
                     ShortJumpSkill += Random.Range(traningSkill.min, traningSkill.max);
                     _totalPlacedObjects += ShortJumpSkill;
                     break;
-                case TranningType.Medium_Jump:
+                case TrainingType.Medium_Jump:
                     MediumJumpSkill += Random.Range(traningSkill.min, traningSkill.max);
                     _totalPlacedObjects += MediumJumpSkill;
                     break;
-                case TranningType.Enemies:
+                case TrainingType.Enemies:
                     EnemySkill += Random.Range(traningSkill.min, traningSkill.max);
                     _totalPlacedObjects += EnemySkill;
                     break;
-                case TranningType.Long_Jump:
+                case TrainingType.Long_Jump:
                     LongJumpSkill += Random.Range(traningSkill.min, traningSkill.max);
                     _totalPlacedObjects += LongJumpSkill;
                     break;
-                case TranningType.FireBar:
+                case TrainingType.FireBar:
                     FireBarSkill += Random.Range(traningSkill.min, traningSkill.max);
                     _totalPlacedObjects += FireBarSkill;
                     break;
-                case TranningType.Platform:
+                case TrainingType.Platform:
                     HighJumpSkill += Random.Range(traningSkill.min, traningSkill.max);
                     _totalPlacedObjects += HighJumpSkill;
                     break;
-                case TranningType.BasicsTest:
+                case TrainingType.BasicsTest:
                 default:
                     break;
             }

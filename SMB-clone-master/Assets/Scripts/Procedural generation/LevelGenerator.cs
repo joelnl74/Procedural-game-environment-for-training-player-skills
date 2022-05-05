@@ -80,7 +80,7 @@ public class LevelGenerator : MonoBehaviour
         _groundBlock = overworld == true ? _groundBlockOver : _groundBlockUnder;
     }
 
-    public void ReachedEndOfChunk(int id, List<TranningType> tranningTypes)
+    public void ReachedEndOfChunk(int id, List<TrainingType> tranningTypes)
     {
         var currentId = id - 1;
         if (currentId == 0)
@@ -210,7 +210,7 @@ public class LevelGenerator : MonoBehaviour
         _previousChunkWidthEnd += _maxCooldownWidth;
     }
 
-    private Vector2Int GetEmptySpotOnMap(int chunkId, TranningType tranningType)
+    private Vector2Int GetEmptySpotOnMap(int chunkId, TrainingType tranningType)
     {
         var randomXPos = Random.Range(_previousChunkWidthEnd + 1, _previousChunkWidthEnd + _maxWidth - 1);
         var entities = _entities[chunkId];
@@ -225,7 +225,7 @@ public class LevelGenerator : MonoBehaviour
 
                 if (ypos > highestYpos)
                 {
-                    if (tranningType == TranningType.FireBar)
+                    if (tranningType == TrainingType.FireBar)
                     {
                         var id = GetId(entityValue.xPos - 1, entityValue.yPos, chunkId);
                         var PreviousEntity = entities.ContainsKey(id);
@@ -286,11 +286,11 @@ public class LevelGenerator : MonoBehaviour
             var xPos = Random.Range(minX, maxX - model.width);
             var previousBlockHeigth = FindBlockHighestPosition(chunkId, xPos, model.heigth);
 
-            var modelHeigth = previousBlockHeigth + model.heigth;
-            var maxHeigth = Mathf.Clamp(modelHeigth, 0, Mathf.Min(modelHeigth, 4));
+            var columnHeigth = previousBlockHeigth + model.heigth;
+            var increasedHeigth = Mathf.Clamp(columnHeigth, previousBlockHeigth, Mathf.Min(columnHeigth, previousBlockHeigth + 4));
 
             var beginposition = new Vector2Int(xPos, 1);
-            var endPosition = new Vector2Int(xPos + model.width, previousBlockHeigth + maxHeigth);
+            var endPosition = new Vector2Int(xPos + model.width, increasedHeigth);
 
             var chunk = _chunks[chunkId];
 
@@ -304,7 +304,7 @@ public class LevelGenerator : MonoBehaviour
 
         foreach (var model in _tranningModelHandler.fireBarModels)
         {
-            var emptySpot = GetEmptySpotOnMap(chunkId, TranningType.FireBar);
+            var emptySpot = GetEmptySpotOnMap(chunkId, TrainingType.FireBar);
 
             GenerateFireBar(emptySpot.x, emptySpot.y, chunk);
         }
@@ -319,17 +319,25 @@ public class LevelGenerator : MonoBehaviour
         foreach (var model in _tranningModelHandler.platformModels)
         {
             var xPos = Random.Range(minX, maxX - model.width);
-            var yPos = FindBlockHighestPosition(chunkId, xPos, model.heigth) + model.heigth + 1;
+            var yPos = FindBlockHighestPosition(chunkId, xPos, model.heigth) + model.heigth;
 
             var beginposition = new Vector2Int(xPos, yPos);
-            var endPosition = new Vector2Int(xPos + model.width, yPos + 1);
+            var endPosition = new Vector2Int(xPos + model.width, yPos);
 
             GenerateBlocks(beginposition, endPosition, chunk, model.hasSpecialBlocks);
 
             if (model.hasEnemies)
             {
-                // TODO goomba or turtle
-                GenerateGoomba(chunk, endPosition);
+                var type = Random.Range(0, 2);
+
+                if (type == 0)
+                {
+                    GenerateGoomba(chunk, endPosition);
+                }
+                else
+                {
+                    GenerateShell(chunk, endPosition);
+                }
             }
             if (model.hasCoins)
             {
@@ -361,7 +369,7 @@ public class LevelGenerator : MonoBehaviour
 
         for(int i = 0; i < spawnCoins; i++)
         {
-            var emptySpot = GetEmptySpotOnMap(chunkId, TranningType.Walking);
+            var emptySpot = GetEmptySpotOnMap(chunkId, TrainingType.Walking);
 
             GenerateCoin(emptySpot.x, emptySpot.y, chunk);
         }
@@ -375,7 +383,7 @@ public class LevelGenerator : MonoBehaviour
 
         foreach (var model in _tranningModelHandler.enemyModels)
         {
-            var emptySpot = GetEmptySpotOnMap(chunkId, TranningType.Enemies);
+            var emptySpot = GetEmptySpotOnMap(chunkId, TrainingType.Enemies);
             var position = new Vector2Int(emptySpot.x, emptySpot.y);
 
             switch(model.enemytype)
@@ -414,6 +422,11 @@ public class LevelGenerator : MonoBehaviour
 
     private void GenerateCoin(int x, int y, GameObject chunk)
     {
+        if (CheckId(x, y, _lastGeneratedChunk))
+        {
+            return;
+        }
+
         var go = Instantiate(_coin, chunk.transform);
         var pos = new Vector2(x, y);
         var entityModel = new EntityModel();
@@ -426,6 +439,11 @@ public class LevelGenerator : MonoBehaviour
 
     private void GenerateFireBar(int x, int y, GameObject chunk)
     {
+        if (CheckId(x, y, _lastGeneratedChunk))
+        {
+            return;
+        }
+
         var go = Instantiate(_fireBar, chunk.transform);
         var pos = new Vector2(x, y);
         var entityModel = new EntityModel();
@@ -434,15 +452,16 @@ public class LevelGenerator : MonoBehaviour
         go.transform.position = pos;
 
         AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), entityModel, go, EntityType.FireBar);
+
     }
 
     private void GenerateBlocks(Vector2Int begin, Vector2Int end, GameObject chunk, bool hasSpecial = false, bool stayAtHeigth = false)
     {
         var endPointX = stayAtHeigth == false ? end.x : _previousChunkWidthEnd + _maxWidth;
 
-        for(int x = begin.x; x < endPointX; x++)
+        for(int x = begin.x; x <= endPointX; x++)
         {
-            for(int y = begin.y; y < end.y; y++)
+            for(int y = begin.y; y <= end.y; y++)
             {
                 if (y >= _maxHeigth)
                     break;

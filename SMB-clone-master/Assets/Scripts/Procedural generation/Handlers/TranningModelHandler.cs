@@ -19,7 +19,7 @@ public class TranningModelHandler : MonoBehaviour
         model.SetPlayerSkillConfiguration(_skillsCollection);
 
         // TODO Load in from external file.
-        model.SetTranningType((int)TranningType.Walking);
+        model.SetTranningType((int)TrainingType.Walking);
     }
 
     public SkillsCollectionConfiguration Get()
@@ -33,7 +33,7 @@ public class TranningModelHandler : MonoBehaviour
         GenerateMediumJumpModels();
         GenerateEnemies(1);
         GenerateLongJumpModels();
-        GeneratePlatformModels(2, 5, 2, 4, 0, false, true, true, false);
+        GeneratePlatformModels(2, 5, 2, 5, 0, false, true, true, false);
         GenerateFireBarModel();
     }
 

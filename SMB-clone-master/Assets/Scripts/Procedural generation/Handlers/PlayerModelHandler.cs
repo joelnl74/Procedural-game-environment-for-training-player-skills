@@ -13,7 +13,7 @@ public class PlayerModelHandler : MonoBehaviour
     private int _index;
     private int _failedIndex;
 
-    private List<TranningType> _tranningTypes;
+    private List<TrainingType> _tranningTypes;
 
     private float _timer;
     private float _chunkTimer;
@@ -22,7 +22,7 @@ public class PlayerModelHandler : MonoBehaviour
 
     private void Awake()
     {
-        _index = (int)TranningType.Walking;
+        _index = (int)TrainingType.Walking;
         _PCGEventManager = PCGEventManager.Instance;
         _playerModel = new PlayerModel(_PCGEventManager);
         _chunkTimer = 30;
@@ -35,7 +35,7 @@ public class PlayerModelHandler : MonoBehaviour
             _index = Mathf.Clamp(lastCunk.Value.index, 1, tranningTypes.skillParameters.Count - 1);
         }
 
-        _tranningTypes = new List<TranningType> { TranningType.Walking };
+        _tranningTypes = new List<TrainingType> { TrainingType.Walking };
 
         _PCGEventManager.onReachedEndOfChunk += CheckEndOfChunk;
         _PCGEventManager.onPlayerModelUpdated += HandlePlayerModelUpdated;
@@ -70,7 +70,7 @@ public class PlayerModelHandler : MonoBehaviour
 
         if(_timer >= 30)
         {
-            GetHelpText((TranningType)_index);
+            GetHelpText((TrainingType)_index);
         }
 
         if (_buttonPressed)
@@ -87,41 +87,41 @@ public class PlayerModelHandler : MonoBehaviour
 
         if (_timer > 8 && _buttonPressed == false)
         {
-            GetHelpText((TranningType)_index);
+            GetHelpText((TrainingType)_index);
         }
     }
 
     public int GetDifficulty()
         => _playerModel.currentDifficultyScore;
 
-    public List<TranningType> GetTranningTypes()
+    public List<TrainingType> GetTranningTypes()
         => _tranningTypes;
 
-    private void GetHelpText(TranningType tranningType)
+    private void GetHelpText(TrainingType tranningType)
     {
         switch (tranningType)
         {
-            case TranningType.None:
+            case TrainingType.None:
                 break;
-            case TranningType.Walking:
+            case TrainingType.Walking:
                 _PCGEventManager.onShowMessage?.Invoke("Use the arrow keys to move");
                 break;
-            case TranningType.Short_Jump:
+            case TrainingType.Short_Jump:
                 _PCGEventManager.onShowMessage?.Invoke("Use the  arrows keys + Z key To jump");
                 break;
-            case TranningType.Medium_Jump:
+            case TrainingType.Medium_Jump:
                 _PCGEventManager.onShowMessage?.Invoke("Holding the Z key a bit longer to jump higher");
                 break;
-            case TranningType.Enemies:
+            case TrainingType.Enemies:
                 _PCGEventManager.onShowMessage?.Invoke("Jumping on top or over the enemies by using the Z key");
                 break;
-            case TranningType.Long_Jump:
+            case TrainingType.Long_Jump:
                 _PCGEventManager.onShowMessage?.Invoke("Holding the Z key a bit longer to jump higher");
                 break;
-            case TranningType.Platform:
+            case TrainingType.Platform:
                 _PCGEventManager.onShowMessage?.Invoke("Holding the Z key a bit longer to jump higher");
                 break;
-            case TranningType.FireBar:
+            case TrainingType.FireBar:
                 _PCGEventManager.onShowMessage?.Invoke("Holding the Z key a bit longer to jump higher");
                 break;
             default:
@@ -149,10 +149,10 @@ public class PlayerModelHandler : MonoBehaviour
     /// <param name="chunkId">Chunk id.</param>
     /// <param name="isCoolDownChunk">Cooldown chunk.</param>
     /// <param name="chunkTranningTypes">Tranning types in the chunk.</param>
-    private void CheckEndOfChunk(int chunkId, bool isCoolDownChunk, List<TranningType> chunkTranningTypes)
+    private void CheckEndOfChunk(int chunkId, bool isCoolDownChunk, List<TrainingType> chunkTranningTypes)
     {
         var playerSucces = false;
-        var currentTranningType = (TranningType)_index;
+        var currentTranningType = (TrainingType)_index;
 
         if (isCoolDownChunk == false)
         {
@@ -181,7 +181,7 @@ public class PlayerModelHandler : MonoBehaviour
         }
         else
         {
-            tranningModelHandler.model.SetTranningType((int)TranningType.Medium_Jump);
+            tranningModelHandler.model.SetTranningType((int)TrainingType.Medium_Jump);
         }
 
         tranningModelHandler.GenerateModelsBasedOnSkill();
@@ -193,18 +193,18 @@ public class PlayerModelHandler : MonoBehaviour
         SetTimer(30);
     }
 
-    private string GetTipText(TranningType tranningType)
+    private string GetTipText(TrainingType tranningType)
     {
         switch (tranningType)
         {
-            case TranningType.Enemies:
+            case TrainingType.Enemies:
 
                 return "Try jumping on top of the enemies!";
-            case TranningType.Long_Jump:
+            case TrainingType.Long_Jump:
                 return "Try jumping timing your jumps a bit better!";
-            case TranningType.Platform:
+            case TrainingType.Platform:
                 return "Try jumping timing your jumps a bit better!";
-            case TranningType.FireBar:
+            case TrainingType.FireBar:
                 return "Try jumping timing your jumps based on the position of the fire bar!";
         }
 
@@ -216,7 +216,7 @@ public class PlayerModelHandler : MonoBehaviour
     /// </summary>
     /// <param name="currentTypes">Previous chunk tranning types.</param>
     /// <returns></returns>
-    private List<TranningType> GenerateTranningType(TranningType previousTranningTypes, bool succes)
+    private List<TrainingType> GenerateTranningType(TrainingType previousTranningTypes, bool succes)
     {
         var tranningTypes = tranningModelHandler.Get();
 
@@ -230,7 +230,7 @@ public class PlayerModelHandler : MonoBehaviour
             return adaptiveTypes;
         }
 
-        var types = new List<TranningType>();
+        var types = new List<TrainingType>();
 
         _index = Mathf.Clamp(succes ? _index + 1 : _index - 1, 0, tranningTypes.skillParameters.Count - 1);
 
@@ -246,25 +246,25 @@ public class PlayerModelHandler : MonoBehaviour
         return types;
     }
 
-    private bool DidCompleteTranningType(TranningType type)
+    private bool DidCompleteTranningType(TrainingType type)
     {
         switch (type)
         {
-            case TranningType.None:
+            case TrainingType.None:
                 return true;
-            case TranningType.Walking:
+            case TrainingType.Walking:
                 return DidCompleteWalkingTranning();
-            case TranningType.Short_Jump:
+            case TrainingType.Short_Jump:
                 return DidCompleteJumpTranning();
-            case TranningType.Medium_Jump:
+            case TrainingType.Medium_Jump:
                 return DidCompleteJumpTranning();
-            case TranningType.Enemies:
+            case TrainingType.Enemies:
                 return DidCompleteEnemies();
-            case TranningType.Long_Jump:
+            case TrainingType.Long_Jump:
                 return DidCompleteJumpTranning();
-            case TranningType.Platform:
+            case TrainingType.Platform:
                 return DidCompletePlatformTranning();
-            case TranningType.BasicsTest:
+            case TrainingType.BasicsTest:
                 break;
         }
 
@@ -285,7 +285,7 @@ public class PlayerModelHandler : MonoBehaviour
     {
         _tranningTypes.Clear();
 
-        var currentTranningType = (TranningType)_index;
+        var currentTranningType = (TrainingType)_index;
 
         _tranningTypes = GenerateTranningType(currentTranningType, false);
 

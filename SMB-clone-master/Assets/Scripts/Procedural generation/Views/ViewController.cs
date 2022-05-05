@@ -29,7 +29,7 @@ public class ViewController : MonoBehaviour
         }
     }
 
-    private void OnReceivedTranningTypes(List<TranningType> tranningTypes)
+    private void OnReceivedTranningTypes(List<TrainingType> tranningTypes)
     {
         _view.SetGoals(tranningTypes);
     }
