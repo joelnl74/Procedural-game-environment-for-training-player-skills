@@ -1,17 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Coin : MonoBehaviour {
+public class Coin : MonoBehaviour 
+{
 	private LevelManager t_LevelManager;
 
 	// Use this for initialization
-	void Start () {
+	void Start () 
+	{
 		t_LevelManager = FindObjectOfType<LevelManager> ();
 	}
 	
-	void OnTriggerEnter2D(Collider2D other) {
-		if (other.gameObject.tag == "Player") {
+	void OnTriggerEnter2D(Collider2D other) 
+	{
+		if (other.gameObject.tag == "Player") 
+		{
+			PCGEventManager.Instance.onCollectedCoin?.Invoke();
 			t_LevelManager.AddCoin ();
 			Destroy (gameObject);
 		}

@@ -13,7 +13,8 @@ public class PlayerModelHandler : MonoBehaviour
     private int _index;
     private int _failedIndex;
 
-    private List<TrainingType> _tranningTypes;
+    private List<TrainingType> _tranningTypes = new List<TrainingType>();
+    private List<TrainingType> _failedTrainingTypes = new List<TrainingType>();
 
     private float _timer;
     private float _chunkTimer;
@@ -149,12 +150,12 @@ public class PlayerModelHandler : MonoBehaviour
     /// <param name="chunkId">Chunk id.</param>
     /// <param name="isCoolDownChunk">Cooldown chunk.</param>
     /// <param name="chunkTranningTypes">Tranning types in the chunk.</param>
-    private void CheckEndOfChunk(int chunkId, bool isCoolDownChunk, List<TrainingType> chunkTranningTypes)
+    private void CheckEndOfChunk(int chunkId, int coins, bool isCoolDownChunk, List<TrainingType> chunkTranningTypes)
     {
         var playerSucces = false;
         var currentTranningType = (TrainingType)_index;
 
-        if (isCoolDownChunk == false)
+        if (isCoolDownChunk == false && _outOfTime == false)
         {
             foreach (var tranningType in chunkTranningTypes)
             {
@@ -166,18 +167,23 @@ public class PlayerModelHandler : MonoBehaviour
                 }
             }
         }
-        else
+        else if (isCoolDownChunk == true)
         {
             playerSucces = true;
+        }
+
+        if (playerSucces == false && isCoolDownChunk == false)
+        {
+            _failedIndex = _index;
+            _failedTrainingTypes = _tranningTypes;
         }
         
         if (isCoolDownChunk == false)
         {
-            _failedIndex = _index; ;
-            _playerModel.UpdateChunkInformation(chunkId, _index, playerSucces, (int)_timer, _outOfTime, _tranningTypes);
+            _playerModel.UpdateChunkInformation(chunkId, _index, coins, playerSucces, (int)_timer, _outOfTime, _tranningTypes);
 
             _tranningTypes.Clear();
-            _tranningTypes = GenerateTranningType(currentTranningType, playerSucces);
+            _tranningTypes = GenerateTranningType(_failedTrainingTypes, playerSucces);
         }
         else
         {
@@ -187,7 +193,11 @@ public class PlayerModelHandler : MonoBehaviour
         tranningModelHandler.GenerateModelsBasedOnSkill();
         _levelGenerator.ReachedEndOfChunk(chunkId, _tranningTypes);
 
-        _PCGEventManager.onShowMessage?.Invoke(playerSucces ? "Well done increasing difficulty!" : GetTipText(_playerModel.lastTranningTypeFailure));
+        if (isCoolDownChunk == false)
+        {
+            _PCGEventManager.onShowMessage?.Invoke(playerSucces ? "Well done increasing difficulty!" : GetTipText(_playerModel.lastTranningTypeFailure));
+        }
+
         _PCGEventManager.onTranningGoalsGenerated?.Invoke(_tranningTypes);
 
         SetTimer(30);
@@ -216,14 +226,14 @@ public class PlayerModelHandler : MonoBehaviour
     /// </summary>
     /// <param name="currentTypes">Previous chunk tranning types.</param>
     /// <returns></returns>
-    private List<TrainingType> GenerateTranningType(TrainingType previousTranningTypes, bool succes)
+    private List<TrainingType> GenerateTranningType(List<TrainingType> previousFailedTraningTypes, bool succes)
     {
         var tranningTypes = tranningModelHandler.Get();
 
         // Has completed basic list, now work on adaptive part;
         if(_index + 1 >= tranningTypes.skillParameters.Count)
         {
-            var adaptiveTypes = _playerModel.GetTranningTypes(_tranningTypes);
+            var adaptiveTypes = _playerModel.GetTranningTypes(_tranningTypes, previousFailedTraningTypes);
 
             tranningModelHandler.model.SetAdaptiveTranningType(adaptiveTypes, _playerModel.currentDifficultyScore);
 
@@ -283,11 +293,7 @@ public class PlayerModelHandler : MonoBehaviour
 
     private void HandleRegenerateLevel(int chunkId)
     {
-        _tranningTypes.Clear();
-
         var currentTranningType = (TrainingType)_index;
-
-        _tranningTypes = GenerateTranningType(currentTranningType, false);
 
         tranningModelHandler.GenerateModelsBasedOnSkill();
         _PCGEventManager.onRegenerateChunk?.Invoke(chunkId);

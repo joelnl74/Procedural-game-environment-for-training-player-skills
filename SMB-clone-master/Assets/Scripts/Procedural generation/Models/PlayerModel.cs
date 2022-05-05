@@ -12,7 +12,7 @@ public class ChunkInformation
     public int fireBarDeaths = 0;
     public int timeCompleted;
 
-    public int totalCoinsInChunk = 0;
+    public int totalCoinsAvailable = 0;
     public int totalCoinsCollected = 0;
 
     public int difficultyScore = 0;
@@ -62,6 +62,7 @@ public class PlayerModel
         eventManager.onKilledEnemy += HandleKilledEnemy;
         eventManager.onDeathByFireBar += HandleDeathByFireBar;
         eventManager.onSaveData += SaveDataToFirebase;
+        eventManager.onCollectedCoin += HandleOnCollectedCoin;
 
         serializeData = new SerializeData();
 
@@ -84,6 +85,7 @@ public class PlayerModel
         eventManager.onKilledEnemy -= HandleKilledEnemy;
         eventManager.onDeathByFireBar -= HandleDeathByFireBar;
         eventManager.onSaveData -= SaveDataToFirebase;
+        eventManager.onCollectedCoin -= HandleOnCollectedCoin;
     }
 
     public bool HasSafe()
@@ -91,10 +93,15 @@ public class PlayerModel
         return _previousChunkStats.Count > 0;
     }
 
+    private void HandleOnCollectedCoin()
+    {
+        chunkInformation.totalCoinsCollected++;
+    }
+
     public void ResetChunkInformation()
         => chunkInformation = new ChunkInformation();
 
-    public void UpdateChunkInformation(int chunkId, int index, bool completed, int time, bool outOfTime, List<TrainingType> tranningTypes)
+    public void UpdateChunkInformation(int chunkId, int index, int coins, bool completed, int time, bool outOfTime, List<TrainingType> tranningTypes)
     {
         if (_previousChunkStats.ContainsKey(chunkId))
         {
@@ -110,6 +117,7 @@ public class PlayerModel
         chunkInformation.completedChunk = completed;
         chunkInformation.difficultyScore = currentDifficultyScore;
         chunkInformation.index = index;
+        chunkInformation.totalCoinsAvailable = coins;
         chunkInformation.tranningTypes = tranningTypes;
 
         _previousChunkStats.Add(chunkId, chunkInformation);
@@ -124,7 +132,7 @@ public class PlayerModel
         serializeData.SaveData(_previousChunkStats);
     }
 
-    public List<TrainingType> GetTranningTypes(List<TrainingType> previousTranningTypes)
+    public List<TrainingType> GetTranningTypes(List<TrainingType> previousTranningTypes, List<TrainingType> previousFailedTraningTypes)
     {
         var lastChunk = _previousChunkStats.Last();
         var completed = lastChunk.Value.completedChunk;
@@ -134,17 +142,15 @@ public class PlayerModel
             setupCompleted = true;
             currentDifficultyScore = lastChunk.Value.difficultyScore;
 
-            return GetTranningTypesForIncreasedDifficulty();
+            return GetTranningTypesForTargetedDifficulty();
         }
         // Increase difficulty;
         if (completed)
         {
             currentDifficultyScore = Mathf.Clamp(currentDifficultyScore + IncreaseDifficulty(lastChunk.Value), 1, 100);
 
-            return GetTranningTypesForIncreasedDifficulty();
+            return GetTranningTypesForTargetedDifficulty();
         }
-
-        // Check if chunk before that also failed in traning.
         else
         {
             if (_previousChunkStats.Count <= 1)
@@ -155,15 +161,15 @@ public class PlayerModel
             var hasFailedPreviousChunk = lastChunk.Value.completedChunk;
 
             // If chunk before last one also failed and total death count of last chunk is smaller or equal to two generate same type of level.
-            if (hasFailedPreviousChunk == false && lastChunk.Value.GetTotalDeaths() <= 2)
+            if (hasFailedPreviousChunk == false && lastChunk.Value.GetTotalDeaths() <= 3)
             {
-                return previousTranningTypes;
+                return previousFailedTraningTypes;
             }
 
             currentDifficultyScore = Mathf.Clamp(currentDifficultyScore - DecreaseDifficulty(lastChunk.Value), 1, 100);
 
             // If all conditions above lead to this code we decrease the difficulty for the player.
-            return GetTranningTypesForIncreasedDifficulty();
+            return GetTranningTypesForTargetedDifficulty();
         }
     }
 
@@ -284,7 +290,7 @@ public class PlayerModel
         _precentageElevation = 10;
     }
 
-    private List<TrainingType> GetTranningTypesForIncreasedDifficulty()
+    private List<TrainingType> GetTranningTypesForTargetedDifficulty()
     {
         var current = 0;
         var completed = false;

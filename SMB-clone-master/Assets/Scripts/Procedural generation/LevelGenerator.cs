@@ -42,6 +42,8 @@ public class LevelGenerator : MonoBehaviour
 
     private int minHeigth = 3;
 
+    private int generatedCoins = 0;
+
     private PlayerModelHandler tranningHandler;
     private int _maxWidth;
 
@@ -82,6 +84,7 @@ public class LevelGenerator : MonoBehaviour
 
     public void ReachedEndOfChunk(int id, List<TrainingType> tranningTypes)
     {
+        generatedCoins = 0;
         var currentId = id - 1;
         if (currentId == 0)
         {
@@ -284,7 +287,7 @@ public class LevelGenerator : MonoBehaviour
         foreach (var model in _tranningModelHandler.elevationModels)
         {
             var xPos = Random.Range(minX, maxX - model.width);
-            var previousBlockHeigth = FindBlockHighestPosition(chunkId, xPos, model.heigth);
+            var previousBlockHeigth = FindBlockHighestPosition(chunkId, xPos);
 
             var columnHeigth = previousBlockHeigth + model.heigth;
             var increasedHeigth = Mathf.Clamp(columnHeigth, previousBlockHeigth, Mathf.Min(columnHeigth, previousBlockHeigth + 4));
@@ -319,7 +322,10 @@ public class LevelGenerator : MonoBehaviour
         foreach (var model in _tranningModelHandler.platformModels)
         {
             var xPos = Random.Range(minX, maxX - model.width);
-            var yPos = FindBlockHighestPosition(chunkId, xPos, model.heigth) + model.heigth;
+            var previousHighestBlock = FindBlockHighestPosition(chunkId, xPos);
+
+            var yPos = previousHighestBlock <= minHeigth ? 3 : previousHighestBlock;
+            yPos += model.heigth;
 
             var beginposition = new Vector2Int(xPos, yPos);
             var endPosition = new Vector2Int(xPos + model.width, yPos);
@@ -345,10 +351,7 @@ public class LevelGenerator : MonoBehaviour
 
                 for (int x = beginposition.x; x < endPosition.x; x++)
                 {
-                    if(CheckId(x, yPosition, chunkId))
-                    {
-                        GenerateCoin(x, yPosition, chunk);
-                    }
+                    GenerateCoin(x, yPosition, chunk);
                 }
             }
             if (model.chasmModel != null)
@@ -427,8 +430,12 @@ public class LevelGenerator : MonoBehaviour
             return;
         }
 
+        generatedCoins++;
+
+        var yPos = y >= minHeigth ? y : minHeigth + 1;
+
         var go = Instantiate(_coin, chunk.transform);
-        var pos = new Vector2(x, y);
+        var pos = new Vector2(x, yPos);
         var entityModel = new EntityModel();
 
         go.name = "coin";
@@ -621,7 +628,7 @@ public class LevelGenerator : MonoBehaviour
         goEnd.transform.position = new Vector2(x, y);
         goEnd.name = "End of chunk";
 
-        component.Setup(_lastGeneratedChunk, _lastGeneratedChunk % 2 == 0, tranningHandler.GetTranningTypes());
+        component.Setup(_lastGeneratedChunk, generatedCoins, _lastGeneratedChunk % 2 == 0, tranningHandler.GetTranningTypes());
         
         _lastGeneratedChunk++;
     }
@@ -637,7 +644,7 @@ public class LevelGenerator : MonoBehaviour
         return null;
     }
 
-    private int FindBlockHighestPosition(int chunkId, int x, int heigth)
+    private int FindBlockHighestPosition(int chunkId, int x)
     {
         int highestPositon = 0;
 
