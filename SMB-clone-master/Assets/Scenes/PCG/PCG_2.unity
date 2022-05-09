@@ -3466,7 +3466,7 @@ PrefabInstance:
     - target: {fileID: 114256751761485294, guid: 2edb2b8e476654f0ea2807c7a8261a76,
         type: 3}
       propertyPath: maxJumpSpeedY
-      value: 15
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 114256751761485294, guid: 2edb2b8e476654f0ea2807c7a8261a76,
         type: 3}
@@ -3486,7 +3486,7 @@ PrefabInstance:
     - target: {fileID: 114256751761485294, guid: 2edb2b8e476654f0ea2807c7a8261a76,
         type: 3}
       propertyPath: normaleJumpSpeedY
-      value: 18.75
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 114256751761485294, guid: 2edb2b8e476654f0ea2807c7a8261a76,
         type: 3}
@@ -3521,17 +3521,17 @@ PrefabInstance:
     - target: {fileID: 114256751761485294, guid: 2edb2b8e476654f0ea2807c7a8261a76,
         type: 3}
       propertyPath: maxJumpSpeedUpGravity
-      value: 0.44
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 114256751761485294, guid: 2edb2b8e476654f0ea2807c7a8261a76,
         type: 3}
       propertyPath: minJumpSpeedUpGravity
-      value: 0.47
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 114256751761485294, guid: 2edb2b8e476654f0ea2807c7a8261a76,
         type: 3}
       propertyPath: normaleSpeedUpGravity
-      value: 0.59
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 114256751761485294, guid: 2edb2b8e476654f0ea2807c7a8261a76,
         type: 3}
@@ -3546,7 +3546,7 @@ PrefabInstance:
     - target: {fileID: 114256751761485294, guid: 2edb2b8e476654f0ea2807c7a8261a76,
         type: 3}
       propertyPath: maxJumpSpeedDownGravity
-      value: 1.41
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 114256751761485294, guid: 2edb2b8e476654f0ea2807c7a8261a76,
         type: 3}
@@ -3556,7 +3556,7 @@ PrefabInstance:
     - target: {fileID: 114256751761485294, guid: 2edb2b8e476654f0ea2807c7a8261a76,
         type: 3}
       propertyPath: minJumpSpeedDownGravity
-      value: 1.64
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 114256751761485294, guid: 2edb2b8e476654f0ea2807c7a8261a76,
         type: 3}
@@ -3566,7 +3566,7 @@ PrefabInstance:
     - target: {fileID: 114256751761485294, guid: 2edb2b8e476654f0ea2807c7a8261a76,
         type: 3}
       propertyPath: normaleJumpSpeedDownGravity
-      value: 2.11
+      value: 2.2
       objectReference: {fileID: 0}
     - target: {fileID: 114256751761485294, guid: 2edb2b8e476654f0ea2807c7a8261a76,
         type: 3}
