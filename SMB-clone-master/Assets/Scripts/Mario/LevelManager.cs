@@ -281,19 +281,26 @@ public class LevelManager : MonoBehaviour {
 		mario_Animator.SetBool ("isPoweringUp", false);
 	}
 
-	public void MarioPowerDown() {
+	public void MarioPowerDown() 
+	{
 		if (!isPoweringDown) {
 			Debug.Log (this.name + " MarioPowerDown: called and executed");
 			isPoweringDown = true;
 
-			if (marioSize > 0) {
+			if (marioSize > 0) 
+			{
 				StartCoroutine (MarioPowerDownCo ());
 				soundSource.PlayOneShot (pipePowerdownSound);
-			} else {
+				PCGEventManager.Instance.onDeathByEnemy?.Invoke(Enemytype.Goomba);
+			}
+			else 
+			{
 				MarioRespawn ();
 			}
 			Debug.Log (this.name + " MarioPowerDown: done executing");
-		} else {
+		} 
+		else 
+		{
 			Debug.Log (this.name + " MarioPowerDown: called but not executed");
 		}
 	}

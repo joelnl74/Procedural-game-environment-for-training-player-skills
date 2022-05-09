@@ -10,10 +10,11 @@ public class Mario : MonoBehaviour {
 	public GameObject Fireball;
 	public Transform FirePos;
 	private float waitBetweenFire = .2f;
-	private float fireTime1, fireTime2;
+	private float fireTimeDelayTime = 0;
 
 	private float faceDirectionX;
 	private float moveDirectionX;
+
 	[SerializeField] private float normalGravity;
 
 	private float currentSpeedX;
@@ -96,7 +97,7 @@ public class Mario : MonoBehaviour {
 		UpdateSize ();
 
 		jumpButtonReleased = true;
-		fireTime1 = 0;
+		fireTimeDelayTime = 0;
 		fireTime2 = 0;
 	}
 
@@ -252,14 +253,13 @@ public class Mario : MonoBehaviour {
 
 		/******** Shooting */
 		if (isShooting && t_LevelManager.marioSize == 2) {
-			fireTime2 = Time.time;
 
-			if (fireTime2 - fireTime1 >= waitBetweenFire) {
+			if (fireTimeDelayTime >= waitBetweenFire) {
 				m_Animator.SetTrigger ("isFiring");
 				GameObject fireball = Instantiate (Fireball, FirePos.position, Quaternion.identity);
 				fireball.GetComponent<MarioFireball> ().directionX = transform.localScale.x;
 				t_LevelManager.soundSource.PlayOneShot (t_LevelManager.fireballSound);
-				fireTime1 = Time.time;
+				fireTimeDelayTime = 0;
 			}
 		}
 
@@ -289,6 +289,8 @@ public class Mario : MonoBehaviour {
 				jumpButtonReleased = true;
 			}
 		}
+
+		fireTimeDelayTime += Time.deltaTime;
 
 		isChangingDirection = currentSpeedX > 0 && faceDirectionX * moveDirectionX < 0;
 		isGrounded = Physics2D.OverlapPoint(m_GroundCheck1.position, GroundLayers) || Physics2D.OverlapPoint(m_GroundCheck2.position, GroundLayers);
