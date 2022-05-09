@@ -14,19 +14,41 @@ public class Mario : MonoBehaviour {
 
 	private float faceDirectionX;
 	private float moveDirectionX;
-	private float normalGravity;
+	[SerializeField] private float normalGravity;
 
 	private float currentSpeedX;
 	private float speedXBeforeJump;
 
-	private float minWalkSpeedX = .28f;
-	private float walkAccelerationX = .14f;
-	private float runAccelerationX = .21f;
-	private float releaseDecelerationX = .19f;
-	private float skidDecelerationX = .38f;
-	private float skidTurnaroundSpeedX = 2.11f;
-	private float maxWalkSpeedX = 5.86f;
-	private float maxRunSpeedX = 9.61f;
+	[SerializeField] private float minWalkSpeedX = .28f;
+	[SerializeField] private float walkAccelerationX = .14f;
+	[SerializeField] private float runAccelerationX = .21f;
+	[SerializeField] private float releaseDecelerationX = .19f;
+	[SerializeField] private float skidDecelerationX = .38f;
+	[SerializeField] private float skidTurnaroundSpeedX = 2.11f;
+	[SerializeField] private float maxWalkSpeedX = 5.86f;
+	[SerializeField] private float maxRunSpeedX = 9.61f;
+
+	[SerializeField] private float minJumpSpeed = 3.76f;
+	[SerializeField] private float maxJumpSpeed = 8.67f;
+
+	[SerializeField] private float minJumpSpeedY = 15f;
+	[SerializeField] private float minJumpSpeedUpGravity = 0.47f;
+	[SerializeField] private float minJumpSpeedDownGravity = 1.64f;
+
+	[SerializeField] private float maxJumpSpeedY = 15f;
+	[SerializeField] private float maxJumpSpeedUpGravity = 0.44f;
+	[SerializeField] private float maxJumpSpeedDownGravity = 1.41f;
+
+	[SerializeField] private float normaleJumpSpeedY = 18.75f;
+	[SerializeField] private float normaleSpeedUpGravity = .59f;
+	[SerializeField] private float normaleJumpSpeedDownGravity = 2.11f;
+
+	[SerializeField] private float midAircurrentSpeedX = 5.86f;
+	[SerializeField] private float midmidairAccelerationX = .14f;
+	[SerializeField] private float midAirspeedXBeforeJump = 6.8f;
+	[SerializeField] private float midairDecelerationXJump = 0.14f;
+	[SerializeField] private float midairDecelerationXJumpIncreased = 0.19f;
+	[SerializeField] private float midairDecelerationNormale = 0.21f;
 
 	private float jumpSpeedY;
 	private float jumpUpGravity;
@@ -79,33 +101,45 @@ public class Mario : MonoBehaviour {
 	}
 
 	/****************** Movement control */
-	void SetJumpParams() {
-		if (currentSpeedX < 3.75f) {
-			jumpSpeedY = 15f;
-			jumpUpGravity = .47f;
-			jumpDownGravity = 1.64f;
-		} else if (currentSpeedX < 8.67f) {
-			jumpSpeedY = 15f;
-			jumpUpGravity = .44f;
-			jumpDownGravity = 1.41f;
-		} else {
-			jumpSpeedY = 18.75f;
-			jumpUpGravity = .59f;
-			jumpDownGravity = 2.11f;
+	void SetJumpParams() 
+	{
+		if (currentSpeedX <= minJumpSpeed) 
+		{
+			jumpSpeedY = minJumpSpeedY;
+			jumpUpGravity = minJumpSpeedUpGravity;
+			jumpDownGravity = minJumpSpeedDownGravity;
+		} 
+		else if (currentSpeedX <= maxJumpSpeed) 
+		{
+			jumpSpeedY = maxJumpSpeedY;
+			jumpUpGravity = maxJumpSpeedUpGravity;
+			jumpDownGravity = maxJumpSpeedDownGravity;
+		} 
+		else 
+		{
+			jumpSpeedY = normaleJumpSpeedY;
+			jumpUpGravity = normaleSpeedUpGravity;
+			jumpDownGravity = normaleJumpSpeedDownGravity;
 		}
 	}
 
-	void SetMidairParams() {
-		if (currentSpeedX < 5.86f) {
-			midairAccelerationX = .14f;
-			if (speedXBeforeJump < 6.80f) {
-				midairDecelerationX = .14f;
-			} else {
-				midairDecelerationX = .19f;
+	void SetMidairParams() 
+	{
+		if (currentSpeedX <= midAircurrentSpeedX) 
+		{
+			midairAccelerationX = midmidairAccelerationX;
+			if (speedXBeforeJump <= midAirspeedXBeforeJump) 
+			{
+				midairDecelerationX = midairDecelerationXJump;
+			} else 
+			{
+				midairDecelerationX = midairDecelerationXJumpIncreased;
 			}
-		} else {
-			midairAccelerationX = .21f;
-			midairDecelerationX = .21f;
+		}
+		else 
+		{
+			midairAccelerationX = midairDecelerationNormale;
+			midairDecelerationX = midairDecelerationNormale;
 		}
 	}
 
@@ -244,7 +278,8 @@ public class Mario : MonoBehaviour {
 
 	/****************** Automatic movement sequences */
 	void Update() {
-		if (!inputFreezed) {
+		if (!inputFreezed) 
+		{
 			faceDirectionX = Input.GetAxisRaw ("Horizontal"); // > 0 for right, < 0 for left
 			isDashing = Input.GetButton ("Dash");
 			isCrouching = Input.GetButton ("Crouch");
@@ -255,21 +290,25 @@ public class Mario : MonoBehaviour {
 			}
 		}
 
-		isFalling = m_Rigidbody2D.velocity.y < 0 && !isGrounded;
-		isGrounded = Physics2D.OverlapPoint(m_GroundCheck1.position, GroundLayers) || Physics2D.OverlapPoint(m_GroundCheck2.position, GroundLayers);
 		isChangingDirection = currentSpeedX > 0 && faceDirectionX * moveDirectionX < 0;
+		isGrounded = Physics2D.OverlapPoint(m_GroundCheck1.position, GroundLayers) || Physics2D.OverlapPoint(m_GroundCheck2.position, GroundLayers);
+		isFalling = m_Rigidbody2D.velocity.y < 0 && !isGrounded;
 
-		if (inputFreezed && !t_LevelManager.gamePaused) {
-			if (isDying) {
+		if (inputFreezed && !t_LevelManager.gamePaused) 
+		{
+			if (isDying) 
+			{
 				deadUpTimer -= Time.unscaledDeltaTime;
-				if (deadUpTimer > 0) { // TODO MovePosition not working
-//					m_Rigidbody2D.MovePosition (m_Rigidbody2D.position + deadUpVelocity * Time.unscaledDeltaTime);
+				if (deadUpTimer > 0) 
+				{
 					gameObject.transform.position += Vector3.up * .22f;
-				} else {
-//					m_Rigidbody2D.MovePosition (m_Rigidbody2D.position + deadDownVelocity * Time.unscaledDeltaTime);
+				} else 
+				{
 					gameObject.transform.position += Vector3.down * .2f;
 				}
-			} else if (isClimbingFlagPole) {
+			} 
+			else if (isClimbingFlagPole) 
+			{
 				m_Rigidbody2D.MovePosition (m_Rigidbody2D.position + climbFlagPoleVelocity * Time.deltaTime);
 			}
 		}

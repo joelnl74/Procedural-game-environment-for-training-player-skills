@@ -17,16 +17,16 @@ public class SerializeData
         }
     }
 
-    public bool CheckSafe()
+    public bool CheckSafe(int version)
     {
-        var destination = Application.persistentDataPath + "/save.dat";
+        var destination = Application.persistentDataPath + $"/save{version}.dat";
 
         return File.Exists(destination);
     }
 
-    public void DeleteSave()
+    public void DeleteSave(int version)
     {
-        var destination = Application.persistentDataPath + "/save.dat";
+        var destination = Application.persistentDataPath + $"/save{version}.dat";
 
         if (File.Exists(destination))
         {
@@ -34,9 +34,9 @@ public class SerializeData
         }
     }
 
-    public void SaveData(Dictionary<int, ChunkInformation> chunkInformation)
+    public void SaveData(Dictionary<int, ChunkInformation> chunkInformation, int version)
     {
-        var destination = Application.persistentDataPath + "/save.dat";
+        var destination = Application.persistentDataPath + $"/save{version}.dat";
 
         FileStream file;
 
@@ -55,17 +55,16 @@ public class SerializeData
         var bf = new BinaryFormatter();
 
         bf.Serialize(file, jsonDictonary);
-        FirebaseManager.Instance.UpdateDatabase(jsonDictonary);
-
+        FirebaseManager.Instance.UpdateDatabase(jsonDictonary, version);
 
         file.Close();
     }
 
-    public Dictionary<int, ChunkInformation> LoadData()
+    public Dictionary<int, ChunkInformation> LoadData(int version)
     {
         // Load JSON file
         string json = "";
-        string destination = Application.persistentDataPath + "/save.dat";
+        string destination = Application.persistentDataPath + $"/save{version}.dat";
 
         FileStream file;
 

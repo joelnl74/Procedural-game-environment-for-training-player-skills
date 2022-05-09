@@ -40,14 +40,14 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
         });
     }
 
-    public void UpdateDatabase(string data)
+    public void UpdateDatabase(string data, int version)
     {
         if (setup == false)
         {
             return;
         }
 
-        var task = database.RootReference.Child("users").Child(user.UserId).Child("playerInfo").SetRawJsonValueAsync(data);
+        var task = database.RootReference.Child("users").Child(user.UserId).Child("playerInfo").Child($"version{version}").SetRawJsonValueAsync(data);
     }
 
     public void SetSkippedTutorial(bool skipped)
@@ -57,8 +57,7 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
             return;
         }
 
-        var data = $"HasSkippedTutrial : {skipped}";
-        var task = database.RootReference.Child("users").Child(user.UserId).SetValueAsync(data);
+        var task = database.RootReference.Child("users").Child(user.UserId).Child("HasSkippedTutrial").SetValueAsync(skipped);
     }
 
     public void LoadLeaderboardAsync()
@@ -85,7 +84,7 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
         foreach(var snapshot in shot.Children)
         {
             var key = snapshot.Key;
-            var jsonValue = snapshot.Child("playerInfo");
+            var jsonValue = snapshot.Child("playerInfo").Child($"version{1}");
             var highestScore = 0;
 
             foreach(var items in jsonValue.Children)

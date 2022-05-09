@@ -33,7 +33,8 @@ public class MainMenu : MonoBehaviour {
 		}
 		if (deleteSave)
 		{
-			serializeData.DeleteSave();
+			serializeData.DeleteSave(1);
+			serializeData.DeleteSave(2);
 		}
 
 		int currentHighScore = PlayerPrefs.GetInt ("highScore", 0);
@@ -82,6 +83,15 @@ public class MainMenu : MonoBehaviour {
 		if (!volumePanelActive) {
 			t_GameStateManager.sceneToLoad = "PCG";
 			SceneManager.LoadScene ("Level Start Screen");
+		}
+	}
+
+	public void StartPCGV2()
+	{
+		if (!volumePanelActive)
+		{
+			t_GameStateManager.sceneToLoad = "PCG_2";
+			SceneManager.LoadScene("Level Start Screen");
 		}
 	}
 

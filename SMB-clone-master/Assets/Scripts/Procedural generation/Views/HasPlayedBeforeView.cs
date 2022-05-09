@@ -54,7 +54,16 @@ public class HasPlayedBeforeView : MonoBehaviour
                 completedChunk = true,
             }
             }
-        });
+        }, 1);
+        _serializeData.SaveData(new Dictionary<int, ChunkInformation>
+        {
+            { 1, new ChunkInformation
+            {
+                index = skillsCollection.skillParameters.Count,
+                completedChunk = true,
+            }
+            }
+        }, 2);
 
         Disable();
     }

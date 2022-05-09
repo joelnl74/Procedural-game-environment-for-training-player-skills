@@ -138,7 +138,7 @@ public class LevelManager : MonoBehaviour {
 		}
 
 		if (timeLeftInt <= 0) {
-			if(SceneManager.GetActiveScene().name == "PCG")
+			if(SceneManager.GetActiveScene().name.Contains("PCG"))
             {
 				PCGEventManager.Instance.onSaveData?.Invoke();
 				SceneManager.LoadScene("Main Menu");
@@ -338,7 +338,7 @@ public class LevelManager : MonoBehaviour {
 			}
 			Debug.Log (this.name + " MarioRespawn: lives left=" + lives.ToString ());
 
-			if (SceneManager.GetActiveScene().name == "PCG")
+			if (SceneManager.GetActiveScene().name.Contains("PCG"))
 			{
 				RespawnWithDelay(deadSound.length);
 			}

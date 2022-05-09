@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class ChunkInformation
 {
     public int jumpDeaths = 0;
@@ -66,9 +66,12 @@ public class PlayerModel
 
         serializeData = new SerializeData();
 
-        if (serializeData.CheckSafe())
+        var scene = SceneManager.GetActiveScene();
+        int version = scene.name == "PCG" ? 1 : 2;
+
+        if (serializeData.CheckSafe(version))
         {
-            _previousChunkStats = serializeData.LoadData();
+            _previousChunkStats = serializeData.LoadData(version);
             _previousChunkStats = _previousChunkStats.OrderBy(x => x.Value.difficultyScore).ToDictionary(x => x.Key, x => x.Value);
         }
     }
@@ -129,7 +132,10 @@ public class PlayerModel
 
     public void SaveDataToFirebase()
     {
-        serializeData.SaveData(_previousChunkStats);
+        var scene = SceneManager.GetActiveScene();
+        int version = scene.name == "PCG" ? 1 : 2;
+
+        serializeData.SaveData(_previousChunkStats, version);
     }
 
     public List<TrainingType> GetTranningTypes(List<TrainingType> previousTranningTypes, List<TrainingType> previousFailedTraningTypes)
