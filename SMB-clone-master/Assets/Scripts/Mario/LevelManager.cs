@@ -291,11 +291,11 @@ public class LevelManager : MonoBehaviour {
 			{
 				StartCoroutine (MarioPowerDownCo ());
 				soundSource.PlayOneShot (pipePowerdownSound);
-				PCGEventManager.Instance.onDeathByEnemy?.Invoke(Enemytype.Goomba);
 			}
 			else 
 			{
 				MarioRespawn ();
+				PCGEventManager.Instance.onDeathByEnemy?.Invoke(Enemytype.Goomba);
 			}
 			Debug.Log (this.name + " MarioPowerDown: done executing");
 		} 

@@ -5,6 +5,7 @@ public class Mario : MonoBehaviour {
 	private Transform m_GroundCheck1, m_GroundCheck2;
 	private Animator m_Animator;
 	private Rigidbody2D m_Rigidbody2D;
+	private CapsuleCollider2D m_capsuleCollider2D;
 
 	public LayerMask GroundLayers;
 	public GameObject Fireball;
@@ -85,10 +86,11 @@ public class Mario : MonoBehaviour {
 	public Vector2 respawnPositionPCG;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		t_LevelManager = FindObjectOfType<LevelManager>();
 		m_GroundCheck1 = transform.Find ("Ground Check 1");
 		m_GroundCheck2 = transform.Find ("Ground Check 2");
+		m_capsuleCollider2D = GetComponent<CapsuleCollider2D>();
 		m_Animator = GetComponent<Animator> ();
 		m_Rigidbody2D = GetComponent<Rigidbody2D> ();
 		normalGravity = m_Rigidbody2D.gravityScale;
@@ -98,7 +100,6 @@ public class Mario : MonoBehaviour {
 
 		jumpButtonReleased = true;
 		fireTimeDelayTime = 0;
-		fireTime2 = 0;
 	}
 
 	/****************** Movement control */
@@ -418,8 +419,22 @@ public class Mario : MonoBehaviour {
 	}
 
 	/****************** Misc */
-	public void UpdateSize() {
-		GetComponent<Animator>().SetInteger("marioSize", FindObjectOfType<LevelManager>().marioSize);
+	public void UpdateSize() 
+	{
+		var marioSize = t_LevelManager.marioSize;
+
+		m_Animator.SetInteger("marioSize", marioSize);
+
+		if (marioSize >= 1)
+        {
+			m_capsuleCollider2D.offset = new Vector2(0, 1);
+			m_capsuleCollider2D.size = new Vector2(0.9f, 2);
+		}
+		else
+        {
+			m_capsuleCollider2D.offset = new Vector2(0, 0.5f);
+			m_capsuleCollider2D.size = new Vector2(0.9f, 1);
+		}
 	}
 
 	float IncreaseWithinBound(float val, float delta, float maxVal = Mathf.Infinity) {
@@ -463,7 +478,6 @@ public class Mario : MonoBehaviour {
 					Debug.Log (this.name + " OnCollisionEnter2D: Damaged by " + other.gameObject.name
 						+ " from " + normal.ToString () + "; isFalling=" + isFalling); // TODO sometimes fire before stompbox reacts
 
-					PCGEventManager.Instance.onDeathByEnemy?.Invoke(Enemytype.Goomba);
 					t_LevelManager.MarioPowerDown ();
 				}
 

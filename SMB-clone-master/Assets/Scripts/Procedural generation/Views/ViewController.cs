@@ -29,9 +29,9 @@ public class ViewController : MonoBehaviour
         }
     }
 
-    private void OnReceivedTranningTypes(List<TrainingType> tranningTypes)
+    private void OnReceivedTranningTypes(List<TrainingType> tranningTypes, int difficultyScore)
     {
-        _view.SetGoals(tranningTypes);
+        _view.SetGoals(tranningTypes, difficultyScore);
     }
 
     private void OnShowMessageReceived(string text)

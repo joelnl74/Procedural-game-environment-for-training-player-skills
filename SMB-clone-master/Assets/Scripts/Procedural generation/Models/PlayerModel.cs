@@ -42,6 +42,7 @@ public class PlayerModel
     private int _precentageJumpDeaths;
     private int _precentageFireBarDeaths;
     private int _precentageElevation;
+    private int _precentagePlatform;
 
     public int currentDifficultyScore = 20;
 
@@ -54,9 +55,9 @@ public class PlayerModel
 
     private PCGEventManager eventManager;
 
-    public PlayerModel(PCGEventManager pCGEventManager)
+    public PlayerModel()
     {
-        eventManager = pCGEventManager;
+        eventManager = PCGEventManager.Instance;
         eventManager.onDeathByEnemy += HandleDeathByEnemy;
         eventManager.onFallDeath += HandleDeathByFalling;
         eventManager.onKilledEnemy += HandleKilledEnemy;
@@ -164,10 +165,10 @@ public class PlayerModel
                 return previousTranningTypes;
             }
 
-            var hasFailedPreviousChunk = lastChunk.Value.completedChunk;
+            var completedSecondLast = _previousChunkStats.ElementAt(_previousChunkStats.Count - 2).Value;
 
             // If chunk before last one also failed and total death count of last chunk is smaller or equal to two generate same type of level.
-            if (hasFailedPreviousChunk == false && lastChunk.Value.GetTotalDeaths() <= 3)
+            if (lastChunk.Value.completedChunk == false && completedSecondLast.completedChunk == true && lastChunk.Value.GetTotalDeaths() <= 3)
             {
                 return previousFailedTraningTypes;
             }
@@ -209,7 +210,7 @@ public class PlayerModel
     {
         // TODO frequencies take into account failures and take into account current difficulty level.
         int[] arr = { 0, 1, 2, 3, 4 };
-        int[] freq = { _precentageElevation, _precentageEnemyDeaths, _precentageJumpDeaths, 25, currentDifficultyScore > 59 ? _precentageFireBarDeaths : 0 };
+        int[] freq = { _precentageElevation, _precentageEnemyDeaths, _precentageJumpDeaths, _precentagePlatform, currentDifficultyScore > 59 ? _precentageFireBarDeaths : 0 };
 
         var type = DistributionRand(arr, freq);
 
@@ -290,6 +291,7 @@ public class PlayerModel
         var precentageJumpDeaths = totalJumpDeaths != 0 ? Mathf.Clamp(totalJumpDeaths / total * 100, 20, 90) : 20;
         var precentageFireBarDeaths = totalFireBarDeaths != 0 ? Mathf.Clamp(totalFireBarDeaths / total * 100, 5, 40) : 5;
 
+        _precentagePlatform = precentageJumpDeaths > 50 ? Random.Range(15, 30) : Random.Range(10, 25);
         _precentageEnemyDeaths = precentageEnemyDeaths;
         _precentageJumpDeaths = precentageJumpDeaths;
         _precentageFireBarDeaths = precentageFireBarDeaths;

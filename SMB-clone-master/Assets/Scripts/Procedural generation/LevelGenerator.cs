@@ -330,7 +330,7 @@ public class LevelGenerator : MonoBehaviour
             var beginposition = new Vector2Int(xPos, yPos);
             var endPosition = new Vector2Int(xPos + model.width, yPos);
 
-            GenerateBlocks(beginposition, endPosition, chunk, model.hasSpecialBlocks);
+            GenerateBlocks(beginposition, endPosition, chunk, model.hasSpecialBlocks, false, true);
 
             if (model.hasEnemies)
             {
@@ -462,7 +462,7 @@ public class LevelGenerator : MonoBehaviour
 
     }
 
-    private void GenerateBlocks(Vector2Int begin, Vector2Int end, GameObject chunk, bool hasSpecial = false, bool stayAtHeigth = false)
+    private void GenerateBlocks(Vector2Int begin, Vector2Int end, GameObject chunk, bool hasSpecial = false, bool stayAtHeigth = false, bool isPlatform = false)
     {
         var endPointX = stayAtHeigth == false ? end.x : _previousChunkWidthEnd + _maxWidth;
 
@@ -483,6 +483,17 @@ public class LevelGenerator : MonoBehaviour
                 if (hasSpecial)
                 {
                     chance = Random.Range(0, 100);
+                }
+
+                if (isPlatform)
+                {
+                    var position = FindBlockHighestPosition(_lastGeneratedChunk, x + 1);
+
+                    if (y - position == 1)
+                    {
+                        y++;
+                    }
+
                 }
 
                 go = chance < 50
