@@ -186,7 +186,8 @@ public class PlayerModel
         var totalDeaths = chunk.GetTotalDeaths();
 
         increaseDifficulty += chunk.timeCompleted < 5 ? 5 : 0;
-        increaseDifficulty += totalDeaths <= 1 ? 5 : 0;
+        increaseDifficulty += totalDeaths == 0 ? 5 : 0;
+        increaseDifficulty += chunk.completedChunk ? 5 : 0;
         // 5.86 is the max speed mario can reach without using dash.
         increaseDifficulty += chunk.averageVelocity > 5.86f && totalDeaths < 3 ? 10 : 0;
 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class LevelGenerator : MonoBehaviour
 {
@@ -57,7 +58,7 @@ public class LevelGenerator : MonoBehaviour
         pcgEventManager.onRegenerateChunk += RegenerateChunk;
         pcgEventManager.onPlayerDeath += HandleOnDeath;
 
-        SetupSprites(true);
+        SetupSprites(SceneManager.GetActiveScene().name == "PCG");
 
         var spawnPos = Instantiate(new GameObject(), _spawnPoints.transform);
         spawnPos.name = "Spawn position";
@@ -80,6 +81,8 @@ public class LevelGenerator : MonoBehaviour
     public void SetupSprites(bool overworld)
     {
         _groundBlock = overworld == true ? _groundBlockOver : _groundBlockUnder;
+        Camera.main.backgroundColor = overworld == true ? Camera.main.backgroundColor : Color.black;
+        _clouds.SetActive(overworld);
     }
 
     public void ReachedEndOfChunk(int id, List<TrainingType> tranningTypes)
@@ -144,7 +147,6 @@ public class LevelGenerator : MonoBehaviour
 
     private void GenerateChunk()
     {
-        SetupSprites(tranningHandler.GetDifficulty() < 60);
         _entities.Add(_lastGeneratedChunk, new Dictionary<int, EntityModel>());
 
         if (_lastGeneratedChunk % 2 == 0)
