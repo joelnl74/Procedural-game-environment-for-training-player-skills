@@ -218,10 +218,10 @@ public class PlayerModel
         return type switch
         {
             0 => (2, TrainingType.Medium_Jump),
-            1 => (6, TrainingType.Enemies),
-            2 => (8, TrainingType.Long_Jump),
-            3 => (8, TrainingType.Platform),
-            4 => (10, TrainingType.FireBar),
+            1 => (4, TrainingType.Enemies),
+            2 => (6, TrainingType.Long_Jump),
+            3 => (6, TrainingType.Platform),
+            4 => (8, TrainingType.FireBar),
             _ => (0, TrainingType.None),
         };
     }
@@ -288,9 +288,9 @@ public class PlayerModel
 
         var total = totalEnemyDeaths + totalJumpDeaths + totalFireBarDeaths;
 
-        var precentageEnemyDeaths = totalEnemyDeaths != 0 ? Mathf.Clamp(totalEnemyDeaths / total * 100, 20, 90) : 20;
-        var precentageJumpDeaths = totalJumpDeaths != 0 ? Mathf.Clamp(totalJumpDeaths / total * 100, 20, 90) : 20;
-        var precentageFireBarDeaths = totalFireBarDeaths != 0 ? Mathf.Clamp(totalFireBarDeaths / total * 100, 5, 40) : 5;
+        var precentageEnemyDeaths = totalEnemyDeaths != 0 ? Mathf.Clamp(totalEnemyDeaths / total * 100, 20, 90) : Random.Range(15, 35);
+        var precentageJumpDeaths = totalJumpDeaths != 0 ? Mathf.Clamp(totalJumpDeaths / total * 100, 20, 90) : Random.Range(10, 30);
+        var precentageFireBarDeaths = totalFireBarDeaths != 0 ? Mathf.Clamp(totalFireBarDeaths / total * 100, 5, 40) : Random.Range(5, 20);
 
         _precentagePlatform = precentageJumpDeaths > 50 ? Random.Range(15, 30) : Random.Range(10, 25);
         _precentageEnemyDeaths = precentageEnemyDeaths;
@@ -303,6 +303,7 @@ public class PlayerModel
     {
         var current = 0;
         var completed = false;
+        var currentAmountOfPlatforms = 0;
         List<TrainingType> tranningTypes = new List<TrainingType>();
 
         while (completed == false)
@@ -321,6 +322,16 @@ public class PlayerModel
             {
                 var count = tranningTypes.Count(x => x == TrainingType.Enemies);
                 current += count;
+            }
+
+            if (type.Item2 == TrainingType.Platform)
+            {
+                currentAmountOfPlatforms++;
+            }
+
+            if (currentAmountOfPlatforms >= _maxPlatforms)
+            {
+                _precentagePlatform = 0;
             }
 
             tranningTypes.Add(type.Item2);
