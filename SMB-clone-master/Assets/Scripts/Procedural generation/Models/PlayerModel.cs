@@ -73,6 +73,14 @@ public class PlayerModel
         if (serializeData.CheckSafe(version))
         {
             _previousChunkStats = serializeData.LoadData(version);
+
+            if (_previousChunkStats == null)
+            {
+                _previousChunkStats = new Dictionary<int, ChunkInformation>();
+
+                return;
+            }
+
             _previousChunkStats = _previousChunkStats.OrderBy(x => x.Value.difficultyScore).ToDictionary(x => x.Key, x => x.Value);
         }
     }

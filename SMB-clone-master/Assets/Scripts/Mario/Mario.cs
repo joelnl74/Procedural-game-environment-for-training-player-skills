@@ -73,6 +73,7 @@ public class Mario : MonoBehaviour {
 	private bool isChangingDirection;
 	private bool wasDashingBeforeJump;
 	private bool isShooting;
+	private bool isFacingRight;
 	
 	public bool isCrouching;
 
@@ -190,22 +191,26 @@ public class Mario : MonoBehaviour {
 			SetMidairParams ();
 
 			// Holding Dash while in midair has no effect
-			if (faceDirectionX != 0) {
-				if (currentSpeedX == 0) {
+			if (faceDirectionX != 0 && isChangingDirection == false) 
+			{
+				if (currentSpeedX == 0) 
+				{
 					currentSpeedX = minWalkSpeedX;
-				} else if (currentSpeedX < maxWalkSpeedX) {
+				} else if (currentSpeedX < maxWalkSpeedX) 
+				{
 					currentSpeedX = IncreaseWithinBound (currentSpeedX, midairAccelerationX, maxWalkSpeedX);
 				} else if (wasDashingBeforeJump && currentSpeedX < maxRunSpeedX) {
 					currentSpeedX = IncreaseWithinBound (currentSpeedX, midairAccelerationX, maxRunSpeedX);
 				}
-			} else if (currentSpeedX > 0) {
-				currentSpeedX = DecreaseWithinBound (currentSpeedX, releaseDecelerationX, 0);
+			} else if (currentSpeedX > 0) 
+			{
+				currentSpeedX = DecreaseWithinBound (currentSpeedX, releaseDecelerationX, -1);
 			}
 
 			// If change direction, decelerate but keep facing move direction
 			if (isChangingDirection) {
 				faceDirectionX = moveDirectionX;
-				currentSpeedX = DecreaseWithinBound (currentSpeedX, midairDecelerationX, 0);
+				currentSpeedX = DecreaseWithinBound (currentSpeedX, midairDecelerationX, -1);
 			}
 		}
 
@@ -238,13 +243,17 @@ public class Mario : MonoBehaviour {
 		}
 
 		/******** Horizontal orientation */
-		if (faceDirectionX > 0) 
-		{
-			transform.localScale = new Vector2 (1, 1); // facing right
-		} else if (faceDirectionX < 0) {
-			transform.localScale = new Vector2 (-1, 1);
+		if (isGrounded && faceDirectionX != 0)
+        {
+			if (isFacingRight)
+			{
+				transform.localScale = new Vector2(1, 1); // facing right
+			}
+			else
+            {
+				transform.localScale = new Vector2(-1, 1);
+			}
 		}
-
 
 		/******** Reset params for automatic movement */
 		if (inputFreezed) {
@@ -292,6 +301,15 @@ public class Mario : MonoBehaviour {
 		}
 
 		fireTimeDelayTime += Time.deltaTime;
+
+		if (faceDirectionX != 0 && faceDirectionX > 0)
+        {
+			isFacingRight = true;
+        }
+		else if (faceDirectionX != 0)
+        {
+			isFacingRight = false;
+        }
 
 		isChangingDirection = currentSpeedX > 0 && faceDirectionX * moveDirectionX < 0;
 		isGrounded = Physics2D.OverlapPoint(m_GroundCheck1.position, GroundLayers) || Physics2D.OverlapPoint(m_GroundCheck2.position, GroundLayers);

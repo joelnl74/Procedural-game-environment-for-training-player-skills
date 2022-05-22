@@ -491,9 +491,9 @@ public class LevelGenerator : MonoBehaviour
                 {
                     var position = FindBlockHighestPosition(_lastGeneratedChunk, x + 1);
 
-                    if (y - position == 1)
+                    if (y - position <= 1)
                     {
-                        y++;
+                        y += 2;
                     }
 
                 }
@@ -657,7 +657,7 @@ public class LevelGenerator : MonoBehaviour
         return null;
     }
 
-    private int FindBlockHighestPosition(int chunkId, int x)
+    private int FindBlockHighestPosition(int chunkId, int x, int y = 0)
     {
         int highestPositon = 0;
 

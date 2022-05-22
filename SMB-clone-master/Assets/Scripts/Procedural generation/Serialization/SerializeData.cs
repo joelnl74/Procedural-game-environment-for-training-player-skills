@@ -36,49 +36,15 @@ public class SerializeData
 
     public void SaveData(Dictionary<int, ChunkInformation> chunkInformation, int version)
     {
-        var destination = Application.persistentDataPath + $"/save{version}.dat";
-
-        FileStream file;
-
-        if (File.Exists(destination))
-        {
-            file = File.OpenWrite(destination);
-        }
-        else
-        {
-            file = File.Create(destination);
-        }
-
-        file.Flush();
-
         var jsonDictonary = JsonConvert.SerializeObject(chunkInformation);
         var bf = new BinaryFormatter();
 
-        bf.Serialize(file, jsonDictonary);
         FirebaseManager.Instance.UpdateDatabase(jsonDictonary, version);
-
-        file.Close();
     }
 
     public Dictionary<int, ChunkInformation> LoadData(int version)
     {
-        // Load JSON file
-        string json = "";
-        string destination = Application.persistentDataPath + $"/save{version}.dat";
-
-        FileStream file;
-
-        if (File.Exists(destination) == false)
-        {
-            return null;
-        }
-
-        file = File.OpenRead(destination);
-
-        var bf = new BinaryFormatter();
-        json = (string)bf.Deserialize(file);
-
-        var dictonary = JsonConvert.DeserializeObject<Dictionary<int, ChunkInformation>>(json);
+        var dictonary = FirebaseManager.Instance.GetData(version);
         var newDictonary = new Dictionary<int, ChunkInformation>();
 
         foreach(var KeyValue in dictonary)
