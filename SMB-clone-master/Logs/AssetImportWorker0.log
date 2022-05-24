@@ -1,6 +1,6 @@
 Using pre-set license
 Built from '2020.3/release' branch; Version is '2020.3.7f1 (dd97f2c94397) revision 14522354'; Using compiler version '192528614'; Build Type 'Release'
-OS: 'Windows 10 Pro; OS build 19044.1645; Version 2009; 64bit' Language: 'en' Physical Memory: 16303 MB
+OS: 'Windows 10 Pro; OS build 19044.1706; Version 2009; 64bit' Language: 'en' Physical Memory: 16303 MB
 BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1, IsPro: 0
 
  COMMAND LINE ARGUMENTS:
@@ -15,11 +15,11 @@ G:/Thesis/Platformer-PCG/SMB-clone-master
 -logFile
 Logs/AssetImportWorker0.log
 -srvPort
-60085
+61424
 Successfully changed project path to: G:/Thesis/Platformer-PCG/SMB-clone-master
 G:/Thesis/Platformer-PCG/SMB-clone-master
 Using Asset Import Pipeline V2.
-Refreshing native plugins compatible for Editor in 44.65 ms, found 3 plugins.
+Refreshing native plugins compatible for Editor in 47.47 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 2020.3.7f1 (dd97f2c94397)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2020.3.7f1/Editor/Data/Resources/UnitySubsystems
@@ -35,213 +35,432 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2020.3.7f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2020.3.7f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/2020.3.7f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56512
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56596
 Begin MonoManager ReloadAssembly
 Registering precompiled unity dll's ...
 Register platform support module: C:/Program Files/Unity/Hub/Editor/2020.3.7f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
 Register platform support module: C:/Program Files/Unity/Hub/Editor/2020.3.7f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
-Registered in 0.002505 seconds.
+Registered in 0.002094 seconds.
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 28.30 ms, found 3 plugins.
+Refreshing native plugins compatible for Editor in 26.92 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Mono: successfully reloaded assembly
-- Completed reload, in  5.736 seconds
+- Completed reload, in  3.635 seconds
 Platform modules already initialized, skipping
 Registering precompiled user dll's ...
-Registered in 0.132280 seconds.
+Registered in 0.109444 seconds.
 Begin MonoManager ReloadAssembly
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 0.71 ms, found 3 plugins.
+Refreshing native plugins compatible for Editor in 0.82 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Mono: successfully reloaded assembly
-- Completed reload, in  0.865 seconds
+- Completed reload, in  2.387 seconds
 Platform modules already initialized, skipping
 ========================================================================
 Worker process is ready to serve import requests
-Launched and connected shader compiler UnityShaderCompiler.exe after 0.07 seconds
-Refreshing native plugins compatible for Editor in 0.72 ms, found 3 plugins.
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.05 seconds
+Refreshing native plugins compatible for Editor in 0.77 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 1383 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 1382 Unused Serialized files (Serialized files now loaded: 0)
 System memory in use before: 64.4 MB.
 System memory in use after: 64.5 MB.
 
 Unloading 103 unused Assets to reduce memory usage. Loaded Objects now: 1748.
-Total: 1.581300 ms (FindLiveObjects: 0.129200 ms CreateObjectMapping: 0.045100 ms MarkObjects: 1.337100 ms  DeleteObjects: 0.069200 ms)
+Total: 1.711400 ms (FindLiveObjects: 0.129200 ms CreateObjectMapping: 0.037100 ms MarkObjects: 1.474400 ms  DeleteObjects: 0.070200 ms)
 
 ========================================================================
 Received Import Request.
-  path: Assets/Scripts/Procedural generation/LevelGenerator.cs
-  artifactKey: Guid(90715c3d7f024fc46a39ae30a763a935) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Scripts/Procedural generation/LevelGenerator.cs using Guid(90715c3d7f024fc46a39ae30a763a935) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c66b3c22588cbea9c1de57e6d0eec397') in 0.041041 seconds
-  Import took 0.094945 seconds .
+  path: Assets/Sounds/06-level-complete.mp3
+  artifactKey: Guid(632e293310a2b4c088dd51fdeaa9d8b8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Sounds/06-level-complete.mp3 using Guid(632e293310a2b4c088dd51fdeaa9d8b8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '60289aee676471d671553d987fbf2268') in 0.151629 seconds
+  Import took 0.218510 seconds .
 
 ========================================================================
 Received Prepare
 Registering precompiled user dll's ...
-Registered in 0.321887 seconds.
-Begin MonoManager ReloadAssembly
-Native extension for WindowsStandalone target not found
-Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 0.72 ms, found 3 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Mono: successfully reloaded assembly
-- Completed reload, in  0.832 seconds
-Platform modules already initialized, skipping
-Switching build target platform(5) subTarget(0) extendedPlatform(0) -> platform(13) subTarget(589824) extendedPlatform(0)
-Refreshing native plugins compatible for Editor in 0.77 ms, found 3 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 1400 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 65.1 MB.
-System memory in use after: 65.2 MB.
-
-Unloading 118 unused Assets to reduce memory usage. Loaded Objects now: 1751.
-Total: 1.674800 ms (FindLiveObjects: 0.143400 ms CreateObjectMapping: 0.039900 ms MarkObjects: 1.450600 ms  DeleteObjects: 0.039900 ms)
-
-AssetImportParameters requested are different than current active one (requested -> active):
-  custom:graphics/normal-map-encoding: 01000000000000000000000000000000 -> 02000000000000000000000000000000
-========================================================================
-Received Import Request.
-  Time since last request: 57.062772 seconds.
-  path: Assets/Scripts/Procedural generation/LevelGenerator.cs
-  artifactKey: Guid(90715c3d7f024fc46a39ae30a763a935) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Scripts/Procedural generation/LevelGenerator.cs using Guid(90715c3d7f024fc46a39ae30a763a935) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '19305c22b8bd4444e3e4867ddaf94cdb') in 0.003314 seconds
-  Import took 0.021955 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 1.573357 seconds.
-  path: Assets/Scripts/Procedural generation/LevelGenerator.cs
-  artifactKey: Guid(90715c3d7f024fc46a39ae30a763a935) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Scripts/Procedural generation/LevelGenerator.cs using Guid(90715c3d7f024fc46a39ae30a763a935) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '19305c22b8bd4444e3e4867ddaf94cdb') in 0.002397 seconds
-  Import took 0.013337 seconds .
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.007074 seconds.
+Registered in 0.365751 seconds.
 Begin MonoManager ReloadAssembly
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
 Refreshing native plugins compatible for Editor in 0.73 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Mono: successfully reloaded assembly
-- Completed reload, in  0.860 seconds
+- Completed reload, in  0.778 seconds
 Platform modules already initialized, skipping
-Switching build target platform(5) subTarget(0) extendedPlatform(0) -> platform(13) subTarget(589824) extendedPlatform(0)
-Refreshing native plugins compatible for Editor in 0.71 ms, found 3 plugins.
+Refreshing native plugins compatible for Editor in 0.74 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 1400 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 65.1 MB.
-System memory in use after: 65.2 MB.
+Unloading 1376 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 67.4 MB.
+System memory in use after: 67.5 MB.
 
-Unloading 118 unused Assets to reduce memory usage. Loaded Objects now: 1754.
-Total: 1.661700 ms (FindLiveObjects: 0.137800 ms CreateObjectMapping: 0.049600 ms MarkObjects: 1.434200 ms  DeleteObjects: 0.039000 ms)
-
-AssetImportParameters requested are different than current active one (requested -> active):
-  custom:graphics/normal-map-encoding: 01000000000000000000000000000000 -> 02000000000000000000000000000000
-========================================================================
-Received Import Request.
-  Time since last request: 60.811700 seconds.
-  path: Assets/Scripts/Procedural generation/LevelGenerator.cs
-  artifactKey: Guid(90715c3d7f024fc46a39ae30a763a935) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Scripts/Procedural generation/LevelGenerator.cs using Guid(90715c3d7f024fc46a39ae30a763a935) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '595ac7fbd6e324e67675c670344963cc') in 0.003685 seconds
-  Import took 0.023642 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 2.099708 seconds.
-  path: Assets/Scripts/Procedural generation/LevelGenerator.cs
-  artifactKey: Guid(90715c3d7f024fc46a39ae30a763a935) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Scripts/Procedural generation/LevelGenerator.cs using Guid(90715c3d7f024fc46a39ae30a763a935) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '595ac7fbd6e324e67675c670344963cc') in 0.001521 seconds
-  Import took 0.003297 seconds .
+Unloading 98 unused Assets to reduce memory usage. Loaded Objects now: 1760.
+Total: 1.795000 ms (FindLiveObjects: 0.175200 ms CreateObjectMapping: 0.046600 ms MarkObjects: 1.526800 ms  DeleteObjects: 0.045300 ms)
 
 ========================================================================
 Received Prepare
 Registering precompiled user dll's ...
-Registered in 0.384691 seconds.
-Begin MonoManager ReloadAssembly
-Native extension for WindowsStandalone target not found
-Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 0.73 ms, found 3 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Mono: successfully reloaded assembly
-- Completed reload, in  0.846 seconds
-Platform modules already initialized, skipping
-Switching build target platform(5) subTarget(0) extendedPlatform(0) -> platform(13) subTarget(589824) extendedPlatform(0)
-Refreshing native plugins compatible for Editor in 0.84 ms, found 3 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 1400 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 65.1 MB.
-System memory in use after: 65.2 MB.
-
-Unloading 118 unused Assets to reduce memory usage. Loaded Objects now: 1757.
-Total: 1.669700 ms (FindLiveObjects: 0.151900 ms CreateObjectMapping: 0.060100 ms MarkObjects: 1.419600 ms  DeleteObjects: 0.037400 ms)
-
-AssetImportParameters requested are different than current active one (requested -> active):
-  custom:graphics/normal-map-encoding: 01000000000000000000000000000000 -> 02000000000000000000000000000000
-========================================================================
-Received Import Request.
-  Time since last request: 149.136563 seconds.
-  path: Assets/Scripts/Procedural generation/LevelGenerator.cs
-  artifactKey: Guid(90715c3d7f024fc46a39ae30a763a935) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Scripts/Procedural generation/LevelGenerator.cs using Guid(90715c3d7f024fc46a39ae30a763a935) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '08951a085ced32ca8d07d3f1bf04c4a6') in 0.003912 seconds
-  Import took 0.045154 seconds .
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.006792 seconds.
+Registered in 0.009649 seconds.
 Begin MonoManager ReloadAssembly
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
 Refreshing native plugins compatible for Editor in 0.74 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Mono: successfully reloaded assembly
-- Completed reload, in  0.882 seconds
+- Completed reload, in  0.767 seconds
 Platform modules already initialized, skipping
-Switching build target platform(5) subTarget(0) extendedPlatform(0) -> platform(13) subTarget(589824) extendedPlatform(0)
-Refreshing native plugins compatible for Editor in 0.72 ms, found 3 plugins.
+Refreshing native plugins compatible for Editor in 0.74 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 1400 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 65.1 MB.
-System memory in use after: 65.2 MB.
+Unloading 1376 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 67.4 MB.
+System memory in use after: 67.5 MB.
 
-Unloading 118 unused Assets to reduce memory usage. Loaded Objects now: 1760.
-Total: 1.894400 ms (FindLiveObjects: 0.140700 ms CreateObjectMapping: 0.047500 ms MarkObjects: 1.654900 ms  DeleteObjects: 0.049900 ms)
+Unloading 98 unused Assets to reduce memory usage. Loaded Objects now: 1763.
+Total: 1.475500 ms (FindLiveObjects: 0.151400 ms CreateObjectMapping: 0.043800 ms MarkObjects: 1.250800 ms  DeleteObjects: 0.028400 ms)
 
-AssetImportParameters requested are different than current active one (requested -> active):
-  custom:graphics/normal-map-encoding: 01000000000000000000000000000000 -> 02000000000000000000000000000000
 ========================================================================
 Received Import Request.
-  Time since last request: 149.964002 seconds.
-  path: Assets/Scripts/Procedural generation/LevelGenerator.cs
-  artifactKey: Guid(90715c3d7f024fc46a39ae30a763a935) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Scripts/Procedural generation/LevelGenerator.cs using Guid(90715c3d7f024fc46a39ae30a763a935) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '377365e86ee987c0777fa1f26dc73322') in 0.003594 seconds
-  Import took 0.025418 seconds .
+  Time since last request: 389.321040 seconds.
+  path: Assets/Plugins/Android
+  artifactKey: Guid(871d618fbdd3cd64ba007afc6ce8979f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Plugins/Android using Guid(871d618fbdd3cd64ba007afc6ce8979f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a678004f7f4af8f11aa40fdf4b7e2fc9') in 0.021249 seconds
+  Import took 0.077633 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.760256 seconds.
+  path: Assets/Plugins/Android/FirebaseApp.androidlib
+  artifactKey: Guid(e53526b9b5714f844ac3a0f2c267f1c3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Plugins/Android/FirebaseApp.androidlib using Guid(e53526b9b5714f844ac3a0f2c267f1c3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7c4a37132ad28685c8dc432fc9bd3670') in 0.005321 seconds
+  Import took 0.033701 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 2.521908 seconds.
+  path: Assets/Plugins/Android/FirebaseApp.androidlib/res
+  artifactKey: Guid(043f64e615f3c714aab3069b60f62ff6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Plugins/Android/FirebaseApp.androidlib/res using Guid(043f64e615f3c714aab3069b60f62ff6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4d5ba6b5cafa1ee4bdf6d1971d447c05') in 0.022089 seconds
+  Import took 0.049595 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.834365 seconds.
+  path: Assets/Plugins/Android/FirebaseApp.androidlib/res/values
+  artifactKey: Guid(d333e003bc4fdd648b9411e9ba6e1244) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Plugins/Android/FirebaseApp.androidlib/res/values using Guid(d333e003bc4fdd648b9411e9ba6e1244) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a747e7498f255da3500eb74fff3013e8') in 0.007602 seconds
+  Import took 0.017349 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 6.140956 seconds.
+  path: Assets/Plugins/Android/com.google.firebase.firebase-database-collection-18.0.0.aar
+  artifactKey: Guid(fb618342edbd58a4aa4b30caad3c9255) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Plugins/Android/com.google.firebase.firebase-database-collection-18.0.0.aar using Guid(fb618342edbd58a4aa4b30caad3c9255) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f2661e03694f3989b61e7451806497fe') in 0.030772 seconds
+  Import took 0.055677 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 6.523639 seconds.
+  path: Assets/Plugins/Android/com.google.firebase.firebase-measurement-connector-19.0.0.aar
+  artifactKey: Guid(908f0ea4b39b65a40936ef575e5e8d22) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Plugins/Android/com.google.firebase.firebase-measurement-connector-19.0.0.aar using Guid(908f0ea4b39b65a40936ef575e5e8d22) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c537dbe8287f9b22a01c273cc6f3c7a6') in 0.005467 seconds
+  Import took 0.022436 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.002047 seconds.
+  path: Assets/Plugins/Android/com.google.firebase.firebase-measurement-connector-19.0.0.aar
+  artifactKey: Guid(908f0ea4b39b65a40936ef575e5e8d22) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Plugins/Android/com.google.firebase.firebase-measurement-connector-19.0.0.aar using Guid(908f0ea4b39b65a40936ef575e5e8d22) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c537dbe8287f9b22a01c273cc6f3c7a6') in 0.002286 seconds
+  Import took 0.003945 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 3.062593 seconds.
+  path: Assets/Plugins/Android/androidx.loader.loader-1.0.0.aar
+  artifactKey: Guid(b010c2d9822a39b4aa593d0987cc7f4a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Plugins/Android/androidx.loader.loader-1.0.0.aar using Guid(b010c2d9822a39b4aa593d0987cc7f4a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1c5a4562c4377699dedeea70ae21424f') in 0.005037 seconds
+  Import took 0.031471 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 6.872822 seconds.
+  path: Assets/Plugins/Android/androidx.loader.loader-1.0.0.aar
+  artifactKey: Guid(b010c2d9822a39b4aa593d0987cc7f4a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Plugins/Android/androidx.loader.loader-1.0.0.aar using Guid(b010c2d9822a39b4aa593d0987cc7f4a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3d8a1a02ac9f3ab56909796ce4c60306') in 0.002523 seconds
+  Import took 0.028571 seconds .
 
 ========================================================================
 Received Prepare
 Registering precompiled user dll's ...
-Registered in 0.007623 seconds.
+Registered in 0.078810 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 0.73 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.743 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 0.72 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 1376 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 67.5 MB.
+System memory in use after: 67.6 MB.
+
+Unloading 98 unused Assets to reduce memory usage. Loaded Objects now: 1766.
+Total: 1.663000 ms (FindLiveObjects: 0.132100 ms CreateObjectMapping: 0.038000 ms MarkObjects: 1.463600 ms  DeleteObjects: 0.028300 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 45.491251 seconds.
+  path: Packages/com.google.firebase.app/package.json
+  artifactKey: Guid(710839599e6f4072a41e5e472249e4fd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.app/package.json using Guid(710839599e6f4072a41e5e472249e4fd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6bb41309a8a3da5463c4db4727399b6f') in 0.018756 seconds
+  Import took 0.020668 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.335047 seconds.
+  path: Packages/com.google.firebase.app/Plugins
+  artifactKey: Guid(52e850f2b42f4a94bf2cd75867563307) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.app/Plugins using Guid(52e850f2b42f4a94bf2cd75867563307) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5b82c262f5a7fb864f5ad03dc37d864d') in 0.017887 seconds
+  Import took 0.037513 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.852399 seconds.
+  path: Packages/com.google.firebase.app/Plugins/iOS
+  artifactKey: Guid(925099624d63409087e7d6b8cd72b77d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.app/Plugins/iOS using Guid(925099624d63409087e7d6b8cd72b77d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '241f63e0274ae6e2890588edb70d307e') in 0.005591 seconds
+  Import took 0.018974 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.907738 seconds.
+  path: Packages/com.google.firebase.app/Plugins/iOS/Firebase
+  artifactKey: Guid(4089aa0234ee467e8f6a30e19422dac9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.app/Plugins/iOS/Firebase using Guid(4089aa0234ee467e8f6a30e19422dac9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '709b82df3e7ab694f8f6ce195e2edc3f') in 0.005098 seconds
+  Import took 0.007085 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000888 seconds.
+  path: Packages/com.google.firebase.app/Plugins/iOS/Firebase
+  artifactKey: Guid(4089aa0234ee467e8f6a30e19422dac9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.app/Plugins/iOS/Firebase using Guid(4089aa0234ee467e8f6a30e19422dac9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '709b82df3e7ab694f8f6ce195e2edc3f') in 0.001996 seconds
+  Import took 0.015655 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 4.035040 seconds.
+  path: Packages/com.google.firebase.app/Firebase/m2repository
+  artifactKey: Guid(b93a63c2e8ae42a198e75195609862ef) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.app/Firebase/m2repository using Guid(b93a63c2e8ae42a198e75195609862ef) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8b58df6b892646564da233dc7baca933') in 0.005138 seconds
+  Import took 0.007983 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.827193 seconds.
+  path: Packages/com.google.firebase.app/Firebase/m2repository/com
+  artifactKey: Guid(c5cac0f304604f6d93a5d78353d3147b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.app/Firebase/m2repository/com using Guid(c5cac0f304604f6d93a5d78353d3147b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '27649311b2c2111192789db1c9526451') in 0.005072 seconds
+  Import took 0.025815 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.594142 seconds.
+  path: Packages/com.google.firebase.app/Firebase/m2repository/com/google
+  artifactKey: Guid(81eae72dade746fbaee379eb20224908) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.app/Firebase/m2repository/com/google using Guid(81eae72dade746fbaee379eb20224908) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '594e3b5047e883c965b68fcb9d0f09ac') in 0.021622 seconds
+  Import took 0.023460 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.554564 seconds.
+  path: Packages/com.google.firebase.app/Firebase/m2repository/com/google/firebase
+  artifactKey: Guid(5c51f398423a4aad8f261fdf8b99a7c9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.app/Firebase/m2repository/com/google/firebase using Guid(5c51f398423a4aad8f261fdf8b99a7c9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '807d6442a6eaeb1eedef7c075ec00ef6') in 0.005085 seconds
+  Import took 0.007078 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000876 seconds.
+  path: Packages/com.google.firebase.app/Firebase/m2repository/com/google/firebase
+  artifactKey: Guid(5c51f398423a4aad8f261fdf8b99a7c9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.app/Firebase/m2repository/com/google/firebase using Guid(5c51f398423a4aad8f261fdf8b99a7c9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '807d6442a6eaeb1eedef7c075ec00ef6') in 0.002147 seconds
+  Import took 0.018800 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.541317 seconds.
+  path: Packages/com.google.firebase.app/Firebase/m2repository/com/google/firebase/firebase-app-unity
+  artifactKey: Guid(0a7f405b4b704e04aa625b81b5918254) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.app/Firebase/m2repository/com/google/firebase/firebase-app-unity using Guid(0a7f405b4b704e04aa625b81b5918254) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5837dda13d19112cc5ea7bffedb34c35') in 0.005799 seconds
+  Import took 0.007889 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000516 seconds.
+  path: Packages/com.google.firebase.app/Firebase/m2repository/com/google/firebase/firebase-app-unity
+  artifactKey: Guid(0a7f405b4b704e04aa625b81b5918254) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.app/Firebase/m2repository/com/google/firebase/firebase-app-unity using Guid(0a7f405b4b704e04aa625b81b5918254) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5837dda13d19112cc5ea7bffedb34c35') in 0.001936 seconds
+  Import took 0.003616 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.966666 seconds.
+  path: Packages/com.google.firebase.app/Firebase/m2repository/com/google/firebase/firebase-app-unity/8.8.0
+  artifactKey: Guid(474b72d48cdf4628a770c03d5386df6e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.app/Firebase/m2repository/com/google/firebase/firebase-app-unity/8.8.0 using Guid(474b72d48cdf4628a770c03d5386df6e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f1b0872fe4fe42caf7b891afa9d04027') in 0.005355 seconds
+  Import took 0.007412 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000780 seconds.
+  path: Packages/com.google.firebase.app/Firebase/m2repository/com/google/firebase/firebase-app-unity/8.8.0
+  artifactKey: Guid(474b72d48cdf4628a770c03d5386df6e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.app/Firebase/m2repository/com/google/firebase/firebase-app-unity/8.8.0 using Guid(474b72d48cdf4628a770c03d5386df6e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f1b0872fe4fe42caf7b891afa9d04027') in 0.002040 seconds
+  Import took 0.003772 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.735650 seconds.
+  path: Packages/com.google.firebase.app/Firebase/m2repository/com/google/firebase/firebase-app-unity/8.8.0/firebase-app-unity-8.8.0.pom
+  artifactKey: Guid(a56c1c8eae3b46488312a63a2f457f8c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.app/Firebase/m2repository/com/google/firebase/firebase-app-unity/8.8.0/firebase-app-unity-8.8.0.pom using Guid(a56c1c8eae3b46488312a63a2f457f8c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '98147eb417282b130a8c8248b1e6f9db') in 0.008164 seconds
+  Import took 0.025724 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.645112 seconds.
+  path: Packages/com.google.firebase.app/Firebase/m2repository/com/google/firebase/firebase-app-unity/8.8.0/firebase-app-unity-8.8.0.srcaar
+  artifactKey: Guid(d958a2f784ad4b2faac2ec3422b9b243) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.app/Firebase/m2repository/com/google/firebase/firebase-app-unity/8.8.0/firebase-app-unity-8.8.0.srcaar using Guid(d958a2f784ad4b2faac2ec3422b9b243) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3d8237821b318c4b817ccd4340c589dd') in 0.003693 seconds
+  Import took 0.005560 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 27.342540 seconds.
+  path: Packages/com.google.firebase.auth/package.json
+  artifactKey: Guid(c93664d4684348ec884ee09fadaa374e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.auth/package.json using Guid(c93664d4684348ec884ee09fadaa374e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b66d8978f50622b550b7b88344f77109') in 0.016516 seconds
+  Import took 0.035373 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.784108 seconds.
+  path: Packages/com.google.firebase.auth/Firebase
+  artifactKey: Guid(4f37eef863284326882178a1823bc3a0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.auth/Firebase using Guid(4f37eef863284326882178a1823bc3a0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7d2d3b463b60d675163a461f24d8d443') in 0.019053 seconds
+  Import took 0.021154 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.665207 seconds.
+  path: Packages/com.google.firebase.auth/Plugins
+  artifactKey: Guid(f8d3fd5d05c44cba83aac357a3d04604) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.auth/Plugins using Guid(f8d3fd5d05c44cba83aac357a3d04604) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e9b4680243e36852f587463891a292a2') in 0.002524 seconds
+  Import took 0.004713 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 2.122349 seconds.
+  path: Packages/com.google.firebase.auth/Firebase/Plugins
+  artifactKey: Guid(0f44910939754ee49f0eec805232d443) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.auth/Firebase/Plugins using Guid(0f44910939754ee49f0eec805232d443) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1e2316861a43e153b34488d21d0b53e1') in 0.002406 seconds
+  Import took 0.010577 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.454750 seconds.
+  path: Packages/com.google.firebase.auth/Firebase/Plugins/x86_64
+  artifactKey: Guid(c4081be8f56e42d0bad4938ac8b11e5a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.auth/Firebase/Plugins/x86_64 using Guid(c4081be8f56e42d0bad4938ac8b11e5a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ca6fe9abf9f7ca3fdc052789bc19909b') in 0.006937 seconds
+  Import took 0.021114 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 4.500004 seconds.
+  path: Packages/com.google.firebase.auth/Firebase/Plugins/Firebase.Auth.dll
+  artifactKey: Guid(275bd6b96a28470986154b9a995e191c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.auth/Firebase/Plugins/Firebase.Auth.dll using Guid(275bd6b96a28470986154b9a995e191c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9a349604ae1f4e827963f482e2cc5305') in 0.025480 seconds
+  Import took 0.027418 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 6.704165 seconds.
+  path: Packages/com.google.firebase.auth/Firebase/Plugins/Firebase.Auth.dll.mdb
+  artifactKey: Guid(e66cc65dae4c4d79b86c3314e3f306c4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.auth/Firebase/Plugins/Firebase.Auth.dll.mdb using Guid(e66cc65dae4c4d79b86c3314e3f306c4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '307c834c0b366b7516056b614a4d799c') in 0.007998 seconds
+  Import took 0.037482 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 7.270814 seconds.
+  path: Packages/com.google.firebase.auth/Firebase/Plugins/x86_64/FirebaseCppAuth.so
+  artifactKey: Guid(a4d0f2c2a6ca44528c55eb26d36f25d6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.auth/Firebase/Plugins/x86_64/FirebaseCppAuth.so using Guid(a4d0f2c2a6ca44528c55eb26d36f25d6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ec14a81ae4f86d9cf36e69850a0b904f') in 0.007798 seconds
+  Import took 0.009972 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.769384 seconds.
+  path: Packages/com.google.firebase.auth/Firebase/Plugins/x86_64/FirebaseCppAuth.dll
+  artifactKey: Guid(05faff41310d42b1b623c09a22aa53ff) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.auth/Firebase/Plugins/x86_64/FirebaseCppAuth.dll using Guid(05faff41310d42b1b623c09a22aa53ff) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e5d518e5bbef0e1da2fd88df588789c3') in 0.002201 seconds
+  Import took 0.046658 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.151144 seconds.
+  path: Packages/com.google.firebase.auth/Firebase/Plugins/x86_64/FirebaseCppAuth.bundle
+  artifactKey: Guid(5e37ea1972a64af9897f5fab651a5323) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.google.firebase.auth/Firebase/Plugins/x86_64/FirebaseCppAuth.bundle using Guid(5e37ea1972a64af9897f5fab651a5323) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '02cb713c5fca6a19c7085fa4bd22b333') in 0.003561 seconds
+  Import took 0.005626 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.007261 seconds.
 Begin MonoManager ReloadAssembly
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
 Refreshing native plugins compatible for Editor in 0.76 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Mono: successfully reloaded assembly
-- Completed reload, in  0.852 seconds
+- Completed reload, in  0.768 seconds
 Platform modules already initialized, skipping
-Switching build target platform(5) subTarget(0) extendedPlatform(0) -> platform(13) subTarget(589824) extendedPlatform(0)
-Refreshing native plugins compatible for Editor in 0.72 ms, found 3 plugins.
+Refreshing native plugins compatible for Editor in 0.76 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 1400 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 65.1 MB.
-System memory in use after: 65.2 MB.
+Unloading 1376 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 67.6 MB.
+System memory in use after: 67.7 MB.
 
-Unloading 118 unused Assets to reduce memory usage. Loaded Objects now: 1763.
-Total: 1.518200 ms (FindLiveObjects: 0.119400 ms CreateObjectMapping: 0.039900 ms MarkObjects: 1.325000 ms  DeleteObjects: 0.033400 ms)
+Unloading 98 unused Assets to reduce memory usage. Loaded Objects now: 1769.
+Total: 1.589500 ms (FindLiveObjects: 0.119500 ms CreateObjectMapping: 0.037100 ms MarkObjects: 1.401200 ms  DeleteObjects: 0.030900 ms)
 
-AssetImportParameters requested are different than current active one (requested -> active):
-  custom:graphics/normal-map-encoding: 01000000000000000000000000000000 -> 02000000000000000000000000000000
+========================================================================
+Received Prepare
+Refreshing native plugins compatible for Editor in 15.23 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 96 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 42.2 MB.
+System memory in use after: 42.3 MB.
+
+Unloading 96 unused Assets to reduce memory usage. Loaded Objects now: 1769.
+Total: 1.725000 ms (FindLiveObjects: 0.235700 ms CreateObjectMapping: 0.075300 ms MarkObjects: 1.373400 ms  DeleteObjects: 0.039500 ms)
+
+========================================================================
+Received Prepare
+Refreshing native plugins compatible for Editor in 12.13 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 96 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 42.2 MB.
+System memory in use after: 42.3 MB.
+
+Unloading 96 unused Assets to reduce memory usage. Loaded Objects now: 1769.
+Total: 1.588400 ms (FindLiveObjects: 0.118300 ms CreateObjectMapping: 0.042500 ms MarkObjects: 1.399800 ms  DeleteObjects: 0.027000 ms)
+
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file
