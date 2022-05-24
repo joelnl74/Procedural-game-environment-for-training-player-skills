@@ -117,9 +117,9 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
                 var jsonValue1 = snapShotData;
                 var jsonValue2 = snapshot.Child("playerInfo").Child($"version{2}");
 
-                if (jsonValue1 != null)
+                if (jsonValue1.Exists)
                     _data1 = JsonConvert.DeserializeObject<Dictionary<int, ChunkInformation>>(jsonValue1.GetRawJsonValue());
-                if(jsonValue2 != null)
+                if (jsonValue2.Exists)
                     _data2 = JsonConvert.DeserializeObject<Dictionary<int, ChunkInformation>>(jsonValue2.GetRawJsonValue());
             }
 
