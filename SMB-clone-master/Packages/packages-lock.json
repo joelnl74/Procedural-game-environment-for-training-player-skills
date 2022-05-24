@@ -5,41 +5,41 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "beaf35f5be20613dc477fac2b6d84c405900b704"
+      "hash": "fef0caf21bf2c9f62b8e74a5f3bfe2cfd3f43e3e"
     },
     "com.google.external-dependency-manager": {
       "version": "https://github.com/GameWorkstore/com.google.external-dependency-manager.git",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "74ad43c2f9c3d782e5498a0719d0e82d868e484f"
+      "hash": "f510a3e4e75fdc936d60606533bcd560cf014e62"
     },
     "com.google.firebase.app": {
       "version": "https://github.com/GameWorkstore/com.google.firebase.app.git",
       "depth": 0,
       "source": "git",
       "dependencies": {
-        "com.google.external-dependency-manager": "1.2.169"
+        "com.google.external-dependency-manager": "1.2.171"
       },
-      "hash": "2d3b71599dca443adfd4ffbc4605e9de1e8f100e"
+      "hash": "91d5766e48d66bdca5b477a483301cd2632d425e"
     },
     "com.google.firebase.auth": {
       "version": "https://github.com/GameWorkstore/com.google.firebase.auth.git",
       "depth": 0,
       "source": "git",
       "dependencies": {
-        "com.google.firebase.app": "8.8.0"
+        "com.google.firebase.app": "9.0.0"
       },
-      "hash": "6b9cc300797cb86792cb92502c404818fb04f109"
+      "hash": "e9ad9bb67d2a64128104818f889b5f4978d3333f"
     },
     "com.google.firebase.database": {
       "version": "https://github.com/GameWorkstore/com.google.firebase.database.git",
       "depth": 0,
       "source": "git",
       "dependencies": {
-        "com.google.firebase.auth": "8.8.0"
+        "com.google.firebase.auth": "9.0.0"
       },
-      "hash": "ead650fd87eb211dd1ebcc03de3889ab003bbe92"
+      "hash": "93d2561961a6e64cb0d03415e49f9f5d589e3000"
     },
     "com.google.play.core": {
       "version": "https://github.com/GameWorkstore/com.google.play.core.git",
