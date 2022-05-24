@@ -22,6 +22,8 @@ public class MainMenu : MonoBehaviour {
 	// Use this for initialization
 	private void Start () 
 	{
+		Application.targetFrameRate = 60;
+
 		t_GameStateManager = FindObjectOfType<GameStateManager> ();
 		t_GameStateManager.ConfigNewGame ();
 
