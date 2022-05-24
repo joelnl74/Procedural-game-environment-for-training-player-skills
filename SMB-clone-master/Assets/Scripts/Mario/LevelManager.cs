@@ -138,7 +138,7 @@ public class LevelManager : MonoBehaviour {
 		}
 
 		if (timeLeftInt <= 0) {
-			if(SceneManager.GetActiveScene().name == "PCG")
+			if(SceneManager.GetActiveScene().name.Contains("PCG"))
             {
 				PCGEventManager.Instance.onSaveData?.Invoke();
 				SceneManager.LoadScene("Main Menu");
@@ -281,19 +281,26 @@ public class LevelManager : MonoBehaviour {
 		mario_Animator.SetBool ("isPoweringUp", false);
 	}
 
-	public void MarioPowerDown() {
+	public void MarioPowerDown() 
+	{
 		if (!isPoweringDown) {
 			Debug.Log (this.name + " MarioPowerDown: called and executed");
 			isPoweringDown = true;
 
-			if (marioSize > 0) {
+			if (marioSize > 0) 
+			{
 				StartCoroutine (MarioPowerDownCo ());
 				soundSource.PlayOneShot (pipePowerdownSound);
-			} else {
+			}
+			else 
+			{
 				MarioRespawn ();
+				PCGEventManager.Instance.onDeathByEnemy?.Invoke(Enemytype.Goomba);
 			}
 			Debug.Log (this.name + " MarioPowerDown: done executing");
-		} else {
+		} 
+		else 
+		{
 			Debug.Log (this.name + " MarioPowerDown: called but not executed");
 		}
 	}
@@ -338,7 +345,7 @@ public class LevelManager : MonoBehaviour {
 			}
 			Debug.Log (this.name + " MarioRespawn: lives left=" + lives.ToString ());
 
-			if (SceneManager.GetActiveScene().name == "PCG")
+			if (SceneManager.GetActiveScene().name.Contains("PCG"))
 			{
 				RespawnWithDelay(deadSound.length);
 			}

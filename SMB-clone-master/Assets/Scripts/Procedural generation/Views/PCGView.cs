@@ -9,6 +9,7 @@ public class PCGView : MonoBehaviour
 
     [SerializeField] Text _goaltext;
     [SerializeField] Text _feedbackText;
+    [SerializeField] Text _difficultyScore;
 
     [SerializeField] private CanvasGroup _feedbackCanvas;
 
@@ -23,7 +24,7 @@ public class PCGView : MonoBehaviour
         ShowRegenerateDialog(false);
     }
 
-    public void SetGoals(List<TrainingType> tranningTypes)
+    public void SetGoals(List<TrainingType> tranningTypes, int difficultyScore)
     {
         var addedTypes = new List<TrainingType>();
 
@@ -40,6 +41,9 @@ public class PCGView : MonoBehaviour
 
             addedTypes.Add(goal);
         }
+
+        ShowRegenerateDialog(false);
+        _difficultyScore.text = $"Difficulty score: {difficultyScore}";
     }
 
     public void ShowTip(string text)

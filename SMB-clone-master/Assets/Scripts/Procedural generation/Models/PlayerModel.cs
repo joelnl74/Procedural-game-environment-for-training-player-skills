@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class ChunkInformation
 {
     public int jumpDeaths = 0;
@@ -42,6 +42,7 @@ public class PlayerModel
     private int _precentageJumpDeaths;
     private int _precentageFireBarDeaths;
     private int _precentageElevation;
+    private int _precentagePlatform;
 
     public int currentDifficultyScore = 20;
 
@@ -54,9 +55,9 @@ public class PlayerModel
 
     private PCGEventManager eventManager;
 
-    public PlayerModel(PCGEventManager pCGEventManager)
+    public PlayerModel()
     {
-        eventManager = pCGEventManager;
+        eventManager = PCGEventManager.Instance;
         eventManager.onDeathByEnemy += HandleDeathByEnemy;
         eventManager.onFallDeath += HandleDeathByFalling;
         eventManager.onKilledEnemy += HandleKilledEnemy;
@@ -66,9 +67,20 @@ public class PlayerModel
 
         serializeData = new SerializeData();
 
-        if (serializeData.CheckSafe())
+        var scene = SceneManager.GetActiveScene();
+        int version = scene.name == "PCG" ? 1 : 2;
+
+        if (serializeData.CheckSafe(version))
         {
-            _previousChunkStats = serializeData.LoadData();
+            _previousChunkStats = serializeData.LoadData(version);
+
+            if (_previousChunkStats == null)
+            {
+                _previousChunkStats = new Dictionary<int, ChunkInformation>();
+
+                return;
+            }
+
             _previousChunkStats = _previousChunkStats.OrderBy(x => x.Value.difficultyScore).ToDictionary(x => x.Key, x => x.Value);
         }
     }
@@ -129,7 +141,10 @@ public class PlayerModel
 
     public void SaveDataToFirebase()
     {
-        serializeData.SaveData(_previousChunkStats);
+        var scene = SceneManager.GetActiveScene();
+        int version = scene.name == "PCG" ? 1 : 2;
+
+        serializeData.SaveData(_previousChunkStats, version);
     }
 
     public List<TrainingType> GetTranningTypes(List<TrainingType> previousTranningTypes, List<TrainingType> previousFailedTraningTypes)
@@ -158,10 +173,10 @@ public class PlayerModel
                 return previousTranningTypes;
             }
 
-            var hasFailedPreviousChunk = lastChunk.Value.completedChunk;
+            var completedSecondLast = _previousChunkStats.ElementAt(_previousChunkStats.Count - 2).Value;
 
             // If chunk before last one also failed and total death count of last chunk is smaller or equal to two generate same type of level.
-            if (hasFailedPreviousChunk == false && lastChunk.Value.GetTotalDeaths() <= 3)
+            if (lastChunk.Value.completedChunk == false && completedSecondLast.completedChunk == true && lastChunk.Value.GetTotalDeaths() <= 3)
             {
                 return previousFailedTraningTypes;
             }
@@ -179,7 +194,8 @@ public class PlayerModel
         var totalDeaths = chunk.GetTotalDeaths();
 
         increaseDifficulty += chunk.timeCompleted < 5 ? 5 : 0;
-        increaseDifficulty += totalDeaths <= 1 ? 5 : 0;
+        increaseDifficulty += totalDeaths == 0 ? 5 : 0;
+        increaseDifficulty += chunk.completedChunk ? 5 : 0;
         // 5.86 is the max speed mario can reach without using dash.
         increaseDifficulty += chunk.averageVelocity > 5.86f && totalDeaths < 3 ? 10 : 0;
 
@@ -203,17 +219,17 @@ public class PlayerModel
     {
         // TODO frequencies take into account failures and take into account current difficulty level.
         int[] arr = { 0, 1, 2, 3, 4 };
-        int[] freq = { _precentageElevation, _precentageEnemyDeaths, _precentageJumpDeaths, 25, currentDifficultyScore > 59 ? _precentageFireBarDeaths : 0 };
+        int[] freq = { _precentageElevation, _precentageEnemyDeaths, _precentageJumpDeaths, _precentagePlatform, currentDifficultyScore > 59 ? _precentageFireBarDeaths : 0 };
 
         var type = DistributionRand(arr, freq);
 
         return type switch
         {
             0 => (2, TrainingType.Medium_Jump),
-            1 => (6, TrainingType.Enemies),
-            2 => (8, TrainingType.Long_Jump),
-            3 => (8, TrainingType.Platform),
-            4 => (10, TrainingType.FireBar),
+            1 => (4, TrainingType.Enemies),
+            2 => (6, TrainingType.Long_Jump),
+            3 => (6, TrainingType.Platform),
+            4 => (8, TrainingType.FireBar),
             _ => (0, TrainingType.None),
         };
     }
@@ -280,10 +296,11 @@ public class PlayerModel
 
         var total = totalEnemyDeaths + totalJumpDeaths + totalFireBarDeaths;
 
-        var precentageEnemyDeaths = totalEnemyDeaths != 0 ? Mathf.Clamp(totalEnemyDeaths / total * 100, 20, 90) : 20;
-        var precentageJumpDeaths = totalJumpDeaths != 0 ? Mathf.Clamp(totalJumpDeaths / total * 100, 20, 90) : 20;
-        var precentageFireBarDeaths = totalFireBarDeaths != 0 ? Mathf.Clamp(totalFireBarDeaths / total * 100, 5, 40) : 5;
+        var precentageEnemyDeaths = totalEnemyDeaths != 0 ? Mathf.Clamp(totalEnemyDeaths / total * 100, 20, 90) : Random.Range(15, 35);
+        var precentageJumpDeaths = totalJumpDeaths != 0 ? Mathf.Clamp(totalJumpDeaths / total * 100, 20, 90) : Random.Range(10, 30);
+        var precentageFireBarDeaths = totalFireBarDeaths != 0 ? Mathf.Clamp(totalFireBarDeaths / total * 100, 5, 40) : Random.Range(5, 20);
 
+        _precentagePlatform = precentageJumpDeaths > 50 ? Random.Range(15, 30) : Random.Range(10, 25);
         _precentageEnemyDeaths = precentageEnemyDeaths;
         _precentageJumpDeaths = precentageJumpDeaths;
         _precentageFireBarDeaths = precentageFireBarDeaths;
@@ -294,6 +311,7 @@ public class PlayerModel
     {
         var current = 0;
         var completed = false;
+        var currentAmountOfPlatforms = 0;
         List<TrainingType> tranningTypes = new List<TrainingType>();
 
         while (completed == false)
@@ -312,6 +330,16 @@ public class PlayerModel
             {
                 var count = tranningTypes.Count(x => x == TrainingType.Enemies);
                 current += count;
+            }
+
+            if (type.Item2 == TrainingType.Platform)
+            {
+                currentAmountOfPlatforms++;
+            }
+
+            if (currentAmountOfPlatforms >= _maxPlatforms)
+            {
+                _precentagePlatform = 0;
             }
 
             tranningTypes.Add(type.Item2);

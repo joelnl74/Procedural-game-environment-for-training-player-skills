@@ -25,7 +25,7 @@ public class PlayerModelHandler : MonoBehaviour
     {
         _index = (int)TrainingType.Walking;
         _PCGEventManager = PCGEventManager.Instance;
-        _playerModel = new PlayerModel(_PCGEventManager);
+        _playerModel = new PlayerModel();
         _chunkTimer = 30;
 
         if (_playerModel.HasSafe())
@@ -198,7 +198,7 @@ public class PlayerModelHandler : MonoBehaviour
             _PCGEventManager.onShowMessage?.Invoke(playerSucces ? "Well done increasing difficulty!" : GetTipText(_playerModel.lastTranningTypeFailure));
         }
 
-        _PCGEventManager.onTranningGoalsGenerated?.Invoke(_tranningTypes);
+        _PCGEventManager.onTranningGoalsGenerated?.Invoke(_tranningTypes, _playerModel.currentDifficultyScore);
 
         SetTimer(30);
     }
@@ -234,15 +234,18 @@ public class PlayerModelHandler : MonoBehaviour
         if(_index + 1 >= tranningTypes.skillParameters.Count)
         {
             var adaptiveTypes = _playerModel.GetTranningTypes(_tranningTypes, previousFailedTraningTypes);
+            _tranningTypes = adaptiveTypes;
 
             tranningModelHandler.model.SetAdaptiveTranningType(adaptiveTypes, _playerModel.currentDifficultyScore);
 
             return adaptiveTypes;
         }
 
+        _playerModel.ResetChunkInformation();
+
         var types = new List<TrainingType>();
 
-        _index = Mathf.Clamp(succes ? _index + 1 : _index - 1, 0, tranningTypes.skillParameters.Count - 1);
+        _index = Mathf.Clamp(succes ? _index + 1 : _failedIndex, 0, tranningTypes.skillParameters.Count - 1);
 
         var returningType = tranningTypes.skillParameters[_index];
 
@@ -298,7 +301,7 @@ public class PlayerModelHandler : MonoBehaviour
         tranningModelHandler.GenerateModelsBasedOnSkill();
         _PCGEventManager.onRegenerateChunk?.Invoke(chunkId);
         _playerModel.ResetChunkInformation();
-        _PCGEventManager.onTranningGoalsGenerated?.Invoke(_tranningTypes);
+        _PCGEventManager.onTranningGoalsGenerated?.Invoke(_tranningTypes, _playerModel.currentDifficultyScore);
     }
 
     private bool DidCompleteWalkingTranning()

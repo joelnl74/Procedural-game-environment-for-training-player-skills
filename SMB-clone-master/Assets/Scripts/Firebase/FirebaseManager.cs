@@ -6,6 +6,7 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 public struct LeaderBoardEntryViewModel
 {
@@ -24,6 +25,10 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
     private FirebaseUser user;
     private FirebaseDatabase database;
 
+    private Dictionary<int, ChunkInformation> _data1 = new Dictionary<int, ChunkInformation>();
+    private Dictionary<int, ChunkInformation> _data2 = new Dictionary<int, ChunkInformation>();
+    private List<LeaderBoardEntryViewModel> _leaderboard;
+
     public void Setup()
     {
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(check =>
@@ -40,14 +45,14 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
         });
     }
 
-    public void UpdateDatabase(string data)
+    public void UpdateDatabase(string data, int version)
     {
         if (setup == false)
         {
             return;
         }
 
-        var task = database.RootReference.Child("users").Child(user.UserId).Child("playerInfo").SetRawJsonValueAsync(data);
+        var task = database.RootReference.Child("users").Child(user.UserId).Child("playerInfo").Child($"version{version}").SetRawJsonValueAsync(data);
     }
 
     public void SetSkippedTutorial(bool skipped)
@@ -57,13 +62,32 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
             return;
         }
 
-        var data = $"HasSkippedTutrial : {skipped}";
-        var task = database.RootReference.Child("users").Child(user.UserId).SetValueAsync(data);
+        var task = database.RootReference.Child("users").Child(user.UserId).Child("HasSkippedTutrial").SetValueAsync(skipped);
+    }
+
+    public void GetLeaderBoardAysncFromDataBase()
+    {
+        StartCoroutine(GetLeaderBoards());
     }
 
     public void LoadLeaderboardAsync()
     {
-        StartCoroutine(GetLeaderBoards());
+        if(_leaderboard != null)
+        {
+            OnLeaderBoardDataReceived?.Invoke(_leaderboard);
+
+            return;
+        }
+    }
+
+    public Dictionary<int, ChunkInformation> GetData(int version)
+    {
+        if (version == 1)
+        {
+            return _data1;
+        }
+
+        return _data2;
     }
 
     private IEnumerator GetLeaderBoards()
@@ -85,10 +109,23 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
         foreach(var snapshot in shot.Children)
         {
             var key = snapshot.Key;
-            var jsonValue = snapshot.Child("playerInfo");
+
+            var snapShotData = snapshot.Child("playerInfo").Child($"version{1}");
+
+            if (key == user.UserId)
+            {
+                var jsonValue1 = snapShotData;
+                var jsonValue2 = snapshot.Child("playerInfo").Child($"version{2}");
+
+                if (jsonValue1 != null)
+                    _data1 = JsonConvert.DeserializeObject<Dictionary<int, ChunkInformation>>(jsonValue1.GetRawJsonValue());
+                if(jsonValue2 != null)
+                    _data2 = JsonConvert.DeserializeObject<Dictionary<int, ChunkInformation>>(jsonValue2.GetRawJsonValue());
+            }
+
             var highestScore = 0;
 
-            foreach(var items in jsonValue.Children)
+            foreach(var items in snapShotData.Children)
             {
                 var score = Convert.ToInt32(items.Child("difficultyScore").Value);
 
@@ -102,8 +139,6 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
         }
 
         leaderboard = leaderboard.OrderByDescending(x => x.score).ToList();
-
-        OnLeaderBoardDataReceived?.Invoke(leaderboard);
     }
 
     private void InitializeFirebase()

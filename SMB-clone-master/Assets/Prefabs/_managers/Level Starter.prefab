@@ -606,12 +606,38 @@ MonoBehaviour:
     m_Bits: 136841728
   Fireball: {fileID: 1067952513393140, guid: 6cc1215ce827544449add993abeac60a, type: 3}
   FirePos: {fileID: 4650264610460380}
+  normalGravity: 0
+  minWalkSpeedX: 0.28
+  walkAccelerationX: 0.14
+  runAccelerationX: 0.21
+  releaseDecelerationX: 0.19
+  skidDecelerationX: 0.38
+  skidTurnaroundSpeedX: 2.11
+  maxWalkSpeedX: 5.86
+  maxRunSpeedX: 9.61
+  minJumpSpeed: 3.76
+  maxJumpSpeed: 8.67
+  minJumpSpeedY: 15
+  minJumpSpeedUpGravity: 0.47
+  minJumpSpeedDownGravity: 1.64
+  maxJumpSpeedY: 15
+  maxJumpSpeedUpGravity: 0.44
+  maxJumpSpeedDownGravity: 1.41
+  normaleJumpSpeedY: 18.75
+  normaleSpeedUpGravity: 0.59
+  normaleJumpSpeedDownGravity: 2.11
+  midAircurrentSpeedX: 5.86
+  midmidairAccelerationX: 0.14
+  midAirspeedXBeforeJump: 6.8
+  midairDecelerationXJump: 0.14
+  midairDecelerationXJumpIncreased: 0.19
+  midairDecelerationNormale: 0.21
   castleWalkSpeedX: 5.86
   levelEntryWalkSpeedX: 3.05
   isCrouching: 0
   inputFreezed: 0
-  respawnPositionPCG: {x: 0, y: 0}
   isDying: 0
+  respawnPositionPCG: {x: 0, y: 0}
 --- !u!50 &50873520463771854
 Rigidbody2D:
   serializedVersion: 4
@@ -646,8 +672,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.6}
-  m_Size: {x: 0.8, y: 1.2}
+  m_Offset: {x: 0, y: 0.5}
+  m_Size: {x: 0.9, y: 1}
   m_Direction: 0
 --- !u!1 &1213198798568588
 GameObject:

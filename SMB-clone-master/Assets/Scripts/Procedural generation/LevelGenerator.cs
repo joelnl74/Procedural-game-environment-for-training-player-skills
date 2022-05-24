@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class LevelGenerator : MonoBehaviour
 {
@@ -57,7 +58,7 @@ public class LevelGenerator : MonoBehaviour
         pcgEventManager.onRegenerateChunk += RegenerateChunk;
         pcgEventManager.onPlayerDeath += HandleOnDeath;
 
-        SetupSprites(true);
+        SetupSprites(SceneManager.GetActiveScene().name == "PCG");
 
         var spawnPos = Instantiate(new GameObject(), _spawnPoints.transform);
         spawnPos.name = "Spawn position";
@@ -80,6 +81,8 @@ public class LevelGenerator : MonoBehaviour
     public void SetupSprites(bool overworld)
     {
         _groundBlock = overworld == true ? _groundBlockOver : _groundBlockUnder;
+        Camera.main.backgroundColor = overworld == true ? Camera.main.backgroundColor : Color.black;
+        _clouds.SetActive(overworld);
     }
 
     public void ReachedEndOfChunk(int id, List<TrainingType> tranningTypes)
@@ -144,7 +147,6 @@ public class LevelGenerator : MonoBehaviour
 
     private void GenerateChunk()
     {
-        SetupSprites(tranningHandler.GetDifficulty() < 60);
         _entities.Add(_lastGeneratedChunk, new Dictionary<int, EntityModel>());
 
         if (_lastGeneratedChunk % 2 == 0)
@@ -330,7 +332,7 @@ public class LevelGenerator : MonoBehaviour
             var beginposition = new Vector2Int(xPos, yPos);
             var endPosition = new Vector2Int(xPos + model.width, yPos);
 
-            GenerateBlocks(beginposition, endPosition, chunk, model.hasSpecialBlocks);
+            GenerateBlocks(beginposition, endPosition, chunk, model.hasSpecialBlocks, false, true);
 
             if (model.hasEnemies)
             {
@@ -462,7 +464,7 @@ public class LevelGenerator : MonoBehaviour
 
     }
 
-    private void GenerateBlocks(Vector2Int begin, Vector2Int end, GameObject chunk, bool hasSpecial = false, bool stayAtHeigth = false)
+    private void GenerateBlocks(Vector2Int begin, Vector2Int end, GameObject chunk, bool hasSpecial = false, bool stayAtHeigth = false, bool isPlatform = false)
     {
         var endPointX = stayAtHeigth == false ? end.x : _previousChunkWidthEnd + _maxWidth;
 
@@ -483,6 +485,17 @@ public class LevelGenerator : MonoBehaviour
                 if (hasSpecial)
                 {
                     chance = Random.Range(0, 100);
+                }
+
+                if (isPlatform)
+                {
+                    var position = FindBlockHighestPosition(_lastGeneratedChunk, x + 1);
+
+                    if (y - position <= 1)
+                    {
+                        y += 2;
+                    }
+
                 }
 
                 go = chance < 50
@@ -644,7 +657,7 @@ public class LevelGenerator : MonoBehaviour
         return null;
     }
 
-    private int FindBlockHighestPosition(int chunkId, int x)
+    private int FindBlockHighestPosition(int chunkId, int x, int y = 0)
     {
         int highestPositon = 0;
 
