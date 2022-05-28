@@ -487,17 +487,6 @@ public class LevelGenerator : MonoBehaviour
                     chance = Random.Range(0, 100);
                 }
 
-                if (isPlatform)
-                {
-                    var position = FindBlockHighestPosition(_lastGeneratedChunk, x + 1);
-
-                    if (y - position <= 1)
-                    {
-                        y += 2;
-                    }
-
-                }
-
                 go = chance < 50
                     ? Instantiate(_groundBlock, chunk.transform)
                     : Instantiate(_specialBlocks[Random.Range(0, _specialBlocks.Length - 1)], chunk.transform);
