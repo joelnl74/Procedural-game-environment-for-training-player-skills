@@ -21,6 +21,10 @@ public class HasPlayedBeforeView : MonoBehaviour
         _serializeData = new SerializeData();
         _firebaseManager = FirebaseManager.Instance;
 
+        NoButtonPressed();
+
+        return;
+
         if (_serializeData.ContainsSkippedTutorial())
         {
             Disable();

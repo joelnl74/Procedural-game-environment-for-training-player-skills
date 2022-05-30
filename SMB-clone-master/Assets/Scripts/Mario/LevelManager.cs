@@ -141,7 +141,9 @@ public class LevelManager : MonoBehaviour {
 			if(SceneManager.GetActiveScene().name.Contains("PCG"))
             {
 				PCGEventManager.Instance.onSaveData?.Invoke();
-				SceneManager.LoadScene("Main Menu");
+				PCGEventManager.Instance.onTrainingEnd?.Invoke();
+
+				StartCoroutine(WaitForLoad());
 
 				return;
             }
@@ -189,7 +191,8 @@ public class LevelManager : MonoBehaviour {
 		Debug.Log (this.name + " PauseGameCo stops: records prevTimeScale=" + pauseGamePrevTimeScale.ToString());
 	}
 
-	IEnumerator UnpauseGameCo() {
+	IEnumerator UnpauseGameCo() 
+	{
 		pauseSoundSource.Play();
 		yield return new WaitForSecondsRealtime (pauseSoundSource.clip.length);
 
@@ -208,6 +211,13 @@ public class LevelManager : MonoBehaviour {
 		Time.timeScale = pauseGamePrevTimeScale;
 		gamePaused = false;
 		Debug.Log (this.name + " UnpauseGameCo stops: resume prevTimeScale=" + pauseGamePrevTimeScale.ToString());
+	}
+
+	IEnumerator WaitForLoad()
+	{
+		yield return new WaitForSeconds(2);
+
+		SceneManager.LoadScene("Main Menu");
 	}
 
 
