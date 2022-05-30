@@ -12,16 +12,33 @@ public class PCGView : MonoBehaviour
     [SerializeField] Text _difficultyScore;
 
     [SerializeField] private CanvasGroup _feedbackCanvas;
+    [SerializeField] private GameObject _feedbackFollowTarget;
 
     [SerializeField] private Button _closeButton;
     [SerializeField] private CanvasGroup _canvasGroup;
 
+    private GameObject _feedbackGo;
+    private Transform _feedbackGoTransform;
+    private Transform _feedbackFollowTransform;
+
     private void Awake()
     {
+        _feedbackGo = _feedbackCanvas.gameObject;
+        _feedbackGoTransform = _feedbackGo.transform;
+        _feedbackFollowTransform = _feedbackFollowTarget.transform;
+
         _feedbackCanvas.alpha = 0;
         _closeButton.onClick.AddListener(() => { ShowRegenerateDialog(false);});
 
         ShowRegenerateDialog(false);
+    }
+
+    private void Update()
+    {
+        var position = _feedbackGoTransform.position;
+        var followPosition = _feedbackFollowTransform.position;
+
+        _feedbackGo.transform.position = new Vector3(followPosition.x, followPosition.y + 4, position.z);
     }
 
     public void SetGoals(List<TrainingType> tranningTypes, int difficultyScore)

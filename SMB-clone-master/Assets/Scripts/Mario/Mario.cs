@@ -482,19 +482,21 @@ public class Mario : MonoBehaviour {
 			var shell = other.gameObject.GetComponent<KoopaShell>();
 			var enemyTransform = enemy.transform;
 
-			if (transform.position.y > enemy.transform.position.y && other.gameObject.tag != "Enemy/Piranha"
-			&& other.gameObject.tag != "Enemy/Bowser")
+			if (transform.position.y > enemy.transform.position.y 
+				&& other.gameObject.tag != "Enemy/Piranha"
+				&& other.gameObject.tag != "Enemy/Bowser")
             {
 				Debug.Log(this.name + " OnTriggerEnter2D: recognizes " + other.gameObject.name);
 				t_LevelManager.MarioStompEnemy(enemy);
 				Debug.Log(this.name + " OnTriggerEnter2D: finishes calling stomp method on " + other.gameObject.name);
 			}
-			else if (!t_LevelManager.isInvincible ()) {
+			else if (t_LevelManager.isInvincible () == false) 
+			{
 				if (shell != null && shell.isRolling && enemyTransform.position.y >= transform.position.y  ||  // non-rolling shell should do no damage
-					!bottomHit || (bottomHit && !enemy.isBeingStomped) && enemyTransform.position.y >= transform.position.y) 
+					enemy.isBeingStomped == false && enemyTransform.position.y >= transform.position.y) 
 				{
 					Debug.Log (this.name + " OnCollisionEnter2D: Damaged by " + other.gameObject.name
-						+ " from " + normal.ToString () + "; isFalling=" + isFalling); // TODO sometimes fire before stompbox reacts
+						+ " from " + normal.ToString () + "; isFalling=" + isFalling);
 
 					t_LevelManager.MarioPowerDown ();
 				}
