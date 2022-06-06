@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,27 +17,29 @@ public class HasPlayedBeforeView : MonoBehaviour
     private FirebaseManager _firebaseManager;
 
     // Start is called before the first frame update
-    private void Start()
+    private IEnumerator Start()
     {
         _serializeData = new SerializeData();
         _firebaseManager = FirebaseManager.Instance;
 
-        NoButtonPressed();
+        Disable();
 
-        return;
+        yield return new WaitForSeconds(5);
+
+        NoButtonPressed();
 
         if (_serializeData.ContainsSkippedTutorial())
         {
-            Disable();
+            // Disable();
         }
         else
         {
-            Enable();
+            // Enable();
         }
 
-        _continueButton.onClick.AddListener(OnContinuePressed);
-        _noButton.onClick.AddListener(NoButtonPressed);
-        _quitButton.onClick.AddListener(OnQuitButtonPreseed);
+        // _continueButton.onClick.AddListener(OnContinuePressed);
+        // _noButton.onClick.AddListener(NoButtonPressed);
+        // _quitButton.onClick.AddListener(OnQuitButtonPreseed);
     }
 
     private void OnDestroy()
@@ -50,24 +53,6 @@ public class HasPlayedBeforeView : MonoBehaviour
     {
         _serializeData.SetSkippedTutorial(true);
         _firebaseManager.SetSkippedTutorial(true);
-        _serializeData.SaveData(new Dictionary<int, ChunkInformation>
-        {
-            { 1, new ChunkInformation
-            {
-                index = skillsCollection.skillParameters.Count,
-                completedChunk = true,
-            }
-            }
-        }, 1);
-        _serializeData.SaveData(new Dictionary<int, ChunkInformation>
-        {
-            { 1, new ChunkInformation
-            {
-                index = skillsCollection.skillParameters.Count,
-                completedChunk = true,
-            }
-            }
-        }, 2);
 
         Disable();
     }

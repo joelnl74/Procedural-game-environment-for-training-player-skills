@@ -31,6 +31,11 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
 
     public void Setup()
     {
+        if (setup)
+        {
+            return;
+        }
+
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(check =>
         {
             var dependencyStatus = check.Result;

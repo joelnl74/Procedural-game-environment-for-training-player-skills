@@ -30,6 +30,24 @@ public class ChunkInformation
     {
         return jumpDeaths + enemiesDeaths + fireBarDeaths;
     }
+
+    public void AddModel(ChunkInformation chunkInformation)
+    {
+        jumpDeaths += chunkInformation.jumpDeaths;
+        enemiesDeaths += chunkInformation.enemiesDeaths;
+        goombaDeaths += chunkInformation.goombaDeaths;
+        shellDeaths += chunkInformation.shellDeaths;
+        flyingShellDeaths += chunkInformation.flyingShellDeaths;
+        fireBarDeaths += chunkInformation.fireBarDeaths;
+        timeCompleted += chunkInformation.timeCompleted;
+        totalCoinsAvailable += chunkInformation.totalCoinsAvailable;
+        totalCoinsCollected += chunkInformation.totalCoinsCollected;
+
+        if (difficultyScore < chunkInformation.difficultyScore)
+        {
+            difficultyScore = chunkInformation.difficultyScore;
+        }
+    }
 }
 
 public class PlayerModel
@@ -49,6 +67,7 @@ public class PlayerModel
     private bool setupCompleted = false;
 
     public ChunkInformation chunkInformation = new ChunkInformation();
+    public ChunkInformation _sessionChunkInformation = new ChunkInformation();
 
     public Dictionary<int, ChunkInformation> _previousChunkStats = new Dictionary<int, ChunkInformation>();
     public TrainingType lastTranningTypeFailure;
@@ -111,7 +130,15 @@ public class PlayerModel
     }
 
     public void ResetChunkInformation()
-        => chunkInformation = new ChunkInformation();
+    {
+        if (chunkInformation != null)
+        {
+            _previousChunkStats.Add(chunkInformation);
+            _sessionChunkInformation.AddModel(chunkInformation);
+        }
+
+        chunkInformation = new ChunkInformation();
+    }
 
     public void UpdateChunkInformation(int chunkId, int index, int coins, bool completed, int time, bool outOfTime, List<TrainingType> tranningTypes)
     {
@@ -132,6 +159,8 @@ public class PlayerModel
         chunkInformation.totalCoinsAvailable = coins;
         chunkInformation.tranningTypes = tranningTypes;
 
+        _sessionChunkInformation.AddModel(chunkInformation);
+
         _previousChunkStats.Add(chunkId, chunkInformation);
         CalculatePrecentages();
 
@@ -144,6 +173,12 @@ public class PlayerModel
         var scene = SceneManager.GetActiveScene();
         int version = scene.name == "PCG" ? 1 : 2;
 
+        if (_previousChunkStats.ContainsKey(int.MaxValue))
+        {
+            _previousChunkStats.Remove(int.MaxValue);
+        }
+
+        _previousChunkStats.Add(int.MaxValue, _sessionChunkInformation);
         serializeData.SaveData(_previousChunkStats, version);
     }
 

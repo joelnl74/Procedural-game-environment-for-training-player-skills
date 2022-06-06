@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 
 public class SerializeData
 {
@@ -37,7 +36,6 @@ public class SerializeData
     public void SaveData(Dictionary<int, ChunkInformation> chunkInformation, int version)
     {
         var jsonDictonary = JsonConvert.SerializeObject(chunkInformation);
-        var bf = new BinaryFormatter();
 
         FirebaseManager.Instance.UpdateDatabase(jsonDictonary, version);
     }
@@ -49,6 +47,11 @@ public class SerializeData
 
         foreach(var KeyValue in dictonary)
         {
+            if (KeyValue.Key == int.MaxValue)
+            {
+                continue;
+            }
+
             newDictonary.Add(-KeyValue.Key, KeyValue.Value);
         }
 
