@@ -21,7 +21,7 @@ public class ChunkInformation
 
     public float averageVelocity = 0;
 
-    public bool completedChunk = false;
+    public bool completedChunk = true;
     public bool outOfTime = false;
 
     public List<TrainingType> tranningTypes;
@@ -133,7 +133,6 @@ public class PlayerModel
     {
         if (chunkInformation != null)
         {
-            _previousChunkStats.Add(chunkInformation);
             _sessionChunkInformation.AddModel(chunkInformation);
         }
 
@@ -158,6 +157,11 @@ public class PlayerModel
         chunkInformation.index = index;
         chunkInformation.totalCoinsAvailable = coins;
         chunkInformation.tranningTypes = tranningTypes;
+
+        if (chunkInformation.completedChunk == false)
+        {
+            _sessionChunkInformation.completedChunk = false;
+        }
 
         _sessionChunkInformation.AddModel(chunkInformation);
 
