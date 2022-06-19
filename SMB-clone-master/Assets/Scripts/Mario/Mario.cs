@@ -87,7 +87,8 @@ public class Mario : MonoBehaviour {
 	public Vector2 respawnPositionPCG;
 
 	// Use this for initialization
-	void Awake () {
+	void Awake () 
+	{
 		t_LevelManager = FindObjectOfType<LevelManager>();
 		m_GroundCheck1 = transform.Find ("Ground Check 1");
 		m_GroundCheck2 = transform.Find ("Ground Check 2");
@@ -146,48 +147,63 @@ public class Mario : MonoBehaviour {
 		}
 	}
 
-	void FixedUpdate () {
+	void FixedUpdate ()
+	{
 		/******** Horizontal movement on ground */
-		if (isGrounded) {
+		if (isGrounded)
+		{
 			// If holding directional button, accelerate until reach max walk speed
 			// If holding Dash, accelerate until reach max run speed
-			if (faceDirectionX != 0) {
-				if (currentSpeedX == 0) {
+			if (faceDirectionX != 0)
+			{
+				if (currentSpeedX == 0) 
+				{
 					currentSpeedX = minWalkSpeedX;
-				} else if (currentSpeedX < maxWalkSpeedX) {
+				} else if (currentSpeedX < maxWalkSpeedX)
+				{
 					currentSpeedX = IncreaseWithinBound (currentSpeedX, walkAccelerationX, maxWalkSpeedX);
-				} else if (isDashing && currentSpeedX < maxRunSpeedX) {
+				} else if (isDashing && currentSpeedX < maxRunSpeedX)
+				{
 					currentSpeedX = IncreaseWithinBound (currentSpeedX, runAccelerationX, maxRunSpeedX);
 				}
 			} 
 
 			// Decelerate upon release of directional button
-			else if (currentSpeedX > 0) {
+			else if (currentSpeedX > 0)
+			{
 				currentSpeedX = DecreaseWithinBound (currentSpeedX, releaseDecelerationX, 0);
 			}
 
 			// If change direction, skid until lose all momentum then turn around
-			if (isChangingDirection && isGrounded) {
-				if (currentSpeedX > skidTurnaroundSpeedX) {
+			if (isChangingDirection && isGrounded)
+			{
+				if (currentSpeedX > skidTurnaroundSpeedX) 
+				{
 					moveDirectionX = -faceDirectionX;
 					m_Animator.SetBool ("isSkidding", isJumping ? false : true);
 					currentSpeedX = DecreaseWithinBound (currentSpeedX, skidDecelerationX, 0);
-				} else {
+				} 
+				else
+				{
 					moveDirectionX = faceDirectionX;
 					m_Animator.SetBool ("isSkidding", false);
 				}
-			} else {
+			} 
+			else
+			{
 				m_Animator.SetBool ("isSkidding", false);
 			}
 
 			// Freeze horizontal movement while crouching
-			if (isCrouching) {
+			if (isCrouching)
+			{
 				currentSpeedX = 0;
 			}
 
 		/******** Horizontal movement on air */
 		} 
-		else {
+		else
+		{
 			SetMidairParams ();
 
 			// Holding Dash while in midair has no effect
@@ -202,42 +218,53 @@ public class Mario : MonoBehaviour {
 				} else if (wasDashingBeforeJump && currentSpeedX < maxRunSpeedX) {
 					currentSpeedX = IncreaseWithinBound (currentSpeedX, midairAccelerationX, maxRunSpeedX);
 				}
-			} else if (currentSpeedX > 0) 
+			}
+			else if (currentSpeedX > 0) 
 			{
 				currentSpeedX = DecreaseWithinBound (currentSpeedX, releaseDecelerationX, -1);
 			}
 
 			// If change direction, decelerate but keep facing move direction
-			if (isChangingDirection) {
+			if (isChangingDirection)
+			{
 				faceDirectionX = moveDirectionX;
 				currentSpeedX = DecreaseWithinBound (currentSpeedX, midairDecelerationX, -1);
 			}
 		}
 
 		/******** Vertical movement */
-		if (isGrounded) {
+		if (isGrounded) 
+		{
 			isJumping = false;
 			m_Rigidbody2D.gravityScale = normalGravity;
 		}
 
-		if (!isJumping) {
-			if (isGrounded && jumpButtonHeld && jumpButtonReleased) {
+		if (isJumping == false) 
+		{
+			if (isGrounded && jumpButtonHeld && jumpButtonReleased) 
+			{
 				SetJumpParams ();
 				m_Rigidbody2D.velocity = new Vector2 (m_Rigidbody2D.velocity.x, jumpSpeedY);
 				isJumping = true;
 				jumpButtonReleased = false;
 				speedXBeforeJump = currentSpeedX;
 				wasDashingBeforeJump = isDashing;
-				if (t_LevelManager.marioSize == 0) {
+				if (t_LevelManager.marioSize == 0) 
+				{
 					t_LevelManager.soundSource.PlayOneShot (t_LevelManager.jumpSmallSound);
-				} else {
+				} 
+				else 
+				{
 					t_LevelManager.soundSource.PlayOneShot (t_LevelManager.jumpSuperSound);
 				}
 			}
-		} else {  // lower gravity if Jump button held; increased gravity if released
+		}
+		else 
+		{  // lower gravity if Jump button held; increased gravity if released
 			if (m_Rigidbody2D.velocity.y > 0 && jumpButtonHeld) {
 				m_Rigidbody2D.gravityScale = normalGravity * jumpUpGravity;
-			} else {
+			} else 
+			{
 				m_Rigidbody2D.gravityScale = normalGravity * jumpDownGravity;
 			}
 		}
@@ -256,15 +283,18 @@ public class Mario : MonoBehaviour {
 		}
 
 		/******** Reset params for automatic movement */
-		if (inputFreezed) {
+		if (inputFreezed)
+		{
 			currentSpeedX = automaticWalkSpeedX;
 			m_Rigidbody2D.gravityScale = automaticGravity;
 		}
 
 		/******** Shooting */
-		if (isShooting && t_LevelManager.marioSize == 2) {
+		if (isShooting && t_LevelManager.marioSize == 2)
+		{
 
-			if (fireTimeDelayTime >= waitBetweenFire) {
+			if (fireTimeDelayTime >= waitBetweenFire)
+			{
 				m_Animator.SetTrigger ("isFiring");
 				GameObject fireball = Instantiate (Fireball, FirePos.position, Quaternion.identity);
 				fireball.GetComponent<MarioFireball> ().directionX = transform.localScale.x;
@@ -281,7 +311,8 @@ public class Mario : MonoBehaviour {
 		m_Animator.SetBool ("isCrouching", isCrouching);
 		m_Animator.SetFloat ("absSpeed", Mathf.Abs (currentSpeedX));
 
-		if (faceDirectionX != 0 && !isChangingDirection) {
+		if (faceDirectionX != 0 && !isChangingDirection)
+		{
 			moveDirectionX = faceDirectionX;
 		}		
 	}
@@ -377,7 +408,9 @@ public class Mario : MonoBehaviour {
 
 	bool isClimbingFlagPole = false;
 	Vector2 climbFlagPoleVelocity = new Vector2 (0, -5f);
-	public void ClimbFlagPole() {
+
+	public void ClimbFlagPole() 
+	{
 		FreezeUserInput ();
 		isClimbingFlagPole = true;
 		m_Animator.SetBool ("climbFlagPole", true);
@@ -385,7 +418,9 @@ public class Mario : MonoBehaviour {
 		Debug.Log (this.name + ": Mario starts climbing flag pole");
 	}
 
-	void JumpOffPole() { // get off pole and start walking right
+	void JumpOffPole() 
+	{ 
+		// get off pole and start walking right
 		transform.position = new Vector2 (transform.position.x + .5f, transform.position.y);
 		m_Animator.SetBool ("climbFlagPole", false);
 		AutomaticWalk(castleWalkSpeedX);
@@ -394,12 +429,14 @@ public class Mario : MonoBehaviour {
 	}
 
 	/****************** Automatic movement (e.g. walk to castle sequence) */
-	public void UnfreezeUserInput() {
+	public void UnfreezeUserInput() 
+	{
 		inputFreezed = false;
 		Debug.Log (this.name + " UnfreezeUserInput called");
 	}
 
-	public void FreezeUserInput() {
+	public void FreezeUserInput() 
+	{
 		inputFreezed = true;
 		jumpButtonHeld = false;
 		jumpButtonReleased = true;
@@ -422,7 +459,8 @@ public class Mario : MonoBehaviour {
 		Debug.Log (this.name + " FreezeUserInput called");
 	}
 
-	public void AutomaticWalk(float walkVelocityX) {
+	public void AutomaticWalk(float walkVelocityX)
+	{
 		FreezeUserInput ();
 		if (walkVelocityX != 0) {
 			faceDirectionX = walkVelocityX / Mathf.Abs (walkVelocityX);
@@ -431,7 +469,8 @@ public class Mario : MonoBehaviour {
 		Debug.Log (this.name + " AutomaticWalk: speed=" + automaticWalkSpeedX.ToString());
 	}
 
-	public void AutomaticCrouch() {
+	public void AutomaticCrouch()
+	{
 		FreezeUserInput ();
 		isCrouching = true;
 	}
@@ -455,23 +494,30 @@ public class Mario : MonoBehaviour {
 		}
 	}
 
-	float IncreaseWithinBound(float val, float delta, float maxVal = Mathf.Infinity) {
+	float IncreaseWithinBound(float val, float delta, float maxVal = Mathf.Infinity)
+	{
 		val += delta;
-		if (val > maxVal) {
+		if (val > maxVal) 
+		{
 			val = maxVal;
 		}
+
 		return val;
 	}
 
 	float DecreaseWithinBound(float val, float delta, float minVal = 0) {
 		val -= delta;
-		if (val < minVal) {
+
+		if (val < minVal) 
+		{
 			val = minVal;
 		}
+
 		return val;
 	}
 
-	void OnCollisionEnter2D(Collision2D other) {
+	void OnCollisionEnter2D(Collision2D other)
+	{
 		Vector2 normal = other.contacts[0].normal;
 		Vector2 bottomSide = new Vector2 (0f, 1f);
 		bool bottomHit = normal == bottomSide;
@@ -515,5 +561,4 @@ public class Mario : MonoBehaviour {
 			JumpOffPole ();
 		}
 	}
-
 }

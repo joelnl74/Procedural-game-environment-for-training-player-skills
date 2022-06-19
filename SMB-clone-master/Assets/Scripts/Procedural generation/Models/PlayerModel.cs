@@ -30,24 +30,6 @@ public class ChunkInformation
     {
         return jumpDeaths + enemiesDeaths + fireBarDeaths;
     }
-
-    public void AddModel(ChunkInformation chunkInformation)
-    {
-        jumpDeaths += chunkInformation.jumpDeaths;
-        enemiesDeaths += chunkInformation.enemiesDeaths;
-        goombaDeaths += chunkInformation.goombaDeaths;
-        shellDeaths += chunkInformation.shellDeaths;
-        flyingShellDeaths += chunkInformation.flyingShellDeaths;
-        fireBarDeaths += chunkInformation.fireBarDeaths;
-        timeCompleted += chunkInformation.timeCompleted;
-        totalCoinsAvailable += chunkInformation.totalCoinsAvailable;
-        totalCoinsCollected += chunkInformation.totalCoinsCollected;
-
-        if (difficultyScore < chunkInformation.difficultyScore)
-        {
-            difficultyScore = chunkInformation.difficultyScore;
-        }
-    }
 }
 
 public class GlobalPlayerResults
@@ -363,7 +345,7 @@ public class PlayerModel
         chunkInformation.jumpDeaths++;
         lastTranningTypeFailure = TrainingType.Long_Jump;
 
-        PCGEventManager.Instance.onPlayerDeath?.Invoke(chunkInformation.enemiesDeaths < 4);
+        PCGEventManager.Instance.onPlayerDeath?.Invoke(chunkInformation.jumpDeaths < 4);
         PCGEventManager.Instance.onPlayerModelUpdated(_previousChunkStats.Keys.Max());
     }
 
@@ -372,7 +354,7 @@ public class PlayerModel
         chunkInformation.fireBarDeaths++;
         lastTranningTypeFailure = TrainingType.FireBar;
 
-        PCGEventManager.Instance.onPlayerDeath?.Invoke(chunkInformation.enemiesDeaths < 4);
+        PCGEventManager.Instance.onPlayerDeath?.Invoke(chunkInformation.fireBarDeaths < 4);
         PCGEventManager.Instance.onPlayerModelUpdated(_previousChunkStats.Keys.Max());
     }
 
