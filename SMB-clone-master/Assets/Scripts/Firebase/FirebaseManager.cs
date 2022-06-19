@@ -148,20 +148,22 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
     {
        auth.SignInAnonymouslyAsync().ContinueWith(task => 
        {
-       if (task.IsCanceled)
-       {
-               Debug.LogError("SignInWithEmailAndPasswordAsync was canceled.");
-               return;
-       }
-       if (task.IsFaulted)
-       {
-                Debug.LogError("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
+           if (task.IsCanceled)
+           {
+                   Debug.LogError("SignInWithEmailAndPasswordAsync was canceled.");
+                   return;
+           }
+           if (task.IsFaulted)
+           {
+                    Debug.LogError("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
 
-                return;
-       }
-            FirebaseUser newUser = task.Result;
-            Debug.LogFormat("User signed in successfully: {0} ({1})",
-            newUser.DisplayName, newUser.UserId);
+                    return;
+           }
+           
+           FirebaseUser newUser = task.Result;
+
+           Debug.LogFormat("User signed in successfully: {0} ({1})",
+           newUser.DisplayName, newUser.UserId);
 
            database = FirebaseDatabase.DefaultInstance;
 
