@@ -19,6 +19,7 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
 {
     public Action<List<LeaderBoardEntryViewModel>> OnLeaderBoardDataReceived;
     public bool setup;
+    public bool dataReceived;
 
     [Header("Firebase")]
     private FirebaseAuth auth;
@@ -44,8 +45,6 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
             {
                 InitializeFirebase();
                 SignIn();
-
-                setup = true;
             }
         });
     }
@@ -72,7 +71,7 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
 
     public void GetLeaderBoardAysncFromDataBase()
     {
-        StartCoroutine(GetLeaderBoards());
+        StartCoroutine(GetData());
     }
 
     public void LoadLeaderboardAsync()
@@ -95,55 +94,31 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
         return _data2;
     }
 
-    private IEnumerator GetLeaderBoards()
+    private IEnumerator GetData()
     {
-        if (setup == false)
+        if (setup == false || dataReceived == true)
         {
             yield break;
         }
 
-        yield return new WaitForSeconds(2);
-
-        var task = database.RootReference.Child("users").GetValueAsync();
+        var task = database.RootReference.Child("users").Child(user.UserId).Child("playerInfo").GetValueAsync();
 
         yield return new WaitUntil(predicate: () => task.IsCompleted);
 
         var shot = task.Result;
-        var leaderboard = new List<LeaderBoardEntryViewModel>();
 
-        foreach(var snapshot in shot.Children)
+        if (shot != null)
         {
-            var key = snapshot.Key;
+            var jsonValue1 = shot.Child($"version{1}");
+            var jsonValue2 = shot.Child($"version{2}");
 
-            var snapShotData = snapshot.Child("playerInfo").Child($"version{1}");
-
-            if (key == user.UserId)
-            {
-                var jsonValue1 = snapShotData;
-                var jsonValue2 = snapshot.Child("playerInfo").Child($"version{2}");
-
-                if (jsonValue1.Exists)
-                    _data1 = JsonConvert.DeserializeObject<Dictionary<int, ChunkInformation>>(jsonValue1.GetRawJsonValue());
-                if (jsonValue2.Exists)
-                    _data2 = JsonConvert.DeserializeObject<Dictionary<int, ChunkInformation>>(jsonValue2.GetRawJsonValue());
-            }
-
-            var highestScore = 0;
-
-            foreach(var items in snapShotData.Children)
-            {
-                var score = Convert.ToInt32(items.Child("difficultyScore").Value);
-
-                if(score > highestScore)
-                {
-                    highestScore = score;
-                }
-            }
-
-            leaderboard.Add(new LeaderBoardEntryViewModel { userName = key, score = highestScore, isOwn = key == user.UserId});
+            if (jsonValue1.Exists)
+                _data1 = JsonConvert.DeserializeObject<Dictionary<int, ChunkInformation>>(jsonValue1.GetRawJsonValue());
+            if (jsonValue2.Exists)
+                _data2 = JsonConvert.DeserializeObject<Dictionary<int, ChunkInformation>>(jsonValue2.GetRawJsonValue());
         }
 
-        leaderboard = leaderboard.OrderByDescending(x => x.score).ToList();
+        dataReceived = true;
     }
 
     private void InitializeFirebase()
@@ -186,9 +161,11 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
        }
             FirebaseUser newUser = task.Result;
             Debug.LogFormat("User signed in successfully: {0} ({1})",
-                newUser.DisplayName, newUser.UserId);
+            newUser.DisplayName, newUser.UserId);
 
            database = FirebaseDatabase.DefaultInstance;
+
+           setup = true;
        });
     }
 }

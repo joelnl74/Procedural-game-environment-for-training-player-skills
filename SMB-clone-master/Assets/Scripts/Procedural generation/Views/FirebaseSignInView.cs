@@ -5,6 +5,8 @@ public class FirebaseSignInView : MonoBehaviour
 {
     [SerializeField] private CanvasGroup canvasGroup;
 
+    private bool calledSetup;
+
     private IEnumerator Start()
     {
         if (FirebaseManager.Instance.setup)
@@ -15,11 +17,22 @@ public class FirebaseSignInView : MonoBehaviour
         }
 
         yield return new WaitForSeconds(2);
+    }
 
-        canvasGroup.alpha = 0;
-        canvasGroup.interactable = false;
-        canvasGroup.blocksRaycasts = false;
+    private void Update()
+    {
+        if (FirebaseManager.Instance.setup && calledSetup == false)
+        {
+            FirebaseManager.Instance.GetLeaderBoardAysncFromDataBase();
 
-        FirebaseManager.Instance.GetLeaderBoardAysncFromDataBase();
+            calledSetup = true;
+        }
+
+        if (calledSetup)
+        {
+            canvasGroup.alpha = 0;
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
+        }
     }
 }
