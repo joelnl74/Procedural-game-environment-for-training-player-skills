@@ -67,6 +67,9 @@ public class GlobalPlayerResults
     public int fireBarDeathsVersionOne;
     public int fireBarDeathsVersionTwo;
 
+    public int timeCompletionIntroductionVersionOne;
+    public int timeCompletionIntroductionVersionTwo;
+
     public bool DidRegenerateLevelVersionOne;
     public bool DidRegenerateLevelVersionTwo;
     public bool DidFailTraingVersionOne;
@@ -125,6 +128,7 @@ public class PlayerModel
 
     private PCGEventManager eventManager;
     private int version;
+    private bool completedTutorial;
 
     public PlayerModel()
     {
@@ -250,6 +254,21 @@ public class PlayerModel
 
         FirebaseManager.Instance.SetGlobalResults(_globalPlayerResults);
         serializeData.SaveData(_previousChunkStats, _globalPlayerResults, version);
+    }
+
+    public void SetTutorialCompletion(int time)
+    {
+        if (completedTutorial == false)
+        {
+            if (version == 1)
+            {
+                _globalPlayerResults.timeCompletionIntroductionVersionOne = time;
+            }
+
+            _globalPlayerResults.timeCompletionIntroductionVersionTwo = time;
+
+            completedTutorial = true;
+        }
     }
 
     public List<TrainingType> GetTranningTypes(List<TrainingType> previousTranningTypes, List<TrainingType> previousFailedTraningTypes)

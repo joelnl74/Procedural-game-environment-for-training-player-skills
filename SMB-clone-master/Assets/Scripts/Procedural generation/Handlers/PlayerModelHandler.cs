@@ -17,9 +17,11 @@ public class PlayerModelHandler : MonoBehaviour
     private List<TrainingType> _failedTrainingTypes = new List<TrainingType>();
 
     private float _timer;
+    private float _globalTimer;
     private float _chunkTimer;
     private bool _outOfTime = false;
     private bool _buttonPressed = false;
+    private bool _completeTutorial;
 
     private void Awake()
     {
@@ -63,6 +65,7 @@ public class PlayerModelHandler : MonoBehaviour
     private void Update()
     {
         _timer += Time.deltaTime;
+        _globalTimer += Time.deltaTime;
 
         if (_timer >= _chunkTimer && _outOfTime == false)
         {
@@ -231,7 +234,7 @@ public class PlayerModelHandler : MonoBehaviour
         var tranningTypes = tranningModelHandler.Get();
 
         // Has completed basic list, now work on adaptive part;
-        if(_index + 1 >= tranningTypes.skillParameters.Count)
+        if(_completeTutorial)
         {
             var adaptiveTypes = _playerModel.GetTranningTypes(_tranningTypes, previousFailedTraningTypes);
             _tranningTypes = adaptiveTypes;
@@ -255,6 +258,13 @@ public class PlayerModelHandler : MonoBehaviour
         }
         
         tranningModelHandler.model.SetTranningType(_index);
+
+        _completeTutorial = _index + 1 >= tranningTypes.skillParameters.Count;
+
+        if (_completeTutorial)
+        {
+            _playerModel.SetTutorialCompletion((int)_globalTimer);
+        }
 
         return types;
     }
