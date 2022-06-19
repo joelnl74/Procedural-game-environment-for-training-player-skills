@@ -50,6 +50,57 @@ public class ChunkInformation
     }
 }
 
+public class GlobalPlayerResults
+{
+    public int HighestScoreVersionOne;
+    public int HighestScoreVersionTwo;
+
+    public int jumpDeathsVersionOne;
+    public int jumpDeathsVersionTwo;
+
+    public int EnemyDeathsVersionOne;
+    public int EnemyDeathsVersionTwo;
+
+    public int totalDeathsVersionOne;
+    public int totalDeathsVersionTwo;
+
+    public int fireBarDeathsVersionOne;
+    public int fireBarDeathsVersionTwo;
+
+    public bool DidRegenerateLevelVersionOne;
+    public bool DidRegenerateLevelVersionTwo;
+    public bool DidFailTraingVersionOne;
+    public bool DidFailTrainingVersionTwo;
+
+    public void UpdateModel(ChunkInformation chunkInformation, int version)
+    {
+        if (version == 1)
+        {
+            jumpDeathsVersionOne += chunkInformation.jumpDeaths;
+            EnemyDeathsVersionOne += chunkInformation.enemiesDeaths;
+            fireBarDeathsVersionOne += chunkInformation.fireBarDeaths;
+            totalDeathsVersionOne += chunkInformation.GetTotalDeaths();
+
+            if (chunkInformation.difficultyScore > HighestScoreVersionOne)
+            {
+                HighestScoreVersionOne = chunkInformation.difficultyScore;
+            }
+
+            return;
+        }
+
+        jumpDeathsVersionTwo += chunkInformation.jumpDeaths;
+        EnemyDeathsVersionTwo += chunkInformation.enemiesDeaths;
+        fireBarDeathsVersionTwo += chunkInformation.fireBarDeaths;
+        totalDeathsVersionTwo += chunkInformation.GetTotalDeaths();
+
+        if (chunkInformation.difficultyScore > HighestScoreVersionTwo)
+        {
+            HighestScoreVersionTwo = chunkInformation.difficultyScore;
+        }
+    }
+}
+
 public class PlayerModel
 {
     private const int _maxPlatforms = 2;
@@ -67,12 +118,13 @@ public class PlayerModel
     private bool setupCompleted = false;
 
     public ChunkInformation chunkInformation = new ChunkInformation();
-    public ChunkInformation _sessionChunkInformation = new ChunkInformation();
+    public GlobalPlayerResults _globalPlayerResults;
 
     public Dictionary<int, ChunkInformation> _previousChunkStats = new Dictionary<int, ChunkInformation>();
     public TrainingType lastTranningTypeFailure;
 
     private PCGEventManager eventManager;
+    private int version;
 
     public PlayerModel()
     {
@@ -85,9 +137,10 @@ public class PlayerModel
         eventManager.onCollectedCoin += HandleOnCollectedCoin;
 
         serializeData = new SerializeData();
+        _globalPlayerResults = FirebaseManager.Instance.GetGlobalResults();
 
         var scene = SceneManager.GetActiveScene();
-        int version = scene.name == "PCG" ? 1 : 2;
+        version = scene.name == "PCG" ? 1 : 2;
 
         if (serializeData.CheckSafe(version))
         {
@@ -131,9 +184,15 @@ public class PlayerModel
 
     public void ResetChunkInformation()
     {
-        if (chunkInformation != null)
+        _globalPlayerResults.UpdateModel(chunkInformation, version);
+
+        if (version == 1)
         {
-            _sessionChunkInformation.AddModel(chunkInformation);
+            _globalPlayerResults.DidRegenerateLevelVersionOne = true;
+        }
+        else
+        {
+            _globalPlayerResults.DidRegenerateLevelVersionTwo = true;
         }
 
         chunkInformation = new ChunkInformation();
@@ -160,10 +219,17 @@ public class PlayerModel
 
         if (chunkInformation.completedChunk == false)
         {
-            _sessionChunkInformation.completedChunk = false;
+            if (version == 1)
+            {
+                _globalPlayerResults.DidFailTraingVersionOne = true;
+            }
+            else
+            {
+                _globalPlayerResults.DidFailTraingVersionOne = false;
+            }
         }
 
-        _sessionChunkInformation.AddModel(chunkInformation);
+        _globalPlayerResults.UpdateModel(chunkInformation, version);
 
         _previousChunkStats.Add(chunkId, chunkInformation);
         CalculatePrecentages();
@@ -182,8 +248,8 @@ public class PlayerModel
             _previousChunkStats.Remove(int.MaxValue);
         }
 
-        _previousChunkStats.Add(int.MaxValue, _sessionChunkInformation);
-        serializeData.SaveData(_previousChunkStats, version);
+        FirebaseManager.Instance.SetGlobalResults(_globalPlayerResults);
+        serializeData.SaveData(_previousChunkStats, _globalPlayerResults, version);
     }
 
     public List<TrainingType> GetTranningTypes(List<TrainingType> previousTranningTypes, List<TrainingType> previousFailedTraningTypes)

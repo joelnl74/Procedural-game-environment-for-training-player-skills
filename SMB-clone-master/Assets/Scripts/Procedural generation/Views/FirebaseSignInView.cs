@@ -23,7 +23,7 @@ public class FirebaseSignInView : MonoBehaviour
     {
         if (FirebaseManager.Instance.setup && calledSetup == false)
         {
-            FirebaseManager.Instance.GetLeaderBoardAysncFromDataBase();
+            FirebaseManager.Instance.GetPlayerDataFromDataBase();
 
             calledSetup = true;
         }

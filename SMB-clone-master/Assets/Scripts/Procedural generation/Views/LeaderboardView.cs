@@ -15,8 +15,8 @@ public class LeaderboardView : MonoBehaviour
 
     private void Start()
     {
-        firebaseManager = FirebaseManager.Instance;
-        firebaseManager.OnLeaderBoardDataReceived += Configure;
+        // firebaseManager = FirebaseManager.Instance;
+        // firebaseManager.OnLeaderBoardDataReceived += Configure;
         closeButton.onClick.AddListener(() => 
         {
             EnableDisable(false);

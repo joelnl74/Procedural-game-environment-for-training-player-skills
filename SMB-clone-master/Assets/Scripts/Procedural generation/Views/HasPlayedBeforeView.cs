@@ -16,6 +16,8 @@ public class HasPlayedBeforeView : MonoBehaviour
     private SerializeData _serializeData;
     private FirebaseManager _firebaseManager;
 
+    private bool skippedTutorialSet = false;
+
     // Start is called before the first frame update
     private IEnumerator Start()
     {
@@ -24,22 +26,26 @@ public class HasPlayedBeforeView : MonoBehaviour
 
         Disable();
 
+        skippedTutorialSet = _serializeData.ContainsSkippedTutorial();
+
+        if (skippedTutorialSet)
+        {
+            Disable();
+
+            yield break;
+        }
+
         yield return new WaitForSeconds(5);
+    }
 
-        NoButtonPressed();
-
-        if (_serializeData.ContainsSkippedTutorial())
+    private void Update()
+    {
+        if (FirebaseManager.Instance.setup && skippedTutorialSet == false)
         {
-            // Disable();
-        }
-        else
-        {
-            // Enable();
-        }
+            NoButtonPressed();
 
-        // _continueButton.onClick.AddListener(OnContinuePressed);
-        // _noButton.onClick.AddListener(NoButtonPressed);
-        // _quitButton.onClick.AddListener(OnQuitButtonPreseed);
+            skippedTutorialSet = true;
+        }
     }
 
     private void OnDestroy()
@@ -47,14 +53,6 @@ public class HasPlayedBeforeView : MonoBehaviour
         _continueButton?.onClick.RemoveAllListeners();
         _noButton?.onClick.RemoveAllListeners();
         _quitButton.onClick.RemoveAllListeners();
-    }
-
-    private void OnContinuePressed()
-    {
-        _serializeData.SetSkippedTutorial(true);
-        _firebaseManager.SetSkippedTutorial(true);
-
-        Disable();
     }
 
     private void OnQuitButtonPreseed()

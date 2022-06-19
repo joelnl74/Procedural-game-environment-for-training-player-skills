@@ -33,11 +33,13 @@ public class SerializeData
         }
     }
 
-    public void SaveData(Dictionary<int, ChunkInformation> chunkInformation, int version)
+    public void SaveData(Dictionary<int, ChunkInformation> chunkInformation, GlobalPlayerResults globalPlayerResults, int version)
     {
         var jsonDictonary = JsonConvert.SerializeObject(chunkInformation);
+        var jsonObject = JsonConvert.SerializeObject(globalPlayerResults);
 
         FirebaseManager.Instance.UpdateDatabase(jsonDictonary, version);
+        FirebaseManager.Instance.UpdateGlobalResults(jsonObject);
     }
 
     public Dictionary<int, ChunkInformation> LoadData(int version)
@@ -60,7 +62,7 @@ public class SerializeData
 
     public bool GetSkippedTutorial()
     {
-        return hasSkippedTutorial;
+        return PlayerPrefs.GetInt("has_skipped_tutorial") == 1 ? true : false;
     }
 
     public bool ContainsSkippedTutorial()
