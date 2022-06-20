@@ -183,6 +183,7 @@ public class LevelGenerator : MonoBehaviour
         HandleEnemies(_lastGeneratedChunk);
         HandleFireBar(_lastGeneratedChunk);
         HandleGenerateCoins(_lastGeneratedChunk);
+        FinalCheck(_lastGeneratedChunk);
 
         SetupEndOfChunk(chunk, maxX + 1, 0);
 
@@ -289,7 +290,7 @@ public class LevelGenerator : MonoBehaviour
         foreach (var model in _tranningModelHandler.elevationModels)
         {
             var xPos = Random.Range(minX, maxX - model.width);
-            var previousBlockHeigth = FindBlockHighestPosition(chunkId, xPos);
+            var previousBlockHeigth = FindBlockHighestPosition(chunkId, xPos - 1);
 
             var columnHeigth = previousBlockHeigth + model.heigth;
             var increasedHeigth = Mathf.Clamp(columnHeigth, previousBlockHeigth, Mathf.Min(columnHeigth, previousBlockHeigth + 4));
@@ -324,7 +325,7 @@ public class LevelGenerator : MonoBehaviour
         foreach (var model in _tranningModelHandler.platformModels)
         {
             var xPos = Random.Range(minX, maxX - model.width);
-            var previousHighestBlock = FindBlockHighestPosition(chunkId, xPos);
+            var previousHighestBlock = FindBlockHighestPosition(chunkId, xPos - 1);
 
             var yPos = previousHighestBlock <= minHeigth ? 3 : previousHighestBlock;
             yPos += model.heigth;
@@ -563,6 +564,9 @@ public class LevelGenerator : MonoBehaviour
 
     private void GenerateChasmBlocks(Vector2Int begin, Vector2Int end, int chunkId, bool ignoreCheck = false)
     {
+        var beginY = FindBlockHighestPosition(chunkId, begin.x - 1);
+        var endY = FindBlockHighestPosition(chunkId, end.x);
+
         for (int x = begin.x; x < end.x; x++)
         {
             if (ignoreCheck == false)
@@ -570,7 +574,16 @@ public class LevelGenerator : MonoBehaviour
                 var CanRemove = CheckBlockInfront(x, chunkId);
 
                 if (CanRemove == false)
+                {
+                    var blockHighestPosition = FindBlockHighestPosition(chunkId, x - 1);
+
+                    if (blockHighestPosition > beginY)
+                    {
+                        LowerBlocks(x - 1, beginY, beginY, chunkId);
+                    }
+
                     break;
+                }
             }
 
             for (int y = begin.y; y < end.y; y++)
@@ -589,6 +602,71 @@ public class LevelGenerator : MonoBehaviour
                 }
             }
         }
+
+        if (endY > beginY)
+        {
+            LowerBlocks(end.x, beginY, end.y + 1, chunkId);
+        }
+    }
+
+    private void LowerBlocks(int x, int maxY, int CurY, int chunkId)
+    {
+        for (int y = CurY; y > maxY; y--)
+        {
+            var block = GetEntity(x, y, chunkId);
+
+            if (block != null)
+            {
+                if (block.gameObject != null)
+                {
+                    Destroy(block.gameObject);
+                }
+
+                _entities[chunkId].Remove(GetId(x, y, chunkId));
+            }
+        }
+    }
+
+    private void FinalCheck(int chunkId)
+    {
+        var chunk = _entities[chunkId];
+
+        for (int x = _previousChunkWidthEnd + 1; x < _previousChunkWidthEnd + _maxWidth; x++)
+        {
+            var PreviousY = FindBlockHighestPosition(chunkId, x - 1);
+            var posY = FindBlockHighestPosition(chunkId, x);
+            var nextPos = FindBlockHighestPosition(chunkId, x + 1);
+
+            if (posY - PreviousY > 4)
+            {
+                LowerBlocks(x, PreviousY + 4, posY, chunkId);
+            }
+
+            if (nextPos == 0 && PreviousY != 0)
+            {
+                LowerBlocks(x, PreviousY, posY, chunkId);
+            }
+        }
+    }
+
+    private int FindBlockHighestPosition(int chunkId, int x)
+    {
+        int highestPositon = 0;
+
+        var chunk = _entities[chunkId];
+        var xPos = x;
+
+        foreach (var block in chunk)
+        {
+            var value = block.Value;
+
+            if (value.xPos == xPos && value.yPos > highestPositon)
+            {
+                highestPositon = block.Value.yPos;
+            }
+        }
+
+        return highestPositon;
     }
 
     private bool CheckBlockInfront(int start, int chunkId)
@@ -622,19 +700,6 @@ public class LevelGenerator : MonoBehaviour
         return min && max;
     }
 
-    private void SetupEndOfChunk(GameObject chunkGo, int x, int y)
-    {
-        var goEnd = Instantiate(_endOfChunk, chunkGo.transform);
-        var component = goEnd.GetComponent<EndOfChunkCollider>();
-
-        goEnd.transform.position = new Vector2(x, y);
-        goEnd.name = "End of chunk";
-
-        component.Setup(_lastGeneratedChunk, generatedCoins, _lastGeneratedChunk % 2 == 0, tranningHandler.GetTranningTypes());
-        
-        _lastGeneratedChunk++;
-    }
-
     private EntityModel GetEntity(int x, int y, int chunk)
     {
         var key = GetId(x, y, chunk);
@@ -644,26 +709,6 @@ public class LevelGenerator : MonoBehaviour
             return _entities[chunk][key];
 
         return null;
-    }
-
-    private int FindBlockHighestPosition(int chunkId, int x, int y = 0)
-    {
-        int highestPositon = 0;
-
-        var chunk = _entities[chunkId];
-        var xPos = x - 1;
-
-        foreach (var block in chunk)
-        {
-            var value = block.Value;
-
-            if(value.xPos == xPos && value.yPos > highestPositon)
-            {
-                highestPositon = block.Value.yPos;
-            }
-        }
-
-        return highestPositon;
     }
 
     private void AddEntity(int chunkId, Vector2Int position, EntityModel entityModel, GameObject go, EntityType entityType)
@@ -730,5 +775,18 @@ public class LevelGenerator : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void SetupEndOfChunk(GameObject chunkGo, int x, int y)
+    {
+        var goEnd = Instantiate(_endOfChunk, chunkGo.transform);
+        var component = goEnd.GetComponent<EndOfChunkCollider>();
+
+        goEnd.transform.position = new Vector2(x, y);
+        goEnd.name = "End of chunk";
+
+        component.Setup(_lastGeneratedChunk, generatedCoins, _lastGeneratedChunk % 2 == 0, tranningHandler.GetTranningTypes());
+
+        _lastGeneratedChunk++;
     }
 }
