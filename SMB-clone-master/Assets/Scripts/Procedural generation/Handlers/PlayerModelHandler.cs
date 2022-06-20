@@ -231,11 +231,11 @@ public class PlayerModelHandler : MonoBehaviour
     /// <returns></returns>
     private List<TrainingType> GenerateTranningType(List<TrainingType> previousFailedTraningTypes, bool succes)
     {
-        var testTypes = new List<TrainingType> { TrainingType.Platform, TrainingType.Platform, TrainingType.Medium_Jump, TrainingType.Medium_Jump, TrainingType.Medium_Jump };
-        tranningModelHandler.model.SetAdaptiveTranningType(testTypes, _playerModel.currentDifficultyScore);
-        _tranningTypes = testTypes;
+        // var testTypes = new List<TrainingType> { TrainingType.Platform, TrainingType.Platform, TrainingType.Medium_Jump, TrainingType.Medium_Jump, TrainingType.Medium_Jump };
+        // tranningModelHandler.model.SetAdaptiveTranningType(testTypes, _playerModel.currentDifficultyScore);
+        // _tranningTypes = testTypes;
 
-        return testTypes;
+        // return testTypes;
 
         var tranningTypes = tranningModelHandler.Get();
 
