@@ -285,7 +285,7 @@ public class LevelGenerator : MonoBehaviour
     private void HandleElevation(int chunkId)
     {
         var minX = _previousChunkWidthEnd + 1;
-        var maxX = _previousChunkWidthEnd + _maxWidth;
+        var maxX = _previousChunkWidthEnd + _maxWidth - 1;
 
         foreach (var model in _tranningModelHandler.elevationModels)
         {
@@ -318,20 +318,36 @@ public class LevelGenerator : MonoBehaviour
 
     private void HandlePlatforms(int chunkId)
     {
-        var minX = _previousChunkWidthEnd;
-        var maxX = _previousChunkWidthEnd + _maxWidth;
+
         var chunk = _chunks[chunkId];
 
-        foreach (var model in _tranningModelHandler.platformModels)
+        for (var i = 0; i < _tranningModelHandler.platformModels.Count; i++)
         {
-            var xPos = Random.Range(minX, maxX - model.width);
-            var previousHighestBlock = FindBlockHighestPosition(chunkId, xPos - 1);
+            var model = _tranningModelHandler.platformModels[i];
+            var minX = _previousChunkWidthEnd + 1;
+            var maxX = _previousChunkWidthEnd + _maxWidth - model.width - 1;
 
-            var yPos = previousHighestBlock <= minHeigth ? 3 : previousHighestBlock;
+            var xPos = Random.Range(minX, maxX - model.width);
+
+            var endX = xPos + model.width;
+            var highestYpos = FindBlockHighestPosition(chunkId, xPos - 1);
+
+            var yPos = Mathf.Max(highestYpos, minHeigth);
+
+            if (yPos > _maxHeigth)
+            {
+                break;
+            }
+
+            if (yPos <= minHeigth)
+            {
+                yPos = minHeigth;
+            }
+
             yPos += model.heigth;
 
             var beginposition = new Vector2Int(xPos, yPos);
-            var endPosition = new Vector2Int(xPos + model.width, yPos);
+            var endPosition = new Vector2Int(endX, yPos);
 
             GenerateBlocks(beginposition, endPosition, chunk, model.hasSpecialBlocks, false, true);
 
@@ -359,11 +375,7 @@ public class LevelGenerator : MonoBehaviour
             }
             if (model.chasmModel != null)
             {
-                var halfLength = beginposition.x;
-                var startX = halfLength;
-                var endX = startX + model.chasmModel.width;
-
-                GenerateChasmBlocks(new Vector2Int(startX, 1), new Vector2Int(endX, yPos - 1), chunkId, true);
+                GenerateChasmBlocks(new Vector2Int(xPos, 1), new Vector2Int(endX, yPos - 1), chunkId, true);
             }
         }
     }
@@ -471,13 +483,17 @@ public class LevelGenerator : MonoBehaviour
 
         for(int x = begin.x; x <= endPointX; x++)
         {
-            for(int y = begin.y; y <= end.y; y++)
+            var xPos = x;
+
+            for (int y = begin.y; y <= end.y; y++)
             {
-                if (y >= _maxHeigth)
+                var yPos = y;
+
+                if (yPos > _maxHeigth)
                     break;
 
                 // does this kill the loop?
-                if (_entities[_lastGeneratedChunk].ContainsKey(GetId(x, y, _lastGeneratedChunk)) == true)
+                if (_entities[_lastGeneratedChunk].ContainsKey(GetId(xPos, yPos, _lastGeneratedChunk)) == true)
                     continue;
 
                 GameObject go = null;
@@ -492,13 +508,13 @@ public class LevelGenerator : MonoBehaviour
                     ? Instantiate(_groundBlock, chunk.transform)
                     : Instantiate(_specialBlocks[Random.Range(0, _specialBlocks.Length - 1)], chunk.transform);
 
-                var pos = new Vector2(x, y);
+                var pos = new Vector2(xPos, yPos);
                 var entityModel = new EntityModel();
 
                 go.name = "block";
                 go.transform.position = pos;
 
-                AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), entityModel, go, EntityType.Solid);
+                AddEntity(_lastGeneratedChunk, new Vector2Int(xPos, yPos), entityModel, go, isPlatform ? EntityType.Platform : EntityType.Solid);
             }
         }
     }
@@ -575,13 +591,6 @@ public class LevelGenerator : MonoBehaviour
 
                 if (CanRemove == false)
                 {
-                    var blockHighestPosition = FindBlockHighestPosition(chunkId, x - 1);
-
-                    if (blockHighestPosition > beginY)
-                    {
-                        LowerBlocks(x - 1, beginY, beginY, chunkId);
-                    }
-
                     break;
                 }
             }
@@ -602,11 +611,6 @@ public class LevelGenerator : MonoBehaviour
                 }
             }
         }
-
-        if (endY > beginY)
-        {
-            LowerBlocks(end.x, beginY, end.y + 1, chunkId);
-        }
     }
 
     private void LowerBlocks(int x, int maxY, int CurY, int chunkId)
@@ -615,7 +619,7 @@ public class LevelGenerator : MonoBehaviour
         {
             var block = GetEntity(x, y, chunkId);
 
-            if (block != null)
+            if (block != null && block.entityType != EntityType.Platform)
             {
                 if (block.gameObject != null)
                 {
@@ -631,7 +635,7 @@ public class LevelGenerator : MonoBehaviour
     {
         var chunk = _entities[chunkId];
 
-        for (int x = _previousChunkWidthEnd + 1; x < _previousChunkWidthEnd + _maxWidth; x++)
+        for (int x = _previousChunkWidthEnd; x < _previousChunkWidthEnd + _maxWidth + 1; x++)
         {
             var PreviousY = FindBlockHighestPosition(chunkId, x - 1);
             var posY = FindBlockHighestPosition(chunkId, x);
@@ -639,10 +643,20 @@ public class LevelGenerator : MonoBehaviour
 
             if (posY - PreviousY > 4)
             {
-                LowerBlocks(x, PreviousY + 4, posY, chunkId);
+                LowerBlocks(x, PreviousY + 3, posY, chunkId);
+            }
+
+            if (PreviousY == 0 && nextPos != 0)
+            {
+                LowerBlocks(x, nextPos, posY, chunkId);
             }
 
             if (nextPos == 0 && PreviousY != 0)
+            {
+                LowerBlocks(x, PreviousY, posY, chunkId);
+            }
+
+            if (nextPos == PreviousY && PreviousY != 0)
             {
                 LowerBlocks(x, PreviousY, posY, chunkId);
             }

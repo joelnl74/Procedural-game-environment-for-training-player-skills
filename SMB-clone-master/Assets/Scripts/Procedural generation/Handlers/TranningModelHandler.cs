@@ -33,7 +33,7 @@ public class TranningModelHandler : MonoBehaviour
         GenerateMediumJumpModels();
         GenerateEnemies(1);
         GenerateLongJumpModels();
-        GeneratePlatformModels(1, 6, 3, 5, 0, false, true, true, false);
+        GeneratePlatformModels(2, 5, 3, 5, 0, false, true, true, false);
         GenerateFireBarModel();
     }
 

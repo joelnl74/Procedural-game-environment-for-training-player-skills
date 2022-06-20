@@ -4,9 +4,10 @@ public enum EntityType
 {
     Unknown = 0,
     Solid = 1,
-    Enemy = 2,
-    Coin = 3,
-    FireBar = 4,
+    Platform = 2,
+    Enemy = 3,
+    Coin = 4,
+    FireBar = 5,
 }
 
 public class EntityModel
