@@ -89,6 +89,7 @@ public class GlobalPlayerResults
 public class PlayerModel
 {
     private const int _maxPlatforms = 2;
+    private const int _maxFireBars = 3;
 
     private SerializeData serializeData;
 
@@ -418,6 +419,7 @@ public class PlayerModel
         var current = 0;
         var completed = false;
         var currentAmountOfPlatforms = 0;
+        var currentAmountOfFireBars = 0;
         List<TrainingType> tranningTypes = new List<TrainingType>();
 
         while (completed == false)
@@ -443,9 +445,19 @@ public class PlayerModel
                 currentAmountOfPlatforms++;
             }
 
+            if (type.Item2 == TrainingType.FireBar)
+            {
+                currentAmountOfFireBars++;
+            }
+
             if (currentAmountOfPlatforms >= _maxPlatforms)
             {
                 _precentagePlatform = 0;
+            }
+
+            if (currentAmountOfFireBars >= _maxFireBars)
+            {
+                _precentageFireBarDeaths = 0;
             }
 
             tranningTypes.Add(type.Item2);
