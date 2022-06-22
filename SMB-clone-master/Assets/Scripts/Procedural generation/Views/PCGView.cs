@@ -65,6 +65,11 @@ public class PCGView : MonoBehaviour
 
     public void ShowTip(string text)
     {
+        if (_feedbackCanvas.alpha == 1)
+        {
+            return;
+        }
+
         var sequence = DOTween.Sequence();
 
         sequence.SetLink(_feedbackCanvas.gameObject);

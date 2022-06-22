@@ -180,8 +180,8 @@ public class LevelGenerator : MonoBehaviour
         HandleElevation(_lastGeneratedChunk);
         HandleChasm(_lastGeneratedChunk);
         HandlePlatforms(_lastGeneratedChunk);
-        HandleEnemies(_lastGeneratedChunk);
         HandleFireBar(_lastGeneratedChunk);
+        HandleEnemies(_lastGeneratedChunk);
         HandleGenerateCoins(_lastGeneratedChunk);
         FinalCheck(_lastGeneratedChunk);
 
@@ -218,38 +218,12 @@ public class LevelGenerator : MonoBehaviour
 
     private Vector2Int GetEmptySpotOnMap(int chunkId, TrainingType tranningType)
     {
-        var randomXPos = Random.Range(_previousChunkWidthEnd + 1, _previousChunkWidthEnd + _maxWidth - 1);
-        var entities = _entities[chunkId];
-        var highestYpos = -1;
+        var solidBlocksInChunk = _entities[chunkId].Values.ToList();
+        var block = solidBlocksInChunk[Random.Range(0, solidBlocksInChunk.Count)];
+        var yPos = FindBlockHighestPosition(chunkId, block.xPos);
 
-        foreach(var entity in entities)
-        {
-            if (entity.Value.xPos == randomXPos)
-            {
-                var entityValue = entity.Value;
-                var ypos = entityValue.yPos;
 
-                if (ypos > highestYpos)
-                {
-                    if (tranningType == TrainingType.FireBar)
-                    {
-                        var id = GetId(entityValue.xPos - 1, entityValue.yPos, chunkId);
-                        var PreviousEntity = entities.ContainsKey(id);
-
-                        if (PreviousEntity)
-                        {
-                            highestYpos = ypos;
-                        }
-                    }
-                    else
-                    {
-                        highestYpos = ypos;
-                    }
-                }
-            }
-        }
-
-        return new Vector2Int(randomXPos, highestYpos + 1);
+        return new Vector2Int(block.xPos, yPos + 1);
     }
 
     private void SetupNewSpawnPosition(int chunkId)
@@ -406,11 +380,11 @@ public class LevelGenerator : MonoBehaviour
 
             switch(model.enemytype)
             {
-                case Enemytype.Shell:
-                    GenerateShell(chunk, position);
-                    break;
                 case Enemytype.Goomba:
                     GenerateGoomba(chunk, position);
+                    break;
+                case Enemytype.Shell:
+                    GenerateShell(chunk, position);
                     break;
                 case Enemytype.FlyingShell:
                     GenerateFlyingShell(chunk, position);
@@ -619,7 +593,7 @@ public class LevelGenerator : MonoBehaviour
         {
             var block = GetEntity(x, y, chunkId);
 
-            if (block != null && block.entityType != EntityType.Platform)
+            if (block != null && block.entityType == EntityType.Solid)
             {
                 if (block.gameObject != null)
                 {

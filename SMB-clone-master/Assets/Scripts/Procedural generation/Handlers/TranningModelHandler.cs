@@ -18,7 +18,6 @@ public class TranningModelHandler : MonoBehaviour
         model = new TranningModel();
         model.SetPlayerSkillConfiguration(_skillsCollection);
 
-        // TODO Load in from external file.
         model.SetTranningType((int)TrainingType.Walking);
     }
 
