@@ -218,7 +218,10 @@ public class LevelGenerator : MonoBehaviour
 
     private Vector2Int GetEmptySpotOnMap(int chunkId, TrainingType tranningType)
     {
-        var solidBlocksInChunk = _entities[chunkId].Values.ToList();
+        var solidBlocksInChunk = tranningType != TrainingType.FireBar 
+            ? _entities[chunkId].Values.ToList()
+            : _entities[chunkId].Values.Where(x => x.entityType == EntityType.Solid).ToList();
+
         var block = solidBlocksInChunk[Random.Range(0, solidBlocksInChunk.Count)];
         var yPos = FindBlockHighestPosition(chunkId, block.xPos);
 
@@ -284,9 +287,22 @@ public class LevelGenerator : MonoBehaviour
 
         foreach (var model in _tranningModelHandler.fireBarModels)
         {
-            var emptySpot = GetEmptySpotOnMap(chunkId, TrainingType.FireBar);
+            var position = GetEmptySpotOnMap(chunkId, TrainingType.FireBar);
 
-            GenerateFireBar(emptySpot.x, emptySpot.y, chunk);
+            var entity = GetEntity(position.x, position.y - 1, _lastGeneratedChunk);
+            
+            if (entity != null && entity.entityType == EntityType.Platform)
+            {
+                var entityBefore = GetEntity(position.x - 1, position.y - 1, _lastGeneratedChunk);
+
+                if (entityBefore == null)
+                {
+                    position.x++;
+                }
+            }
+
+
+            GenerateFireBar(position.x, position.y, chunk);
         }
     }
 
@@ -484,7 +500,7 @@ public class LevelGenerator : MonoBehaviour
 
                     if (yPos - highestPoint  <= 2 && yPos + 2 - highestPoint < 4)
                     {
-                        yPos += 2;
+                        highestPoint += Random.Range(2, 4);
 
                         var entity = GetEntity(x, yPos, _lastGeneratedChunk);
 
