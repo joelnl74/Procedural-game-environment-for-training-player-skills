@@ -477,6 +477,34 @@ public class LevelGenerator : MonoBehaviour
                 {
                     chance = Random.Range(0, 100);
                 }
+                if (isPlatform)
+                {
+                    var highestPoint = FindBlockHighestPosition(_lastGeneratedChunk, xPos);
+                    var entityType = GetEntity(x, highestPoint, _lastGeneratedChunk);
+
+                    if (yPos - highestPoint  <= 2 && yPos + 2 - highestPoint < 4)
+                    {
+                        yPos += 2;
+
+                        var entity = GetEntity(x, yPos, _lastGeneratedChunk);
+
+                        if (entity != null)
+                        {
+                            return;
+                        }
+                    }
+
+                    if (x == endPointX)
+                    {
+                        var highestPointNext = FindBlockHighestPosition(_lastGeneratedChunk, xPos + 1);
+
+                        if (highestPointNext == yPos)
+                        {
+                            return;
+                        }
+
+                    }
+                }
 
                 go = chance < 50
                     ? Instantiate(_groundBlock, chunk.transform)
@@ -559,6 +587,7 @@ public class LevelGenerator : MonoBehaviour
 
         for (int x = begin.x; x < end.x; x++)
         {
+            
             if (ignoreCheck == false)
             {
                 var CanRemove = CheckBlockInfront(x, chunkId);
@@ -576,7 +605,11 @@ public class LevelGenerator : MonoBehaviour
 
                 if (block != null)
                 {
-                    if(block.gameObject != null)
+                    if (block.entityType == EntityType.Platform)
+                    {
+                        return;
+                    }
+                    if (block.gameObject != null)
                     {
                         Destroy(block.gameObject);
                     }
