@@ -219,7 +219,7 @@ public class LevelGenerator : MonoBehaviour
     private Vector2Int GetEmptySpotOnMap(int chunkId, TrainingType tranningType)
     {
         var solidBlocksInChunk = tranningType != TrainingType.FireBar 
-            ? _entities[chunkId].Values.ToList()
+            ? _entities[chunkId].Values.Where(x => x.entityType == EntityType.Solid || x.entityType == EntityType.Platform).ToList()
             : _entities[chunkId].Values.Where(x => x.entityType == EntityType.Solid).ToList();
 
         var block = solidBlocksInChunk[Random.Range(0, solidBlocksInChunk.Count)];
@@ -388,8 +388,6 @@ public class LevelGenerator : MonoBehaviour
 
     private void HandleEnemies(int chunkId)
     {
-        var minX = _previousChunkWidthEnd;
-        var maxX = _previousChunkWidthEnd + _maxWidth;
         var chunk = _chunks[chunkId];
 
         foreach (var model in _tranningModelHandler.enemyModels)
@@ -534,7 +532,7 @@ public class LevelGenerator : MonoBehaviour
                 go.name = "block";
                 go.transform.position = pos;
 
-                AddEntity(_lastGeneratedChunk, new Vector2Int(xPos, yPos), entityModel, go, isPlatform ? EntityType.Platform : EntityType.Solid);
+                AddEntity(_lastGeneratedChunk, new Vector2Int((int)pos.x, (int)pos.y), entityModel, go, isPlatform ? EntityType.Platform : EntityType.Solid);
             }
         }
     }
