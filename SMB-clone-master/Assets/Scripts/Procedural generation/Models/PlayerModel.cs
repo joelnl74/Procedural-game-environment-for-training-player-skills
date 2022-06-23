@@ -411,7 +411,7 @@ public class PlayerModel
         _precentageEnemyDeaths = precentageEnemyDeaths;
         _precentageJumpDeaths = precentageJumpDeaths;
         _precentageFireBarDeaths = precentageFireBarDeaths;
-        _precentageElevation = 10;
+        _precentageElevation = 5;
     }
 
     private List<TrainingType> GetTranningTypesForTargetedDifficulty()
@@ -453,11 +453,13 @@ public class PlayerModel
             if (currentAmountOfPlatforms >= _maxPlatforms)
             {
                 _precentagePlatform = 0;
+                _precentageEnemyDeaths += 5;
             }
 
             if (currentAmountOfFireBars >= _maxFireBars)
             {
                 _precentageFireBarDeaths = 0;
+                _precentageEnemyDeaths += 5;
             }
 
             tranningTypes.Add(type.Item2);

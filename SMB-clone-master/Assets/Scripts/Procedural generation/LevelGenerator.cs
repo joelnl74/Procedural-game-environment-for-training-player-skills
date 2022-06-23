@@ -225,7 +225,6 @@ public class LevelGenerator : MonoBehaviour
         var block = solidBlocksInChunk[Random.Range(0, solidBlocksInChunk.Count)];
         var yPos = FindBlockHighestPosition(chunkId, block.xPos);
 
-
         return new Vector2Int(block.xPos, yPos + 1);
     }
 
@@ -308,7 +307,6 @@ public class LevelGenerator : MonoBehaviour
 
     private void HandlePlatforms(int chunkId)
     {
-
         var chunk = _chunks[chunkId];
 
         for (var i = 0; i < _tranningModelHandler.platformModels.Count; i++)
@@ -335,6 +333,11 @@ public class LevelGenerator : MonoBehaviour
             }
 
             yPos += model.heigth;
+
+            if (highestYpos == yPos)
+            {
+                yPos += 2;
+            }
 
             var beginposition = new Vector2Int(xPos, yPos);
             var endPosition = new Vector2Int(endX, yPos);
@@ -414,8 +417,8 @@ public class LevelGenerator : MonoBehaviour
 
     private void HandleChasm(int chunkId)
     {
-        var minX = _previousChunkWidthEnd;
-        var maxX = _previousChunkWidthEnd + _maxWidth;
+        var minX = _previousChunkWidthEnd + 1;
+        var maxX = _previousChunkWidthEnd + _maxWidth - 1;
 
         foreach (var model in _tranningModelHandler.chasmModels)
         {
@@ -496,11 +499,11 @@ public class LevelGenerator : MonoBehaviour
                 if (isPlatform)
                 {
                     var highestPoint = FindBlockHighestPosition(_lastGeneratedChunk, xPos);
-                    var entityType = GetEntity(x, highestPoint, _lastGeneratedChunk);
+                    var distance = yPos - highestPoint;
 
-                    if (yPos - highestPoint  <= 2 && yPos + 2 - highestPoint < 4)
+                    if (distance <= 2)
                     {
-                        highestPoint += Random.Range(2, 4);
+                        yPos += distance == 2 ? 2 : Random.Range(2, 4);
 
                         var entity = GetEntity(x, yPos, _lastGeneratedChunk);
 
@@ -518,7 +521,6 @@ public class LevelGenerator : MonoBehaviour
                         {
                             return;
                         }
-
                     }
                 }
 
@@ -688,7 +690,7 @@ public class LevelGenerator : MonoBehaviour
 
     private int FindBlockHighestPosition(int chunkId, int x)
     {
-        int highestPositon = 0;
+        int highestPositon = minHeigth;
 
         var chunk = _entities[chunkId];
         var xPos = x;

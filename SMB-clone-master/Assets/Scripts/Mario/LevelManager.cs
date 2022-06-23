@@ -215,7 +215,7 @@ public class LevelManager : MonoBehaviour {
 
 	IEnumerator WaitForLoad()
 	{
-		yield return new WaitForSeconds(2);
+		yield return new WaitForSeconds(5);
 
 		SceneManager.LoadScene("Main Menu");
 	}

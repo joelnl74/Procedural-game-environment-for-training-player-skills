@@ -1,18 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TrainingCompletedView : MonoBehaviour
 {
     [SerializeField] private CanvasGroup canvasGroup;
+    [SerializeField] private Text _dfficultyVersionOne;
+    [SerializeField] private Text _difficultyVersionTwo;
 
     private void Start()
     {
-        SetView(false);
+        SetView(false, null);
 
         PCGEventManager.Instance.onTrainingEnd += (() => 
         {
-            SetView(true);
+            SetView(true, FirebaseManager.Instance.GetGlobalResults());
         });
     }
 
@@ -21,8 +22,14 @@ public class TrainingCompletedView : MonoBehaviour
         
     }
 
-    public void SetView(bool isActive)
+    public void SetView(bool isActive, GlobalPlayerResults data)
     {
+        if (data != null)
+        {
+            _dfficultyVersionOne.text = $"Version one: { data.HighestScoreVersionOne}";
+            _difficultyVersionTwo.text = $"Version two: { data.HighestScoreVersionTwo}";
+        }
+
         canvasGroup.alpha = isActive ? 1 : 0;
         canvasGroup.interactable = isActive ? true : false;
         canvasGroup.blocksRaycasts = isActive ? true : false;
