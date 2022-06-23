@@ -57,6 +57,9 @@ public class GlobalPlayerResults
     public bool DidFailTraingVersionOne;
     public bool DidFailTrainingVersionTwo;
 
+    public bool DidSpeedRun;
+    public bool DidCollectCoins;
+
     public void UpdateModel(ChunkInformation chunkInformation, int version)
     {
         if (version == 1)
@@ -204,6 +207,11 @@ public class PlayerModel
         chunkInformation.totalCoinsAvailable = coins;
         chunkInformation.tranningTypes = tranningTypes;
 
+        if (chunkInformation.totalCoinsAvailable == chunkInformation.totalCoinsCollected)
+        {
+            _globalPlayerResults.DidCollectCoins = true;
+        }
+
         if (chunkInformation.completedChunk == false)
         {
             if (version == 1)
@@ -305,6 +313,11 @@ public class PlayerModel
         increaseDifficulty += chunk.completedChunk ? 5 : 0;
         // 5.86 is the max speed mario can reach without using dash.
         increaseDifficulty += chunk.averageVelocity > 5.86f && totalDeaths < 3 ? 10 : 0;
+
+        if (increaseDifficulty == 15)
+        {
+            _globalPlayerResults.DidSpeedRun = true;
+        }
 
         return increaseDifficulty;
     }
