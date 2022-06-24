@@ -14,6 +14,7 @@ public class PatrolVertical : MonoBehaviour {
 	public float directionY = 1; // 1 for up, -1 for down
 	public bool canMove = false;
 	public bool canMoveAutomatic = true; // should object start moving as soon as player is close?
+	public bool randomize;
 	private float minDistanceToMove = 14;
 
 	public float waitAtUpStop;
@@ -36,6 +37,15 @@ public class PatrolVertical : MonoBehaviour {
 		} else if (transform.position.y <= DownStop.position.y) {
 			directionY = 1;
 		}
+		if (randomize)
+        {
+			var upPosition = UpStop.transform.position;
+			var downPosition = DownStop.transform.position;
+
+			UpStop.transform.position = new Vector3(upPosition.x, upPosition.y + Random.Range(-1, 1), upPosition.z);
+			DownStop.transform.position = new Vector3(downPosition.x, downPosition.y + Random.Range(-1, 1), downPosition.z);
+		}
+
 		currentAbsSpeed = absSpeed;
 	}
 		

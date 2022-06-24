@@ -214,6 +214,7 @@ MonoBehaviour:
   directionY: 1
   canMove: 0
   canMoveAutomatic: 1
+  randomize: 1
   waitAtUpStop: 0
   waitAtDownStop: 0
   isAtUpStop: 0
