@@ -271,6 +271,11 @@ public class LevelGenerator : MonoBehaviour
             var columnHeigth = previousBlockHeigth + model.heigth;
             var increasedHeigth = Mathf.Clamp(columnHeigth, previousBlockHeigth, Mathf.Min(columnHeigth, previousBlockHeigth + 4));
 
+            if (increasedHeigth > 11)
+            {
+                increasedHeigth = 11;
+            }
+
             var beginposition = new Vector2Int(xPos, 1);
             var endPosition = new Vector2Int(xPos + model.width, increasedHeigth);
 
@@ -657,6 +662,8 @@ public class LevelGenerator : MonoBehaviour
             if (posY - PreviousY > 4)
             {
                 LowerBlocks(x, PreviousY + 3, posY, chunkId);
+
+                return;
             }
 
             if (PreviousY == 0 && nextPos != 0)
@@ -678,7 +685,7 @@ public class LevelGenerator : MonoBehaviour
 
     private int FindBlockHighestPosition(int chunkId, int x, TrainingType type = TrainingType.None)
     {
-        int highestPositon = minHeigth;
+        int highestPositon = 0;
 
         var chunk = _entities[chunkId].Values.ToList();
         var xPos = x;
