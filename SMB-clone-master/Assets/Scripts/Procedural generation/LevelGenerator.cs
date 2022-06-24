@@ -315,10 +315,10 @@ public class LevelGenerator : MonoBehaviour
             var minX = _previousChunkWidthEnd + 1;
             var maxX = _previousChunkWidthEnd + _maxWidth - model.width - 1;
 
-            var xPos = Random.Range(minX, maxX - model.width);
+            var xPos = Random.Range(minX, maxX);
 
             var endX = xPos + model.width;
-            var highestYpos = FindBlockHighestPosition(chunkId, xPos - 1);
+            var highestYpos = FindBlockHighestPosition(chunkId, xPos - 1, TrainingType.Platform);
 
             var yPos = Mathf.Max(highestYpos, minHeigth);
 
@@ -327,17 +327,7 @@ public class LevelGenerator : MonoBehaviour
                 break;
             }
 
-            if (yPos <= minHeigth)
-            {
-                yPos = minHeigth;
-            }
-
             yPos += model.heigth;
-
-            if (highestYpos == yPos)
-            {
-                yPos += 2;
-            }
 
             var beginposition = new Vector2Int(xPos, yPos);
             var endPosition = new Vector2Int(endX, yPos);
@@ -496,7 +486,7 @@ public class LevelGenerator : MonoBehaviour
                 }
                 if (isPlatform)
                 {
-                    var highestPoint = FindBlockHighestPosition(_lastGeneratedChunk, xPos);
+                    var highestPoint = FindBlockHighestPosition(_lastGeneratedChunk, xPos, TrainingType.Platform);
                     var distance = yPos - highestPoint;
 
                     if (distance <= 2)
@@ -513,7 +503,7 @@ public class LevelGenerator : MonoBehaviour
 
                     if (x == endPointX)
                     {
-                        var highestPointNext = FindBlockHighestPosition(_lastGeneratedChunk, xPos + 1);
+                        var highestPointNext = FindBlockHighestPosition(_lastGeneratedChunk, xPos + 1, TrainingType.Platform);
 
                         if (highestPointNext == yPos)
                         {
@@ -598,8 +588,8 @@ public class LevelGenerator : MonoBehaviour
 
     private void GenerateChasmBlocks(Vector2Int begin, Vector2Int end, int chunkId, bool ignoreCheck = false)
     {
-        var beginY = FindBlockHighestPosition(chunkId, begin.x - 1);
-        var endY = FindBlockHighestPosition(chunkId, end.x);
+        var beginY = FindBlockHighestPosition(chunkId, begin.x - 1, TrainingType.Platform);
+        var endY = FindBlockHighestPosition(chunkId, end.x, TrainingType.Platform);
 
         for (int x = begin.x; x < end.x; x++)
         {
@@ -660,9 +650,9 @@ public class LevelGenerator : MonoBehaviour
 
         for (int x = _previousChunkWidthEnd; x < _previousChunkWidthEnd + _maxWidth + 1; x++)
         {
-            var PreviousY = FindBlockHighestPosition(chunkId, x - 1);
-            var posY = FindBlockHighestPosition(chunkId, x);
-            var nextPos = FindBlockHighestPosition(chunkId, x + 1);
+            var PreviousY = FindBlockHighestPosition(chunkId, x - 1, TrainingType.Platform);
+            var posY = FindBlockHighestPosition(chunkId, x, TrainingType.Platform);
+            var nextPos = FindBlockHighestPosition(chunkId, x + 1, TrainingType.Platform);
 
             if (posY - PreviousY > 4)
             {
@@ -686,20 +676,23 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    private int FindBlockHighestPosition(int chunkId, int x)
+    private int FindBlockHighestPosition(int chunkId, int x, TrainingType type = TrainingType.None)
     {
         int highestPositon = minHeigth;
 
-        var chunk = _entities[chunkId];
+        var chunk = _entities[chunkId].Values.ToList();
         var xPos = x;
+
+        if (type == TrainingType.Platform)
+        {
+            chunk = chunk.Where(x => x.entityType != EntityType.Enemy && x.entityType != EntityType.Coin).ToList();
+        }
 
         foreach (var block in chunk)
         {
-            var value = block.Value;
-
-            if (value.xPos == xPos && value.yPos > highestPositon)
+            if (block.xPos == xPos && block.yPos > highestPositon)
             {
-                highestPositon = block.Value.yPos;
+                highestPositon = block.yPos;
             }
         }
 
