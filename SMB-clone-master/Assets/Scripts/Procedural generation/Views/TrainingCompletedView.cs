@@ -11,15 +11,17 @@ public class TrainingCompletedView : MonoBehaviour
     {
         SetView(false, null);
 
-        PCGEventManager.Instance.onTrainingEnd += (() => 
-        {
-            SetView(true, FirebaseManager.Instance.GetGlobalResults());
-        });
+        PCGEventManager.Instance.onTrainingEnd += SetActive;
     }
 
     private void OnDestroy()
     {
-        
+        PCGEventManager.Instance.onTrainingEnd -= SetActive;
+    }
+
+    private void SetActive()
+    {
+        SetView(true, FirebaseManager.Instance.GetGlobalResults());
     }
 
     public void SetView(bool isActive, GlobalPlayerResults data)
