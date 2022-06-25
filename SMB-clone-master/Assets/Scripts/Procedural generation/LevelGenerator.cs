@@ -502,7 +502,7 @@ public class LevelGenerator : MonoBehaviour
 
                     if (yPos - highestPos < 2)
                     {
-                        yPos += 2;
+                        yPos += 3;
                     }
                 }
 
@@ -607,8 +607,9 @@ public class LevelGenerator : MonoBehaviour
                 {
                     if (block.entityType == EntityType.Platform)
                     {
-                        return;
+                        continue;
                     }
+
                     if (block.gameObject != null)
                     {
                         Destroy(block.gameObject);

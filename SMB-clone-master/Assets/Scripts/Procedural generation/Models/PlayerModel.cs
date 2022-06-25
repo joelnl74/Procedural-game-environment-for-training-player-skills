@@ -424,7 +424,7 @@ public class PlayerModel
         _precentageEnemyDeaths = precentageEnemyDeaths;
         _precentageJumpDeaths = precentageJumpDeaths;
         _precentageFireBarDeaths = precentageFireBarDeaths;
-        _precentageElevation = 7;
+        _precentageElevation = 10;
     }
 
     private List<TrainingType> GetTranningTypesForTargetedDifficulty()
