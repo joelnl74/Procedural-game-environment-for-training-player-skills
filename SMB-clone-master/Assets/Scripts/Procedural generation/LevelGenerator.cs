@@ -271,9 +271,9 @@ public class LevelGenerator : MonoBehaviour
             var columnHeigth = previousBlockHeigth + model.heigth;
             var increasedHeigth = Mathf.Clamp(columnHeigth, previousBlockHeigth, Mathf.Min(columnHeigth, previousBlockHeigth + 4));
 
-            if (increasedHeigth > 11)
+            if (increasedHeigth > minHeigth + 4)
             {
-                increasedHeigth = 11;
+                increasedHeigth = minHeigth + 4;
             }
 
             var beginposition = new Vector2Int(xPos, 1);
@@ -281,7 +281,7 @@ public class LevelGenerator : MonoBehaviour
 
             var chunk = _chunks[chunkId];
 
-            GenerateBlocks(beginposition, endPosition, chunk, false, Random.Range(1, 3) / 2 == 0);
+            GenerateBlocks(beginposition, endPosition, chunk, false, false);
         }
     }
 
@@ -320,9 +320,9 @@ public class LevelGenerator : MonoBehaviour
             var minX = _previousChunkWidthEnd + 1;
             var maxX = _previousChunkWidthEnd + _maxWidth - model.width - 1;
 
-            var xPos = Random.Range(minX, maxX);
-
+            var xPos = GetEmptySpotOnMap(chunkId, TrainingType.Platform).x;
             var endX = xPos + model.width;
+
             var highestYpos = FindBlockHighestPosition(chunkId, xPos - 1, TrainingType.Platform);
 
             var yPos = Mathf.Max(highestYpos, minHeigth);
@@ -333,6 +333,12 @@ public class LevelGenerator : MonoBehaviour
             }
 
             yPos += model.heigth;
+            highestYpos = FindBlockHighestPosition(chunkId, xPos - 1, TrainingType.Platform);
+
+            if (yPos - highestYpos < 2)
+            {
+                yPos += 2;
+            }
 
             var beginposition = new Vector2Int(xPos, yPos);
             var endPosition = new Vector2Int(endX, yPos);
@@ -489,31 +495,14 @@ public class LevelGenerator : MonoBehaviour
                 {
                     chance = Random.Range(0, 100);
                 }
+
                 if (isPlatform)
                 {
-                    var highestPoint = FindBlockHighestPosition(_lastGeneratedChunk, xPos, TrainingType.Platform);
-                    var distance = yPos - highestPoint;
+                    var highestPos = FindBlockHighestPosition(_lastGeneratedChunk, x, TrainingType.Platform);
 
-                    if (distance <= 2)
+                    if (yPos - highestPos < 2)
                     {
-                        yPos += distance == 2 ? 2 : Random.Range(2, 4);
-
-                        var entity = GetEntity(x, yPos, _lastGeneratedChunk);
-
-                        if (entity != null)
-                        {
-                            return;
-                        }
-                    }
-
-                    if (x == endPointX)
-                    {
-                        var highestPointNext = FindBlockHighestPosition(_lastGeneratedChunk, xPos + 1, TrainingType.Platform);
-
-                        if (highestPointNext == yPos)
-                        {
-                            return;
-                        }
+                        yPos += 2;
                     }
                 }
 
@@ -662,7 +651,12 @@ public class LevelGenerator : MonoBehaviour
             if (posY - PreviousY > 4)
             {
                 LowerBlocks(x, PreviousY + 3, posY, chunkId);
+            }
 
+            var entity = GetEntity(x, posY, chunkId);
+
+            if (entity == null || entity.entityType == EntityType.Platform)
+            {
                 return;
             }
 
@@ -676,7 +670,7 @@ public class LevelGenerator : MonoBehaviour
                 LowerBlocks(x, PreviousY, posY, chunkId);
             }
 
-            if (nextPos == PreviousY && PreviousY != 0)
+            if (nextPos == PreviousY && PreviousY != 0 && nextPos != 0)
             {
                 LowerBlocks(x, PreviousY, posY, chunkId);
             }
