@@ -57,7 +57,7 @@ MonoBehaviour:
     skillParameters:
     - tranningType: 5
       min: 1
-      max: 3
+      max: 2
   - name: Killeable jumps with enemies
     maxObjects: 12
     skillParameters:
@@ -72,13 +72,13 @@ MonoBehaviour:
     skillParameters:
     - tranningType: 6
       min: 1
-      max: 3
+      max: 2
   - name: Platform with enemies
     maxObjects: 12
     skillParameters:
     - tranningType: 4
       min: 1
-      max: 2
+      max: 3
     - tranningType: 5
       min: 1
       max: 2

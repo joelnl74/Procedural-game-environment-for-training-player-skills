@@ -148,6 +148,11 @@ public class LevelGenerator : MonoBehaviour
 
     private void GenerateChunk()
     {
+        if (_entities.ContainsKey(_lastGeneratedChunk) || _chunks.ContainsKey(_lastGeneratedChunk))
+        {
+            _lastGeneratedChunk += 2;
+        }
+
         _entities.Add(_lastGeneratedChunk, new Dictionary<int, EntityModel>());
 
         if (_lastGeneratedChunk % 2 == 0)
