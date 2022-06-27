@@ -3758,6 +3758,22 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 8560940299967970993, guid: 2edb2b8e476654f0ea2807c7a8261a76,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Controls:
+
+
+        Arrows/WASD Move
+
+        Z/SpaceUp To jump
+
+        X/Shift
+        to dash
+
+
+        Press any key to continue'
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 58965874253323938, guid: 2edb2b8e476654f0ea2807c7a8261a76, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 2edb2b8e476654f0ea2807c7a8261a76, type: 3}

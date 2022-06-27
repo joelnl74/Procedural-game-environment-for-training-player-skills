@@ -2279,13 +2279,13 @@ MonoBehaviour:
 
     Arrows/WASD Move
 
-    Z To jump
+    Z/Space/Up To jump
 
-    X to dash
+    X/Shift
+    to dash
 
 
-    Press
-    any key to continue'
+    Press any key to continue'
 --- !u!1 &5775092245844699806
 GameObject:
   m_ObjectHideFlags: 0
