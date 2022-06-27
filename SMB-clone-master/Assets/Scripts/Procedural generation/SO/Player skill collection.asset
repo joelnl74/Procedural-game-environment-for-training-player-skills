@@ -23,11 +23,17 @@ MonoBehaviour:
       min: 0
       max: 0
   - name: Jumping
-    maxObjects: 5
+    maxObjects: 12
     skillParameters:
-    - tranningType: 2
+    - tranningType: 6
       min: 1
-      max: 3
+      max: 1
+    - tranningType: 3
+      min: 4
+      max: 6
+    - tranningType: 5
+      min: 4
+      max: 7
   - name: Large jumps
     maxObjects: 5
     skillParameters:
@@ -57,22 +63,22 @@ MonoBehaviour:
     skillParameters:
     - tranningType: 5
       min: 1
-      max: 2
+      max: 1
   - name: Killeable jumps with enemies
-    maxObjects: 12
+    maxObjects: 4
     skillParameters:
     - tranningType: 5
       min: 1
-      max: 2
+      max: 1
     - tranningType: 4
       min: 1
-      max: 2
+      max: 3
   - name: Platforms
     maxObjects: 12
     skillParameters:
     - tranningType: 6
       min: 1
-      max: 2
+      max: 1
   - name: Platform with enemies
     maxObjects: 12
     skillParameters:
@@ -81,16 +87,16 @@ MonoBehaviour:
       max: 3
     - tranningType: 5
       min: 1
-      max: 2
+      max: 1
   - name: Platforms and killeable jumps
     maxObjects: 8
     skillParameters:
     - tranningType: 4
-      min: 1
-      max: 2
+      min: 2
+      max: 3
     - tranningType: 5
       min: 1
-      max: 2
+      max: 1
     - tranningType: 6
       min: 1
-      max: 2
+      max: 1
