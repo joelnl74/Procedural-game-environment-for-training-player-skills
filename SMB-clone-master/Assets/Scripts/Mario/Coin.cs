@@ -12,6 +12,11 @@ public class Coin : MonoBehaviour
 	
 	void OnTriggerEnter2D(Collider2D other) 
 	{
+		if (t_LevelManager == null)
+        {
+			return;
+        }
+
 		if (other.gameObject.tag == "Player") 
 		{
 			PCGEventManager.Instance.onCollectedCoin?.Invoke();

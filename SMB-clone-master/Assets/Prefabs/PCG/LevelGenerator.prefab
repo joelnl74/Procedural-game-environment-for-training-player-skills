@@ -45,14 +45,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxHeigth: 16
-  _maxWidth: 16
+  _maxLearningWidth: 0
+  _maxCooldownWidth: 0
   _chunksToGenerate: 3
   _spawnPoints: {fileID: 0}
   _endOfChunk: {fileID: 7881505224963038939, guid: 3febba375bb0cc243bdf0d1c7ee214f6,
     type: 3}
-  _groundBlock: {fileID: 1160366322510860, guid: ffc5fa0e4ad2f4d279a007bafa62964a,
+  _patrolEnemyObject: {fileID: 1463195627290494, guid: 77da8a2a120b44132b2ada095c04d034,
     type: 3}
+  _groundBlockOver: {fileID: 0}
+  _goomba: {fileID: 0}
+  _shell: {fileID: 0}
+  _flyingShell: {fileID: 0}
+  _fireBar: {fileID: 0}
+  _piranhaPlant: {fileID: 0}
+  _groundBlockUnder: {fileID: 0}
+  _coin: {fileID: 0}
+  _specialBlocks: []
+  _tranningModelHandler: {fileID: 0}
   _mario: {fileID: 0}
+  _clouds: {fileID: 0}
 --- !u!1 &6851718193748972842
 GameObject:
   m_ObjectHideFlags: 0
@@ -97,3 +109,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _levelGenerator: {fileID: 4617614379025424904}
+  tranningModelHandler: {fileID: 0}

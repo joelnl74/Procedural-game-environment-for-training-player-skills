@@ -12,6 +12,7 @@ public class LevelGenerator : MonoBehaviour
 
     [SerializeField] private GameObject _spawnPoints;
     [SerializeField] private GameObject _endOfChunk;
+    [SerializeField] private GameObject _patrolEnemyObject;
 
     // Over world sprites
     [SerializeField] private GameObject _groundBlockOver;
@@ -181,9 +182,12 @@ public class LevelGenerator : MonoBehaviour
         HandleChasm(_lastGeneratedChunk);
         HandlePlatforms(_lastGeneratedChunk);
         HandleFireBar(_lastGeneratedChunk);
+
+        FinalCheck(_lastGeneratedChunk);
+        
         HandleEnemies(_lastGeneratedChunk);
         HandleGenerateCoins(_lastGeneratedChunk);
-        FinalCheck(_lastGeneratedChunk);
+
 
         SetupEndOfChunk(chunk, maxX + 1, 0);
 
@@ -282,6 +286,9 @@ public class LevelGenerator : MonoBehaviour
             var chunk = _chunks[chunkId];
 
             GenerateBlocks(beginposition, endPosition, chunk, false, false);
+            GeneratePatrolPoints(beginposition.x - 1, previousBlockHeigth + 1, chunk);
+            GeneratePatrolPoints(beginposition.x, increasedHeigth + 1, chunk);
+            GeneratePatrolPoints(endPosition.x, increasedHeigth + 1, chunk);
         }
     }
 
@@ -418,6 +425,7 @@ public class LevelGenerator : MonoBehaviour
     {
         var minX = _previousChunkWidthEnd + 1;
         var maxX = _previousChunkWidthEnd + _maxWidth - 1;
+        var chunk = _chunks[chunkId];
 
         foreach (var model in _tranningModelHandler.chasmModels)
         {
@@ -558,6 +566,14 @@ public class LevelGenerator : MonoBehaviour
         go.transform.position = new Vector2(pos.x, pos.y);
 
         AddEntity(_lastGeneratedChunk, pos, entityModel, go, EntityType.Enemy);
+    }
+    private void GeneratePatrolPoints(int x, int y, GameObject chunk)
+    {
+        var go = Instantiate(_patrolEnemyObject, chunk.transform);
+        var pos = new Vector2Int(x, y);
+
+        go.name = "patrol point";
+        go.transform.position = new Vector2(pos.x, pos.y);
     }
 
     private Vector2Int FindHighestEmptyPoint(int chunkId)

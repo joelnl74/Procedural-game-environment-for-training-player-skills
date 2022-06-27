@@ -71,5 +71,14 @@ public class MoveAndFlip : MonoBehaviour {
 		}
 	}
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == "Detector")
+        {
+			directionX = -directionX;
+			OrientSprite();
+		}
+    }
+
 }
 
