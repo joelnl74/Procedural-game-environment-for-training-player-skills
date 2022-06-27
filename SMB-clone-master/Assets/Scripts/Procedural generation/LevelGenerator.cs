@@ -232,6 +232,15 @@ public class LevelGenerator : MonoBehaviour
         return new Vector2Int(block.xPos, yPos + 1);
     }
 
+    private EntityModel GetHighestSolidBlock(int chunkId)
+    {
+        var solidBlocksInChunk = _entities[chunkId].Values.Where(x => x.entityType == EntityType.Solid).ToList();
+        var block = solidBlocksInChunk[Random.Range(0, solidBlocksInChunk.Count)];
+        var highestBlock = FindBlockHighestPosition(chunkId, block.xPos, TrainingType.Platform);
+
+        return GetEntity(block.xPos, highestBlock, chunkId);
+    }
+
     private void SetupNewSpawnPosition(int chunkId)
     {
         if(chunkId <= 0)
@@ -297,21 +306,20 @@ public class LevelGenerator : MonoBehaviour
 
         foreach (var model in _tranningModelHandler.fireBarModels)
         {
-            var position = GetEmptySpotOnMap(chunkId, TrainingType.FireBar);
+            var block = GetHighestSolidBlock(chunkId);
 
-            var entity = GetEntity(position.x, position.y - 1, _lastGeneratedChunk);
-
-            if (entity != null && entity.entityType == EntityType.Platform)
+            if (block == null)
             {
-                var entityBefore = GetEntity(position.x - 1, position.y - 1, _lastGeneratedChunk);
-
-                if (entityBefore == null)
-                {
-                    position.x++;
-                }
+                return;
             }
 
-            GenerateFireBar(position.x, position.y, chunk);
+            var xPos = block.xPos;
+            var yPos = block.yPos;
+
+            Destroy(block.gameObject);
+            _entities[chunkId].Remove(block.id);
+
+            GenerateFireBar(xPos, yPos, chunk);
         }
     }
 
