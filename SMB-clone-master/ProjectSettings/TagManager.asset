@@ -12,6 +12,7 @@ TagManager:
   - Mario Fireball
   - Enemy/Bowser
   - Chunk
+  - Detector
   layers:
   - Default
   - TransparentFX

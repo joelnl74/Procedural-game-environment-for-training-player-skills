@@ -287,8 +287,7 @@ public class LevelGenerator : MonoBehaviour
 
             GenerateBlocks(beginposition, endPosition, chunk, false, false);
             GeneratePatrolPoints(beginposition.x - 1, previousBlockHeigth + 1, chunk);
-            GeneratePatrolPoints(beginposition.x, increasedHeigth + 1, chunk);
-            GeneratePatrolPoints(endPosition.x, increasedHeigth + 1, chunk);
+            GeneratePatrolPoints(endPosition.x - 1, FindBlockHighestPosition(chunkId, endPosition.x), chunk);
         }
     }
 
@@ -301,7 +300,7 @@ public class LevelGenerator : MonoBehaviour
             var position = GetEmptySpotOnMap(chunkId, TrainingType.FireBar);
 
             var entity = GetEntity(position.x, position.y - 1, _lastGeneratedChunk);
-            
+
             if (entity != null && entity.entityType == EntityType.Platform)
             {
                 var entityBefore = GetEntity(position.x - 1, position.y - 1, _lastGeneratedChunk);
@@ -311,7 +310,6 @@ public class LevelGenerator : MonoBehaviour
                     position.x++;
                 }
             }
-
 
             GenerateFireBar(position.x, position.y, chunk);
         }
@@ -474,7 +472,6 @@ public class LevelGenerator : MonoBehaviour
         go.transform.position = pos;
 
         AddEntity(_lastGeneratedChunk, new Vector2Int(x, y), entityModel, go, EntityType.FireBar);
-
     }
 
     private void GenerateBlocks(Vector2Int begin, Vector2Int end, GameObject chunk, bool hasSpecial = false, bool stayAtHeigth = false, bool isPlatform = false)
@@ -675,6 +672,11 @@ public class LevelGenerator : MonoBehaviour
             if (entity == null || entity.entityType == EntityType.Platform)
             {
                 return;
+            }
+
+            if (PreviousY == 0 && posY > minHeigth && nextPos == minHeigth)
+            {
+                LowerBlocks(x, minHeigth, posY, chunkId);
             }
 
             if (PreviousY == 0 && nextPos != 0)
