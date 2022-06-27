@@ -35,12 +35,13 @@ public class KoopaShell : Enemy {
 		if (!isReviving && !isRolling) 
 		{
 			waitTillRevive -= Time.deltaTime;
-			if (waitTillRevive <= 0) {
+			if (waitTillRevive <= 0) 
+			{
 				m_Animator.SetTrigger ("revived");
 				isReviving = true;
 			}
 		} 
-		else if (isReviving && !isRolling) 
+		else if (isReviving && isRolling == false) 
 		{
 			waitTillRespawn -= Time.deltaTime;
 

@@ -188,7 +188,6 @@ public class LevelGenerator : MonoBehaviour
         HandleEnemies(_lastGeneratedChunk);
         HandleGenerateCoins(_lastGeneratedChunk);
 
-
         SetupEndOfChunk(chunk, maxX + 1, 0);
 
         _previousChunkWidthEnd += _maxWidth;
@@ -243,7 +242,7 @@ public class LevelGenerator : MonoBehaviour
 
     private void SetupNewSpawnPosition(int chunkId)
     {
-        if(chunkId <= 0)
+        if (chunkId <= 0)
         {
             return;
         }
@@ -274,7 +273,7 @@ public class LevelGenerator : MonoBehaviour
     private void HandleElevation(int chunkId)
     {
         var minX = _previousChunkWidthEnd + 1;
-        var maxX = _previousChunkWidthEnd + _maxWidth - 1;
+        var maxX = _previousChunkWidthEnd + _maxWidth - 2;
 
         foreach (var model in _tranningModelHandler.elevationModels)
         {
@@ -331,7 +330,7 @@ public class LevelGenerator : MonoBehaviour
         {
             var model = _tranningModelHandler.platformModels[i];
             var minX = _previousChunkWidthEnd + 1;
-            var maxX = _previousChunkWidthEnd + _maxWidth - model.width - 1;
+            var maxX = _previousChunkWidthEnd + _maxWidth - model.width - 2;
 
             var xPos = GetEmptySpotOnMap(chunkId, TrainingType.Platform).x;
             var endX = xPos + model.width;
@@ -430,7 +429,7 @@ public class LevelGenerator : MonoBehaviour
     private void HandleChasm(int chunkId)
     {
         var minX = _previousChunkWidthEnd + 1;
-        var maxX = _previousChunkWidthEnd + _maxWidth - 1;
+        var maxX = _previousChunkWidthEnd + _maxWidth - 2;
         var chunk = _chunks[chunkId];
 
         foreach (var model in _tranningModelHandler.chasmModels)

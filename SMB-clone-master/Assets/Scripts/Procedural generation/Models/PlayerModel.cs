@@ -91,7 +91,7 @@ public class GlobalPlayerResults
 
 public class PlayerModel
 {
-    private const int _maxPlatforms = 2;
+    private const int _maxPlatforms = 1;
     private const int _maxFireBars = 3;
 
     private SerializeData serializeData;
@@ -102,7 +102,7 @@ public class PlayerModel
     private int _precentageElevation;
     private int _precentagePlatform;
 
-    public int currentDifficultyScore = 20;
+    public int currentDifficultyScore = 10;
 
     private bool setupCompleted = false;
 

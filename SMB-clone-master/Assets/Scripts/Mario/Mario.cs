@@ -528,6 +528,13 @@ public class Mario : MonoBehaviour {
 			var shell = other.gameObject.GetComponent<KoopaShell>();
 			var enemyTransform = enemy.transform;
 
+			if (shell != null && shell.isRolling == false)
+            {
+				shell.StompedByMario();
+
+				return;
+            }
+
 			if (transform.position.y > enemy.transform.position.y 
 				&& other.gameObject.tag != "Enemy/Piranha"
 				&& other.gameObject.tag != "Enemy/Bowser")
