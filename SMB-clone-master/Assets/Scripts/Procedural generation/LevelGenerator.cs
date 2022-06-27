@@ -300,7 +300,7 @@ public class LevelGenerator : MonoBehaviour
 
             GenerateBlocks(beginposition, endPosition, chunk, false, false);
             GeneratePatrolPoints(beginposition.x - 1, previousBlockHeigth + 1, chunk);
-            GeneratePatrolPoints(endPosition.x - 1, FindBlockHighestPosition(chunkId, endPosition.x), chunk);
+            GeneratePatrolPoints(endPosition.x + 1, FindBlockHighestPosition(chunkId, endPosition.x + 1), chunk);
         }
     }
 
