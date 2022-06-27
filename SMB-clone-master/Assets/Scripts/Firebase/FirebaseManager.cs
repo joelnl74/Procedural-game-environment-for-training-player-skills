@@ -199,7 +199,7 @@ public class FirebaseManager : MonoSingleton<FirebaseManager>
            newUser.DisplayName, newUser.UserId);
 
            database = FirebaseDatabase.DefaultInstance;
-
+           database.SetPersistenceEnabled(false);
            setup = true;
        });
     }
