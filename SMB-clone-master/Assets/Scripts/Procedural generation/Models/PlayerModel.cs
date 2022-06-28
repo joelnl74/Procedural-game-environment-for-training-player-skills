@@ -251,14 +251,16 @@ public class PlayerModel
     {
         if (completedTutorial == false)
         {
+            completedTutorial = true;
+
             if (version == 1)
             {
                 _globalPlayerResults.timeCompletionIntroductionVersionOne = time;
+
+                return;
             }
 
             _globalPlayerResults.timeCompletionIntroductionVersionTwo = time;
-
-            completedTutorial = true;
         }
     }
 
