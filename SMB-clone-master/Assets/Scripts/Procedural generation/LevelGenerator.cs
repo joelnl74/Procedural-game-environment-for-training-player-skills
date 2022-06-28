@@ -236,6 +236,14 @@ public class LevelGenerator : MonoBehaviour
         return new Vector2Int(block.xPos, yPos + 1);
     }
 
+    private Vector2Int GetRandomPositionOnMap(int chunkId)
+    {
+        var xPos = Random.Range(_previousChunkWidthEnd + 1, _previousChunkWidthEnd + _maxWidth + 2);
+        var yPos = FindBlockHighestPosition(chunkId, xPos);
+
+        return new Vector2Int(xPos, yPos + 1);
+    }
+
     private EntityModel GetHighestSolidBlock(int chunkId)
     {
         var solidBlocksInChunk = _entities[chunkId].Values.Where(x => x.entityType == EntityType.Solid).ToList();
@@ -410,7 +418,10 @@ public class LevelGenerator : MonoBehaviour
 
         foreach (var model in _tranningModelHandler.enemyModels)
         {
-            var emptySpot = GetEmptySpotOnMap(chunkId, TrainingType.Enemies);
+            var emptySpot = model.enemytype == Enemytype.FlyingShell 
+                ? GetRandomPositionOnMap(chunkId) 
+                :  GetEmptySpotOnMap(chunkId, TrainingType.Enemies);
+
             var position = new Vector2Int(emptySpot.x, emptySpot.y);
 
             switch(model.enemytype)

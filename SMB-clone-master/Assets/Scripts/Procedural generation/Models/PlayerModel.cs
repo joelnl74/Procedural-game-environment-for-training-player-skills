@@ -439,7 +439,7 @@ public class PlayerModel
         {
             var difference = currentDifficultyScore - current;
 
-            if (difference < 0)
+            if (difference <= 0)
             {
                 completed = true;
                 return tranningTypes;
