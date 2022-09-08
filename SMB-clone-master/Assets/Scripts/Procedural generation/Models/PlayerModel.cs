@@ -220,7 +220,7 @@ public class PlayerModel
             }
             else
             {
-                _globalPlayerResults.DidFailTraingVersionOne = false;
+                _globalPlayerResults.DidFailTrainingVersionTwo = true;
             }
         }
 
