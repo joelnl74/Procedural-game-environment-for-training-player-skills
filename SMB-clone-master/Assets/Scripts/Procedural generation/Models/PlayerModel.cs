@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
 public class ChunkInformation
 {
     public int jumpDeaths = 0;
@@ -102,7 +103,7 @@ public class PlayerModel
     private int _precentageElevation;
     private int _precentagePlatform;
 
-    public int currentDifficultyScore = 10;
+    public int currentDifficultyScore = 1;
 
     private bool setupCompleted = false;
 
@@ -269,15 +270,10 @@ public class PlayerModel
         var lastChunk = _previousChunkStats.Last();
         var completed = lastChunk.Value.completedChunk;
 
-        if (lastChunk.Value.tranningTypes != null && previousTranningTypes.Count == 0 && setupCompleted == false)
-        {
-            setupCompleted = true;
-            currentDifficultyScore = lastChunk.Value.difficultyScore;
+        var totalDeaths = lastChunk.Value.GetTotalDeaths();
 
-            return GetTranningTypesForTargetedDifficulty();
-        }
         // Increase difficulty;
-        if (completed)
+        if (totalDeaths < 3)
         {
             currentDifficultyScore = Mathf.Clamp(currentDifficultyScore + IncreaseDifficulty(lastChunk.Value), 1, 100);
 
@@ -285,19 +281,6 @@ public class PlayerModel
         }
         else
         {
-            if (_previousChunkStats.Count <= 1)
-            {
-                return previousTranningTypes;
-            }
-
-            var completedSecondLast = _previousChunkStats.ElementAt(_previousChunkStats.Count - 2).Value;
-
-            // If chunk before last one also failed and total death count of last chunk is smaller or equal to two generate same type of level.
-            if (lastChunk.Value.completedChunk == false && completedSecondLast.completedChunk == true && lastChunk.Value.GetTotalDeaths() <= 3)
-            {
-                return previousFailedTraningTypes;
-            }
-
             currentDifficultyScore = Mathf.Clamp(currentDifficultyScore - DecreaseDifficulty(lastChunk.Value), 1, 100);
 
             // If all conditions above lead to this code we decrease the difficulty for the player.
@@ -307,41 +290,19 @@ public class PlayerModel
 
     private int IncreaseDifficulty(ChunkInformation chunk)
     {
-        var increaseDifficulty = 0;
-        var totalDeaths = chunk.GetTotalDeaths();
-
-        increaseDifficulty += chunk.timeCompleted < 5 ? 5 : 0;
-        increaseDifficulty += totalDeaths == 0 ? 5 : 0;
-        increaseDifficulty += chunk.completedChunk ? 5 : 0;
-        // 5.86 is the max speed mario can reach without using dash.
-        increaseDifficulty += chunk.averageVelocity > 5.86f && totalDeaths < 3 ? 10 : 0;
-
-        if (increaseDifficulty == 15)
-        {
-            _globalPlayerResults.DidSpeedRun = true;
-        }
-
-        return increaseDifficulty;
+        return Random.Range(1, 4);
     }
 
     private int DecreaseDifficulty(ChunkInformation chunk)
     {
-        var decreaseDifficulty = 0;
-        var totalDeaths = chunk.GetTotalDeaths();
-
-        decreaseDifficulty += chunk.completedChunk ? 0 : 5;
-        decreaseDifficulty += chunk.timeCompleted < 10 ? 0 : 5;
-        decreaseDifficulty += totalDeaths > 5 ? 10 : 0;
-        decreaseDifficulty += totalDeaths > 1 ? 5 : 0;
-
-        return decreaseDifficulty;
+        return Random.Range(1 ,4);
     }
 
     private (int, TrainingType) ReturnDifficultyOfMechanic(int score)
     {
         // TODO frequencies take into account failures and take into account current difficulty level.
-        int[] arr = { 0, 1, 2, 3, 4 };
-        int[] freq = { _precentageElevation, _precentageEnemyDeaths, _precentageJumpDeaths, _precentagePlatform, currentDifficultyScore > 59 ? _precentageFireBarDeaths : 0 };
+        int[] arr = { 0, 1, 2, 3, 4, 5};
+        int[] freq = { _precentageElevation, _precentageEnemyDeaths, _precentageJumpDeaths, _precentagePlatform, currentDifficultyScore > 15 ? _precentageFireBarDeaths : 0, 50 };
 
         var type = DistributionRand(arr, freq);
 
@@ -352,6 +313,7 @@ public class PlayerModel
             2 => (6, TrainingType.Long_Jump),
             3 => (6, TrainingType.Platform),
             4 => (8, TrainingType.FireBar),
+            5 => (1, TrainingType.Walking),
             _ => (0, TrainingType.None),
         };
     }
@@ -361,7 +323,7 @@ public class PlayerModel
         chunkInformation.jumpDeaths++;
         lastTranningTypeFailure = TrainingType.Long_Jump;
 
-        PCGEventManager.Instance.onPlayerDeath?.Invoke(chunkInformation.jumpDeaths < 4);
+        PCGEventManager.Instance.onPlayerDeath?.Invoke(true);
         PCGEventManager.Instance.onPlayerModelUpdated(_previousChunkStats.Keys.Max());
     }
 
@@ -370,7 +332,7 @@ public class PlayerModel
         chunkInformation.fireBarDeaths++;
         lastTranningTypeFailure = TrainingType.FireBar;
 
-        PCGEventManager.Instance.onPlayerDeath?.Invoke(chunkInformation.fireBarDeaths < 4);
+        PCGEventManager.Instance.onPlayerDeath?.Invoke(true);
         PCGEventManager.Instance.onPlayerModelUpdated(_previousChunkStats.Keys.Max());
     }
 
@@ -393,7 +355,7 @@ public class PlayerModel
 
         lastTranningTypeFailure = TrainingType.Enemies;
 
-        PCGEventManager.Instance.onPlayerDeath?.Invoke(chunkInformation.enemiesDeaths < 4);
+        PCGEventManager.Instance.onPlayerDeath?.Invoke(true);
         PCGEventManager.Instance.onPlayerModelUpdated(_previousChunkStats.Keys.Max());
     }
 
@@ -412,21 +374,15 @@ public class PlayerModel
 
     private void CalculatePrecentages()
     {
-        var totalEnemyDeaths =_previousChunkStats.Sum(x => x.Value.enemiesDeaths);
-        var totalJumpDeaths = _previousChunkStats.Sum(x => x.Value.jumpDeaths);
-        var totalFireBarDeaths = _previousChunkStats.Sum(x => x.Value.fireBarDeaths);
+        var precentageEnemyDeaths = Random.Range(30, 50);
+        var precentageJumpDeaths = Random.Range(30, 50);
+        var precentageFireBarDeaths = Random.Range(30, 50);
 
-        var total = totalEnemyDeaths + totalJumpDeaths + totalFireBarDeaths;
-
-        var precentageEnemyDeaths = totalEnemyDeaths != 0 ? Mathf.Clamp(totalEnemyDeaths / total * 100, 20, 90) : Random.Range(15, 35);
-        var precentageJumpDeaths = totalJumpDeaths != 0 ? Mathf.Clamp(totalJumpDeaths / total * 100, 20, 90) : Random.Range(10, 30);
-        var precentageFireBarDeaths = totalFireBarDeaths != 0 ? Mathf.Clamp(totalFireBarDeaths / total * 100, 5, 40) : Random.Range(5, 20);
-
-        _precentagePlatform = precentageJumpDeaths > 50 ? Random.Range(15, 30) : Random.Range(10, 25);
+        _precentagePlatform = Random.Range(15, 30);
         _precentageEnemyDeaths = precentageEnemyDeaths;
         _precentageJumpDeaths = precentageJumpDeaths;
         _precentageFireBarDeaths = precentageFireBarDeaths;
-        _precentageElevation = 10;
+        _precentageElevation = Random.Range(10, 15);
     }
 
     private List<TrainingType> GetTranningTypesForTargetedDifficulty()
@@ -480,7 +436,6 @@ public class PlayerModel
             tranningTypes.Add(type.Item2);
             current += type.Item1;
         }
-
 
         return tranningTypes;
     }

@@ -25,7 +25,7 @@ public class PlayerModelHandler : MonoBehaviour
 
     private void Awake()
     {
-        _index = (int)TrainingType.Walking;
+        _index = (int)TrainingType.BasicsTest;
         _PCGEventManager = PCGEventManager.Instance;
         _playerModel = new PlayerModel();
         _chunkTimer = 30;
@@ -103,6 +103,8 @@ public class PlayerModelHandler : MonoBehaviour
 
     private void GetHelpText(TrainingType tranningType)
     {
+        return;
+
         switch (tranningType)
         {
             case TrainingType.None:

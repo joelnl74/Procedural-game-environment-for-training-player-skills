@@ -3369,6 +3369,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvasGroup: {fileID: 1096003595}
+  skipSetup: 0
 --- !u!225 &1096003595
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -6453,6 +6454,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   setup: 0
+  dataReceived: 0
 --- !u!4 &1969195569
 Transform:
   m_ObjectHideFlags: 0
