@@ -290,19 +290,19 @@ public class PlayerModel
 
     private int IncreaseDifficulty(ChunkInformation chunk)
     {
-        return Random.Range(1, 4);
+        return Random.Range(1, 5);
     }
 
     private int DecreaseDifficulty(ChunkInformation chunk)
     {
-        return Random.Range(1 ,4);
+        return Random.Range(1 ,5);
     }
 
     private (int, TrainingType) ReturnDifficultyOfMechanic(int score)
     {
         // TODO frequencies take into account failures and take into account current difficulty level.
         int[] arr = { 0, 1, 2, 3, 4, 5};
-        int[] freq = { _precentageElevation, _precentageEnemyDeaths, _precentageJumpDeaths, _precentagePlatform, currentDifficultyScore > 15 ? _precentageFireBarDeaths : 0, 50 };
+        int[] freq = { _precentageElevation, _precentageEnemyDeaths, _precentageJumpDeaths, _precentagePlatform, currentDifficultyScore >= 30 ? _precentageFireBarDeaths : 0, 50 };
 
         var type = DistributionRand(arr, freq);
 
