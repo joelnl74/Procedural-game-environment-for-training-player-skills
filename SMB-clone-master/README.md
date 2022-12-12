@@ -1,6 +1,4 @@
-# SMB-clone
-
-Clone of Super Mario Bros, World 1-1 through 1-4. Made with Unity.
+# Procedural game environment for training player skills
 
 ***
 ### Controls
@@ -13,34 +11,14 @@ Clone of Super Mario Bros, World 1-1 through 1-4. Made with Unity.
 
 
 ***
-### Links
-#### Download executable (Windows and Mac OS)
-https://www.mediafire.com/folder/nmqxb40qt4c1u/SMB+clone+by+linhdvu14
+### Structure
+PCG Folders contain scripts or prefabs regarding the player modeling and procedural content generation of the levels.
+Scripts/Mario contains the game logic
+Scripts/Procedural genearation Contains level generation and player modeling logic
+  - Models data
+  - Controllers interact on the data
+  - Handlers Handle actions executed from the code
+  - Event manager used for handling game events
+Scripts/Firebase contains database logic
 
-Mirror: 
-https://www.dropbox.com/sh/w1ja3sw1tjq3e21/AAAbx8rreejFNpu5F5f5fy0aa?dl=0
-
-#### References
-World maps: http://www.nesmaps.com/maps/SuperMarioBrothers/SuperMarioBrothers.html
-
-Mario physics: http://s276.photobucket.com/user/jdaster64/media/smb_playerphysics.png.html
-
-Sprites: http://www.mariouniverse.com/sprites/nes/smb
-
-Sounds: http://themushroomkingdom.net/media/smb/wav
-
-***
-### Screenshots
-<img src="https://github.com/linhdvu14/SMB-clone/blob/master/Screenshots/main-menu.jpg" width="500" alt="Main Menu Screenshot" title="Main Menu">
-
-<img src="https://github.com/linhdvu14/SMB-clone/blob/master/Screenshots/lvl-start.jpg" width="500" alt="Level Start Screenshot" title="Level Start Screen">
-
-<img src="https://github.com/linhdvu14/SMB-clone/blob/master/Screenshots/world1-1.jpg" width="500" alt="World 1-1 Screenshot" title="World 1-1">
-
-<img src="https://github.com/linhdvu14/SMB-clone/blob/master/Screenshots/world1-1-underground.jpg" width="500" alt="World 1-1 Underground Screenshot" title="World 1-1 Underground">
-
-<img src="https://github.com/linhdvu14/SMB-clone/blob/master/Screenshots/world1-2.jpg" width="500" alt="World 1-2 Screenshot" title="World 1-2">
-
-<img src="https://github.com/linhdvu14/SMB-clone/blob/master/Screenshots/world1-3.jpg" width="500" alt="World 1-3 Screenshot" title="World 1-3">
-
-<img src="https://github.com/linhdvu14/SMB-clone/blob/master/Screenshots/world1-4.jpg" width="500" alt="World 1-4 Screenshot" title="World 1-4">
+Wanting to learn someone to play a video-game is tightly tight to the concept of literacy, which means the competence or knowledge in a specified area. In video-games, we call this game literacy, which means we want people to increase their skill in playing video games. The common way of teaching a user game literacy is through the use of tutorial's which teaches the player the base mechanics of the game. Tutorials in most situations are created by designers which forces players to complete some simple tasks in a certain order that learn them the base mechanics of the game. After completing the tutorial, the player plays through a series of levels, in which slowly the difficulty of the game scales up. The problem with this approach is that we have players of all kind of different skill levels in playing video games. We have to take the different skill levels of player's into account. If we do not take the different skill levels of players into account, they might quite the game because of boredom or being too frustrated because of not making any progress in the game. To solve this problem, we propose a method that adaptively changes the generation of game levels based on the player's performance in the game and try to target the difficulty of the levels based on the player's skill in playing video games. Our method focuses on generating game levels with game mechanics the user needs improvement on. Results show that our method is enabled to train people in their game literacy better than a baseline adaptive environment.
