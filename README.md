@@ -5,6 +5,10 @@
 * Main: Uses adaptive methods to increase the players game literacy in playing video games based on the Thesis: Procedural game environment for training player skills
 * Base version: Is based on the adaptive infinite mario used as a baseline version for comparing our results: https://www.themarysue.com/infinite-adaptive-mario/ 
 
+### EXE
+* Windows: https://drive.google.com/file/d/1ysZS1MpFLbBcmLsvs5X3kRsd9wtyjoZo/view?usp=share_link 
+* Mac: https://drive.google.com/file/d/1sJ79sX_51jKFDII8Uqso0KrKeu2EYej_/view?usp=share_link
+
 ***
 ### Controls
 * Move: Left/Right
