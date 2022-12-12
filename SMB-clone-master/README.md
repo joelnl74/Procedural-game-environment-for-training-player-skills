@@ -1,6 +1,11 @@
 # Procedural game environment for training player skills
 
 ***
+### Branches
+* Main: Uses adaptive methods to increase the players game literacy in playing video games based on the Thesis: Procedural game environment for training player skills
+* Base version: Is based on the adaptive infinite mario used as a baseline version for comparing our results: https://www.themarysue.com/infinite-adaptive-mario/ 
+
+***
 ### Controls
 * Move: Left/Right
 * Crouch: Down
